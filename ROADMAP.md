@@ -34,28 +34,30 @@ Living product plan. **GitHub [milestones](https://github.com/ArianAr/ReleaseCan
 
 ---
 
-## In progress / next
+## Next
 
 ### v1.3 — Scale
-Tracked issues:
-
 | Issue | Theme |
 |-------|--------|
 | [#20](https://github.com/ArianAr/ReleaseCanvas/issues/20) | Batch multi-model releases |
 | [#21](https://github.com/ArianAr/ReleaseCanvas/issues/21) | Cloud backup behind a storage interface |
 
-Related ideas under this theme (not yet issued unless agreed):
+### v1.4 — UX & branding
+Agreed with maintainer:
 
-- Editable / multi-jurisdiction legal templates (UI editor or import)
-- Photographer default profile (studio name, logo watermark on PDF)
+| Issue | Theme |
+|-------|--------|
+| [#30](https://github.com/ArianAr/ReleaseCanvas/issues/30) | Photographer profile defaults (studio, email/phone, logo; prefill) |
+| [#31](https://github.com/ArianAr/ReleaseCanvas/issues/31) | PDF branding / watermark (logo, accent, studio footer) |
+| [#32](https://github.com/ArianAr/ReleaseCanvas/issues/32) | Onboarding / first-run tips |
+| [#33](https://github.com/ArianAr/ReleaseCanvas/issues/33) | Accessibility pass (TalkBack, targets, contrast) |
+| [#34](https://github.com/ArianAr/ReleaseCanvas/issues/34) | Custom template import (offline `.txt` / `.md`) |
 
 ---
 
 ## Later / ideas (not committed)
 
-_Items below are placeholders only until the maintainer approves them for this file or as GitHub issues._
-
-_(empty — propose additions in discussion or PR review)_
+_No unapproved items. Propose additions before adding to this file or filing issues._
 
 ---
 
