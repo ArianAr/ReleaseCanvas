@@ -78,4 +78,15 @@
     <string name="email_pdf">Email PDF</string>
     <string name="email_subject">Model release — %1$s</string>
     <string name="email_body">Attached is the signed model release PDF.\n\nFile: %1$s\nSigned (UTC): %2$s\n\nSent from ReleaseCanvas.</string>
+    <string name="profile_title">Photographer profile</string>
+    <string name="profile_hint">Defaults prefill new releases. Logo is used later for PDF branding.</string>
+    <string name="profile_display_name">Photographer name</string>
+    <string name="profile_studio_name">Studio name (optional)</string>
+    <string name="profile_email">Email (optional)</string>
+    <string name="profile_phone">Phone (optional)</string>
+    <string name="profile_logo_section">Logo (optional)</string>
+    <string name="profile_pick_logo">Choose logo image</string>
+    <string name="profile_clear_logo">Remove logo</string>
+    <string name="profile_save">Save profile</string>
+    <string name="profile_saved">Profile saved</string>
 </resources>

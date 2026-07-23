@@ -2,6 +2,7 @@ package com.releasecanvas.app.ui
 
 import android.app.Application
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -11,6 +12,7 @@ import com.releasecanvas.app.data.model.ExportResult
 import com.releasecanvas.app.data.model.FormErrors
 import com.releasecanvas.app.data.model.HistoryEntry
 import com.releasecanvas.app.data.model.LocationStatus
+import com.releasecanvas.app.data.model.PhotographerProfile
 import com.releasecanvas.app.data.model.ReleaseDraft
 import com.releasecanvas.app.data.pdf.PdfCompiler
 import com.releasecanvas.app.data.pdf.ReleaseTemplate
@@ -18,6 +20,7 @@ import com.releasecanvas.app.data.prefs.PreferencesStore
 import com.releasecanvas.app.data.storage.DocumentStore
 import com.releasecanvas.app.util.Formatters
 import com.releasecanvas.app.util.Validation
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +29,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
 
 data class ReleaseUiState(
     val draft: ReleaseDraft = ReleaseDraft(),
@@ -37,6 +43,8 @@ data class ReleaseUiState(
     val isExporting: Boolean = false,
     val exportError: String? = null,
     val lastExport: ExportResult? = null,
+    val profile: PhotographerProfile = PhotographerProfile(),
+    val profileSavedMessage: String? = null,
 )
 
 class ReleaseViewModel(
@@ -53,11 +61,22 @@ class ReleaseViewModel(
     val history: StateFlow<List<HistoryEntry>> = preferencesStore.history
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    val photographerProfile: StateFlow<PhotographerProfile> = preferencesStore.photographerProfile
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PhotographerProfile())
+
     init {
         viewModelScope.launch {
-            preferencesStore.shooterName.collect { name ->
-                if (name.isNotBlank() && _uiState.value.draft.shooterName.isBlank()) {
-                    _uiState.update { it.copy(draft = it.draft.copy(shooterName = name)) }
+            preferencesStore.photographerProfile.collect { profile ->
+                _uiState.update { state ->
+                    val draft = state.draft
+                    state.copy(
+                        profile = profile,
+                        draft = draft.copy(
+                            shooterName = draft.shooterName.ifBlank { profile.displayName },
+                            photographerEmail = draft.photographerEmail.ifBlank { profile.email },
+                            photographerPhone = draft.photographerPhone.ifBlank { profile.phone },
+                        ),
+                    )
                 }
             }
         }
@@ -105,11 +124,56 @@ class ReleaseViewModel(
         _uiState.update { it.copy(formErrors = errors) }
         if (!errors.hasErrors) {
             viewModelScope.launch {
+                // Keep display name in profile if empty, otherwise leave profile as-is
+                // and only persist last used photographer name for form convenience.
                 preferencesStore.setShooterName(draft.shooterName)
                 preferencesStore.setLastTemplateId(draft.template.id)
             }
         }
         return !errors.hasErrors
+    }
+
+    fun savePhotographerProfile(profile: PhotographerProfile) {
+        viewModelScope.launch {
+            preferencesStore.setPhotographerProfile(profile)
+            _uiState.update {
+                it.copy(
+                    profile = profile,
+                    profileSavedMessage = "Profile saved",
+                    draft = it.draft.copy(
+                        shooterName = it.draft.shooterName.ifBlank { profile.displayName },
+                        photographerEmail = it.draft.photographerEmail.ifBlank { profile.email },
+                        photographerPhone = it.draft.photographerPhone.ifBlank { profile.phone },
+                    ),
+                )
+            }
+        }
+    }
+
+    fun clearProfileSavedMessage() {
+        _uiState.update { it.copy(profileSavedMessage = null) }
+    }
+
+    suspend fun importProfileLogo(uri: Uri): String? = withContext(Dispatchers.IO) {
+        runCatching {
+            val app = getApplication<Application>()
+            val dest = File(app.filesDir, "profile_logo.jpg")
+            app.contentResolver.openInputStream(uri)?.use { input ->
+                FileOutputStream(dest).use { output -> input.copyTo(output) }
+            } ?: return@withContext null
+            dest.absolutePath
+        }.getOrNull()
+    }
+
+    fun clearProfileLogo(current: PhotographerProfile) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                current.logoPath.takeIf { it.isNotBlank() }?.let { path ->
+                    runCatching { File(path).delete() }
+                }
+            }
+            savePhotographerProfile(current.copy(logoPath = ""))
+        }
     }
 
     fun setSignature(bitmap: Bitmap?, hasStrokes: Boolean) {
@@ -219,12 +283,18 @@ class ReleaseViewModel(
     }
 
     fun resetForNewRelease() {
-        val shooter = _uiState.value.draft.shooterName
+        val profile = _uiState.value.profile
         val template = _uiState.value.draft.template
         val oldSig = _uiState.value.draft.signatureBitmap
         if (oldSig != null && !oldSig.isRecycled) oldSig.recycle()
         _uiState.value = ReleaseUiState(
-            draft = ReleaseDraft(shooterName = shooter, template = template),
+            profile = profile,
+            draft = ReleaseDraft(
+                shooterName = profile.displayName,
+                photographerEmail = profile.email,
+                photographerPhone = profile.phone,
+                template = template,
+            ),
         )
     }
 

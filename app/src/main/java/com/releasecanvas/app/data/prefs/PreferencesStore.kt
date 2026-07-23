@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.releasecanvas.app.data.model.HistoryEntry
+import com.releasecanvas.app.data.model.PhotographerProfile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.json.JSONArray
@@ -19,9 +20,23 @@ class PreferencesStore(private val context: Context) {
     private val shooterNameKey = stringPreferencesKey("shooter_name")
     private val historyKey = stringPreferencesKey("export_history")
     private val lastTemplateKey = stringPreferencesKey("last_release_template")
+    private val profileStudioKey = stringPreferencesKey("profile_studio_name")
+    private val profileEmailKey = stringPreferencesKey("profile_email")
+    private val profilePhoneKey = stringPreferencesKey("profile_phone")
+    private val profileLogoPathKey = stringPreferencesKey("profile_logo_path")
 
     val shooterName: Flow<String> = context.dataStore.data.map { prefs ->
         prefs[shooterNameKey].orEmpty()
+    }
+
+    val photographerProfile: Flow<PhotographerProfile> = context.dataStore.data.map { prefs ->
+        PhotographerProfile(
+            displayName = prefs[shooterNameKey].orEmpty(),
+            studioName = prefs[profileStudioKey].orEmpty(),
+            email = prefs[profileEmailKey].orEmpty(),
+            phone = prefs[profilePhoneKey].orEmpty(),
+            logoPath = prefs[profileLogoPathKey].orEmpty(),
+        )
     }
 
     val lastTemplateId: Flow<String> = context.dataStore.data.map { prefs ->
@@ -35,6 +50,16 @@ class PreferencesStore(private val context: Context) {
     suspend fun setShooterName(name: String) {
         context.dataStore.edit { prefs ->
             prefs[shooterNameKey] = name.trim()
+        }
+    }
+
+    suspend fun setPhotographerProfile(profile: PhotographerProfile) {
+        context.dataStore.edit { prefs ->
+            prefs[shooterNameKey] = profile.displayName.trim()
+            prefs[profileStudioKey] = profile.studioName.trim()
+            prefs[profileEmailKey] = profile.email.trim()
+            prefs[profilePhoneKey] = profile.phone.trim()
+            prefs[profileLogoPathKey] = profile.logoPath.trim()
         }
     }
 
