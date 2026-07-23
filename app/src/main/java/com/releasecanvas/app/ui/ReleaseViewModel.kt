@@ -64,6 +64,17 @@ class ReleaseViewModel(
     val photographerProfile: StateFlow<PhotographerProfile> = preferencesStore.photographerProfile
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PhotographerProfile())
 
+    val onboardingDone: StateFlow<Boolean> = preferencesStore.onboardingDone
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
+    fun completeOnboarding() {
+        viewModelScope.launch { preferencesStore.setOnboardingDone(true) }
+    }
+
+    fun reopenOnboarding() {
+        viewModelScope.launch { preferencesStore.setOnboardingDone(false) }
+    }
+
     init {
         viewModelScope.launch {
             preferencesStore.photographerProfile.collect { profile ->

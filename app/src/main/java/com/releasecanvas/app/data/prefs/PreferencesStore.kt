@@ -27,6 +27,7 @@ class PreferencesStore(private val context: Context) {
     private val profileLogoPathKey = stringPreferencesKey("profile_logo_path")
     private val brandingEnabledKey = booleanPreferencesKey("branding_enabled")
     private val brandAccentKey = stringPreferencesKey("brand_accent_hex")
+    private val onboardingDoneKey = booleanPreferencesKey("onboarding_done")
 
     val shooterName: Flow<String> = context.dataStore.data.map { prefs ->
         prefs[shooterNameKey].orEmpty()
@@ -50,6 +51,16 @@ class PreferencesStore(private val context: Context) {
 
     val history: Flow<List<HistoryEntry>> = context.dataStore.data.map { prefs ->
         parseHistory(prefs[historyKey].orEmpty())
+    }
+
+    val onboardingDone: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[onboardingDoneKey] ?: false
+    }
+
+    suspend fun setOnboardingDone(done: Boolean) {
+        context.dataStore.edit { prefs ->
+            prefs[onboardingDoneKey] = done
+        }
     }
 
     suspend fun setShooterName(name: String) {
