@@ -2,6 +2,7 @@ package com.releasecanvas.app.data.model
 
 import android.graphics.Bitmap
 import android.net.Uri
+import com.releasecanvas.app.data.pdf.ReleaseTemplate
 import java.time.Instant
 
 data class ReleaseDraft(
@@ -9,6 +10,7 @@ data class ReleaseDraft(
     val modelEmail: String = "",
     val shooterName: String = "",
     val description: String = "",
+    val template: ReleaseTemplate = ReleaseTemplate.GENERIC,
     /** Optional photographer-defined shoot identifier. */
     val shootId: String = "",
     val photographerEmail: String = "",

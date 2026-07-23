@@ -11,16 +11,23 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -28,6 +35,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.releasecanvas.app.R
+import com.releasecanvas.app.data.pdf.ReleaseTemplate
 import com.releasecanvas.app.ui.ReleaseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,6 +48,7 @@ fun FormScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val draft = state.draft
     val errors = state.formErrors
+    var templateMenuExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -60,6 +69,56 @@ fun FormScreen(
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
+            Text(
+                text = stringResource(R.string.release_template_section),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = stringResource(R.string.release_template_disclaimer),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(12.dp))
+            ExposedDropdownMenuBox(
+                expanded = templateMenuExpanded,
+                onExpandedChange = { templateMenuExpanded = it },
+            ) {
+                OutlinedTextField(
+                    value = draft.template.displayName,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text(stringResource(R.string.release_template)) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = templateMenuExpanded) },
+                    supportingText = { Text(draft.template.shortDescription) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+                )
+                ExposedDropdownMenu(
+                    expanded = templateMenuExpanded,
+                    onDismissRequest = { templateMenuExpanded = false },
+                ) {
+                    ReleaseTemplate.entries.forEach { template ->
+                        DropdownMenuItem(
+                            text = {
+                                Column {
+                                    Text(template.displayName)
+                                    Text(
+                                        template.shortDescription,
+                                        style = MaterialTheme.typography.bodySmall,
+                                    )
+                                }
+                            },
+                            onClick = {
+                                viewModel.updateTemplate(template)
+                                templateMenuExpanded = false
+                            },
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.height(16.dp))
             OutlinedTextField(
                 value = draft.modelName,
                 onValueChange = viewModel::updateModelName,

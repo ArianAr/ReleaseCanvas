@@ -18,9 +18,14 @@ class PreferencesStore(private val context: Context) {
 
     private val shooterNameKey = stringPreferencesKey("shooter_name")
     private val historyKey = stringPreferencesKey("export_history")
+    private val lastTemplateKey = stringPreferencesKey("last_release_template")
 
     val shooterName: Flow<String> = context.dataStore.data.map { prefs ->
         prefs[shooterNameKey].orEmpty()
+    }
+
+    val lastTemplateId: Flow<String> = context.dataStore.data.map { prefs ->
+        prefs[lastTemplateKey].orEmpty()
     }
 
     val history: Flow<List<HistoryEntry>> = context.dataStore.data.map { prefs ->
@@ -30,6 +35,12 @@ class PreferencesStore(private val context: Context) {
     suspend fun setShooterName(name: String) {
         context.dataStore.edit { prefs ->
             prefs[shooterNameKey] = name.trim()
+        }
+    }
+
+    suspend fun setLastTemplateId(id: String) {
+        context.dataStore.edit { prefs ->
+            prefs[lastTemplateKey] = id
         }
     }
 
