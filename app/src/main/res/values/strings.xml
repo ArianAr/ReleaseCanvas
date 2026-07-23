@@ -76,4 +76,6 @@
     <string name="terms_preview_continue">I have read these terms</string>
     <string name="attestation_label">I confirm I am of legal age of majority (or a parent/guardian with authority) and I accept the release terms.</string>
     <string name="email_pdf">Email PDF</string>
+    <string name="email_subject">Model release — %1$s</string>
+    <string name="email_body">Attached is the signed model release PDF.\n\nFile: %1$s\nSigned (UTC): %2$s\n\nSent from ReleaseCanvas.</string>
 </resources>

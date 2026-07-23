@@ -130,11 +130,21 @@ fun SuccessScreen(
             Spacer(Modifier.height(12.dp))
             OutlinedButton(
                 onClick = {
-                    val uri = export?.contentUri
-                    if (uri == null) return@OutlinedButton
+                    val exp = export ?: return@OutlinedButton
+                    val subject = context.getString(
+                        R.string.email_subject,
+                        state.draft.modelName.ifBlank { exp.displayName },
+                    )
+                    val body = context.getString(
+                        R.string.email_body,
+                        exp.displayName,
+                        Formatters.formatUtc(exp.metadata.signedAtUtc),
+                    )
                     val intent = Intent(Intent.ACTION_SEND).apply {
                         type = "application/pdf"
-                        putExtra(Intent.EXTRA_STREAM, uri)
+                        putExtra(Intent.EXTRA_STREAM, exp.contentUri)
+                        putExtra(Intent.EXTRA_SUBJECT, subject)
+                        putExtra(Intent.EXTRA_TEXT, body)
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     }
                     try {
@@ -149,6 +159,39 @@ fun SuccessScreen(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(R.string.share_pdf))
+            }
+            Spacer(Modifier.height(12.dp))
+            OutlinedButton(
+                onClick = {
+                    val exp = export ?: return@OutlinedButton
+                    val subject = context.getString(
+                        R.string.email_subject,
+                        state.draft.modelName.ifBlank { exp.displayName },
+                    )
+                    val body = context.getString(
+                        R.string.email_body,
+                        exp.displayName,
+                        Formatters.formatUtc(exp.metadata.signedAtUtc),
+                    )
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "message/rfc822"
+                        putExtra(Intent.EXTRA_STREAM, exp.contentUri)
+                        putExtra(Intent.EXTRA_SUBJECT, subject)
+                        putExtra(Intent.EXTRA_TEXT, body)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                    try {
+                        context.startActivity(
+                            Intent.createChooser(intent, context.getString(R.string.email_pdf)),
+                        )
+                    } catch (_: ActivityNotFoundException) {
+                        scope.launch { snackbar.showSnackbar(shareFailed) }
+                    }
+                },
+                enabled = export != null,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.email_pdf))
             }
             Spacer(Modifier.height(12.dp))
             OutlinedButton(
