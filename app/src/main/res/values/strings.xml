@@ -31,7 +31,9 @@
     <string name="back">Back</string>
     <string name="error_required">Required</string>
     <string name="error_email">Enter a valid email</string>
-    <string name="error_signature_empty">Please provide a signature</string>
+    <string name="error_signature_empty">Please provide a signature before continuing</string>
+    <string name="export_error_title">Could not export PDF</string>
+    <string name="retry_export">Retry export</string>
     <string name="about_legal">Legal text is a generic template, not legal advice. Review with counsel for your jurisdiction.</string>
     <string name="exporting">Creating PDF…</string>
 </resources>

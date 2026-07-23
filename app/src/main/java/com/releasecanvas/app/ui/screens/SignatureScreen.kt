@@ -1,5 +1,6 @@
 package com.releasecanvas.app.ui.screens
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -17,13 +19,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -32,7 +34,6 @@ import com.releasecanvas.app.ui.ReleaseViewModel
 import com.releasecanvas.app.ui.components.SignaturePad
 import com.releasecanvas.app.ui.components.emitBitmap
 import com.releasecanvas.app.ui.components.rememberSignaturePadState
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,9 +43,7 @@ fun SignatureScreen(
     onContinue: () -> Unit,
 ) {
     val padState = rememberSignaturePadState()
-    val snackbar = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-    val emptyMessage = stringResource(R.string.error_signature_empty)
+    var showEmptyError by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -57,7 +56,6 @@ fun SignatureScreen(
                 },
             )
         },
-        snackbarHost = { SnackbarHost(snackbar) },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -73,10 +71,24 @@ fun SignatureScreen(
             Spacer(Modifier.height(16.dp))
             SignaturePad(
                 state = padState,
+                modifier = if (showEmptyError) {
+                    Modifier.border(2.dp, MaterialTheme.colorScheme.error, RoundedCornerShape(12.dp))
+                } else {
+                    Modifier
+                },
                 onStrokeChange = { hasStrokes, bitmap ->
+                    if (hasStrokes) showEmptyError = false
                     viewModel.setSignature(bitmap, hasStrokes)
                 },
             )
+            if (showEmptyError) {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.error_signature_empty),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
             Spacer(Modifier.height(12.dp))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -85,7 +97,10 @@ fun SignatureScreen(
                 OutlinedButton(
                     onClick = {
                         padState.undo()
-                        padState.emitBitmap { has, bmp -> viewModel.setSignature(bmp, has) }
+                        padState.emitBitmap { has, bmp ->
+                            if (has) showEmptyError = false
+                            viewModel.setSignature(bmp, has)
+                        }
                     },
                     modifier = Modifier.weight(1f),
                 ) {
@@ -95,6 +110,7 @@ fun SignatureScreen(
                     onClick = {
                         padState.clear()
                         viewModel.clearSignatureFlag()
+                        showEmptyError = false
                     },
                     modifier = Modifier.weight(1f),
                 ) {
@@ -105,8 +121,9 @@ fun SignatureScreen(
             Button(
                 onClick = {
                     if (!padState.hasStrokes) {
-                        scope.launch { snackbar.showSnackbar(emptyMessage) }
+                        showEmptyError = true
                     } else {
+                        showEmptyError = false
                         padState.emitBitmap { has, bmp -> viewModel.setSignature(bmp, has) }
                         onContinue()
                     }

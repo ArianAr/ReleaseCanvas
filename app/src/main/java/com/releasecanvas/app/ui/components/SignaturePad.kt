@@ -111,9 +111,10 @@ fun SignaturePad(
     val strokeWidthPx = with(density) { 3.dp.toPx() }
 
     Box(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(220.dp)
+            .then(modifier)
             .clip(RoundedCornerShape(12.dp))
             .background(Color.White)
             .border(1.dp, borderColor, RoundedCornerShape(12.dp)),

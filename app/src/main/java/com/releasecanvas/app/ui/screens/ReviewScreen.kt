@@ -18,11 +18,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -118,8 +121,37 @@ fun ReviewScreen(
                 )
             }
             state.exportError?.let { error ->
-                Spacer(Modifier.height(12.dp))
-                Text(error, color = MaterialTheme.colorScheme.error)
+                Spacer(Modifier.height(16.dp))
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text(
+                            text = stringResource(R.string.export_error_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            text = error,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        OutlinedButton(
+                            onClick = {
+                                viewModel.clearExportError()
+                                viewModel.export(onSuccess = onExported)
+                            },
+                            enabled = !state.isExporting,
+                        ) {
+                            Text(stringResource(R.string.retry_export))
+                        }
+                    }
+                }
             }
             Spacer(Modifier.height(24.dp))
             if (state.isExporting) {
@@ -131,7 +163,10 @@ fun ReviewScreen(
                 )
             } else {
                 Button(
-                    onClick = { viewModel.export(onSuccess = onExported) },
+                    onClick = {
+                        viewModel.clearExportError()
+                        viewModel.export(onSuccess = onExported)
+                    },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(stringResource(R.string.sign_and_export))
