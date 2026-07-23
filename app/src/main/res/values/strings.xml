@@ -54,4 +54,12 @@
     <string name="retry_export">Retry export</string>
     <string name="about_legal">Legal text is a generic template, not legal advice. Review with counsel for your jurisdiction.</string>
     <string name="exporting">Creating PDF…</string>
+    <string name="about_title">About</string>
+    <string name="about_version">Version %1$s (%2$d)</string>
+    <string name="about_legal_heading">Legal disclaimer</string>
+    <string name="about_legal_body">Release templates are generic wording samples for convenience. They are not attorney-reviewed contracts, not official forms of any stock agency or platform, and not legal advice. Have counsel review language for your jurisdiction before commercial use.</string>
+    <string name="about_privacy_heading">Privacy</string>
+    <string name="about_privacy_body">ReleaseCanvas works offline for core signing. Optional GPS and reverse geocode use device location services and may use network. PDFs are written to Documents/ReleaseCanvas via MediaStore. History is stored only on this device.</string>
+    <string name="about_license_heading">License</string>
+    <string name="about_license_body">ReleaseCanvas is free software under the GNU General Public License v3.0. Source is available on GitHub: ArianAr/ReleaseCanvas.</string>
 </resources>

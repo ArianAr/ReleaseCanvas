@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.releasecanvas.app.ui.ReleaseViewModel
+import com.releasecanvas.app.ui.screens.AboutScreen
 import com.releasecanvas.app.ui.screens.FormScreen
 import com.releasecanvas.app.ui.screens.HomeScreen
 import com.releasecanvas.app.ui.screens.ReviewScreen
@@ -19,6 +20,7 @@ object Routes {
     const val SIGNATURE = "signature"
     const val REVIEW = "review"
     const val SUCCESS = "success"
+    const val ABOUT = "about"
 }
 
 @Composable
@@ -39,7 +41,11 @@ fun AppNav(
                     viewModel.resetForNewRelease()
                     navController.navigate(Routes.FORM)
                 },
+                onAbout = { navController.navigate(Routes.ABOUT) },
             )
+        }
+        composable(Routes.ABOUT) {
+            AboutScreen(onBack = { navController.popBackStack() })
         }
         composable(Routes.FORM) {
             FormScreen(
