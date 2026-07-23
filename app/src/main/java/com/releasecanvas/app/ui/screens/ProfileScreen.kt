@@ -18,7 +18,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +32,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.Alignment
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -64,6 +67,8 @@ fun ProfileScreen(
     var email by remember(saved.email) { mutableStateOf(saved.email) }
     var phone by remember(saved.phone) { mutableStateOf(saved.phone) }
     var logoPath by remember(saved.logoPath) { mutableStateOf(saved.logoPath) }
+    var brandingEnabled by remember(saved.brandingEnabled) { mutableStateOf(saved.brandingEnabled) }
+    var brandAccentHex by remember(saved.brandAccentHex) { mutableStateOf(saved.brandAccentHex) }
 
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -189,6 +194,8 @@ fun ProfileScreen(
                             email = email,
                             phone = phone,
                             logoPath = logoPath,
+                            brandingEnabled = brandingEnabled,
+                            brandAccentHex = brandAccentHex,
                         )
                         logoPath = ""
                         viewModel.clearProfileLogo(current)
@@ -198,6 +205,32 @@ fun ProfileScreen(
                     Text(stringResource(R.string.profile_clear_logo))
                 }
             }
+            Spacer(Modifier.height(20.dp))
+            Text(
+                text = stringResource(R.string.profile_branding_section),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Spacer(Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = brandingEnabled,
+                    onCheckedChange = { brandingEnabled = it },
+                )
+                Text(
+                    text = stringResource(R.string.profile_branding_enabled),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+            OutlinedTextField(
+                value = brandAccentHex,
+                onValueChange = { brandAccentHex = it },
+                label = { Text(stringResource(R.string.profile_brand_accent)) },
+                supportingText = { Text(stringResource(R.string.profile_brand_accent_hint)) },
+                singleLine = true,
+                enabled = brandingEnabled,
+                modifier = Modifier.fillMaxWidth(),
+            )
             Spacer(Modifier.height(24.dp))
             Button(
                 onClick = {
@@ -208,6 +241,8 @@ fun ProfileScreen(
                             email = email,
                             phone = phone,
                             logoPath = logoPath,
+                            brandingEnabled = brandingEnabled,
+                            brandAccentHex = brandAccentHex,
                         ),
                     )
                 },

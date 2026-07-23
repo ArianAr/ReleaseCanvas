@@ -3,6 +3,7 @@ package com.releasecanvas.app.data.prefs
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -24,6 +25,8 @@ class PreferencesStore(private val context: Context) {
     private val profileEmailKey = stringPreferencesKey("profile_email")
     private val profilePhoneKey = stringPreferencesKey("profile_phone")
     private val profileLogoPathKey = stringPreferencesKey("profile_logo_path")
+    private val brandingEnabledKey = booleanPreferencesKey("branding_enabled")
+    private val brandAccentKey = stringPreferencesKey("brand_accent_hex")
 
     val shooterName: Flow<String> = context.dataStore.data.map { prefs ->
         prefs[shooterNameKey].orEmpty()
@@ -36,6 +39,8 @@ class PreferencesStore(private val context: Context) {
             email = prefs[profileEmailKey].orEmpty(),
             phone = prefs[profilePhoneKey].orEmpty(),
             logoPath = prefs[profileLogoPathKey].orEmpty(),
+            brandingEnabled = prefs[brandingEnabledKey] ?: true,
+            brandAccentHex = prefs[brandAccentKey] ?: "#3A86FF",
         )
     }
 
@@ -60,6 +65,8 @@ class PreferencesStore(private val context: Context) {
             prefs[profileEmailKey] = profile.email.trim()
             prefs[profilePhoneKey] = profile.phone.trim()
             prefs[profileLogoPathKey] = profile.logoPath.trim()
+            prefs[brandingEnabledKey] = profile.brandingEnabled
+            prefs[brandAccentKey] = profile.brandAccentHex.trim().ifBlank { "#3A86FF" }
         }
     }
 
