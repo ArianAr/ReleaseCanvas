@@ -36,7 +36,7 @@ Living product plan. **GitHub [milestones](https://github.com/ArianAr/ReleaseCan
 
 ## Next
 
-### v1.5 — Scale (later)
+### v1.6 — Scale (later)
 | Issue | Theme |
 |-------|--------|
 | [#20](https://github.com/ArianAr/ReleaseCanvas/issues/20) | Batch multi-model releases |
@@ -48,11 +48,13 @@ Living product plan. **GitHub [milestones](https://github.com/ArianAr/ReleaseCan
 - [x] [#32](https://github.com/ArianAr/ReleaseCanvas/issues/32) Onboarding / first-run tips
 - [x] [#33](https://github.com/ArianAr/ReleaseCanvas/issues/33) Accessibility basics (more a11y work welcome later)
 
-### v1.4 — Templates & localization
+### v1.4 — Templates (shipped in app 1.4.0)
+- [x] [#34](https://github.com/ArianAr/ReleaseCanvas/issues/34) Custom template import
+- [x] [#36](https://github.com/ArianAr/ReleaseCanvas/issues/36) Editable multi-jurisdiction templates
+
+### v1.5 — Localization
 | Issue | Theme |
 |-------|--------|
-| [#34](https://github.com/ArianAr/ReleaseCanvas/issues/34) | Custom template import (offline `.txt` / `.md`) |
-| [#36](https://github.com/ArianAr/ReleaseCanvas/issues/36) | Editable multi-jurisdiction legal templates |
 | [#37](https://github.com/ArianAr/ReleaseCanvas/issues/37) | **Two language pickers**: app UI language × release/template language (en, es, fr, it, de, fa; Persian RTL) |
 
 Related notes:
