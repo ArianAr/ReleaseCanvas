@@ -30,9 +30,21 @@ class PreferencesStore(private val context: Context) {
     private val brandingEnabledKey = booleanPreferencesKey("branding_enabled")
     private val brandAccentKey = stringPreferencesKey("brand_accent_hex")
     private val onboardingDoneKey = booleanPreferencesKey("onboarding_done")
+    private val uiLanguageKey = stringPreferencesKey("ui_language_tag")
+    private val releaseLanguageKey = stringPreferencesKey("release_language_tag")
 
     val shooterName: Flow<String> = context.dataStore.data.map { prefs ->
         prefs[shooterNameKey].orEmpty()
+    }
+
+    /** UI language: "system" or a supported tag (en, es, …). */
+    val uiLanguageTag: Flow<String> = context.dataStore.data.map { prefs ->
+        prefs[uiLanguageKey] ?: "system"
+    }
+
+    /** Release/template language tag (en, es, …). Independent of UI. */
+    val releaseLanguageTag: Flow<String> = context.dataStore.data.map { prefs ->
+        prefs[releaseLanguageKey] ?: "en"
     }
 
     val photographerProfile: Flow<PhotographerProfile> = context.dataStore.data.map { prefs ->
@@ -66,6 +78,18 @@ class PreferencesStore(private val context: Context) {
     suspend fun setOnboardingDone(done: Boolean) {
         context.dataStore.edit { prefs ->
             prefs[onboardingDoneKey] = done
+        }
+    }
+
+    suspend fun setUiLanguageTag(tag: String) {
+        context.dataStore.edit { prefs ->
+            prefs[uiLanguageKey] = tag
+        }
+    }
+
+    suspend fun setReleaseLanguageTag(tag: String) {
+        context.dataStore.edit { prefs ->
+            prefs[releaseLanguageKey] = tag
         }
     }
 

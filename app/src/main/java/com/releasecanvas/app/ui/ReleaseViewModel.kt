@@ -7,6 +7,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.releasecanvas.app.data.locale.AppLocale
+import com.releasecanvas.app.data.locale.LocaleHelper
 import com.releasecanvas.app.data.location.LocationRepository
 import com.releasecanvas.app.data.model.CustomTemplate
 import com.releasecanvas.app.data.model.ExportResult
@@ -50,6 +52,10 @@ data class ReleaseUiState(
     val customTemplates: List<CustomTemplate> = emptyList(),
     val templateOptions: List<TemplateOption> = TemplateResolver.builtInOptions(),
     val selectedTemplateOption: TemplateOption = TemplateResolver.resolveOption("generic", emptyList()),
+    /** UI language: system or en/es/fr/it/de/fa */
+    val uiLanguageTag: String = AppLocale.UI_FOLLOW_SYSTEM,
+    /** Release/template language independent of UI */
+    val releaseLanguageTag: String = "en",
 )
 
 class ReleaseViewModel(
@@ -78,6 +84,23 @@ class ReleaseViewModel(
 
     fun reopenOnboarding() {
         viewModelScope.launch { preferencesStore.setOnboardingDone(false) }
+    }
+
+    fun updateUiLanguage(tag: String) {
+        val normalized = AppLocale.normalizeUiTag(tag)
+        viewModelScope.launch {
+            preferencesStore.setUiLanguageTag(normalized)
+            LocaleHelper.applyUiLanguage(normalized)
+            _uiState.update { it.copy(uiLanguageTag = normalized) }
+        }
+    }
+
+    fun updateReleaseLanguage(tag: String) {
+        val normalized = AppLocale.normalizeReleaseTag(tag)
+        viewModelScope.launch {
+            preferencesStore.setReleaseLanguageTag(normalized)
+            _uiState.update { it.copy(releaseLanguageTag = normalized) }
+        }
     }
 
     init {
@@ -123,6 +146,19 @@ class ReleaseViewModel(
                 }
             }
         }
+        viewModelScope.launch {
+            preferencesStore.uiLanguageTag.collect { tag ->
+                val normalized = AppLocale.normalizeUiTag(tag)
+                _uiState.update { it.copy(uiLanguageTag = normalized) }
+            }
+        }
+        viewModelScope.launch {
+            preferencesStore.releaseLanguageTag.collect { tag ->
+                val normalized = AppLocale.normalizeReleaseTag(tag)
+                _uiState.update { it.copy(releaseLanguageTag = normalized) }
+            }
+        }
+
     }
 
     fun updateModelName(value: String) = updateDraft { copy(modelName = value) }
@@ -177,6 +213,7 @@ class ReleaseViewModel(
             emptyList(),
             "{{MODEL}}",
             "{{PHOTOGRAPHER}}",
+            languageTag = _uiState.value.releaseLanguageTag,
         )
         val option = TemplateResolver.resolveOption(builtInId, emptyList())
         importCustomTemplate(
@@ -206,6 +243,7 @@ class ReleaseViewModel(
             customs = _uiState.value.customTemplates,
             modelName = draft.modelName,
             photographerName = draft.shooterName,
+            languageTag = _uiState.value.releaseLanguageTag,
         )
     }
     fun updateShootId(value: String) = updateDraft { copy(shootId = value) }
@@ -357,6 +395,7 @@ class ReleaseViewModel(
                     attestationAccepted = true,
                     profile = state.profile,
                     customTemplates = state.customTemplates,
+                    releaseLanguageTag = state.releaseLanguageTag,
                 )
                 val result = documentStore.savePdf(bytes, state.draft.modelName, metadata)
                 preferencesStore.addHistoryEntry(
@@ -402,11 +441,15 @@ class ReleaseViewModel(
         val selected = TemplateResolver.resolveOption(templateId, customs)
         val oldSig = _uiState.value.draft.signatureBitmap
         if (oldSig != null && !oldSig.isRecycled) oldSig.recycle()
+        val uiLang = _uiState.value.uiLanguageTag
+        val releaseLang = _uiState.value.releaseLanguageTag
         _uiState.value = ReleaseUiState(
             profile = profile,
             customTemplates = customs,
             templateOptions = options,
             selectedTemplateOption = selected,
+            uiLanguageTag = uiLang,
+            releaseLanguageTag = releaseLang,
             draft = ReleaseDraft(
                 shooterName = profile.displayName,
                 photographerEmail = profile.email,

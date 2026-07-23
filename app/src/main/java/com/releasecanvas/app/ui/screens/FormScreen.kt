@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.releasecanvas.app.R
 import com.releasecanvas.app.ui.ReleaseViewModel
+import com.releasecanvas.app.ui.components.LanguagePickerField
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -122,6 +123,15 @@ fun FormScreen(
                 text = stringResource(R.string.release_template_disclaimer),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(12.dp))
+            LanguagePickerField(
+                label = stringResource(R.string.release_language),
+                supportingText = stringResource(R.string.release_language_hint),
+                selectedTag = state.releaseLanguageTag,
+                includeSystemOption = false,
+                systemOptionLabel = stringResource(R.string.ui_language_system),
+                onSelected = { viewModel.updateReleaseLanguage(it) },
             )
             Spacer(Modifier.height(12.dp))
             ExposedDropdownMenuBox(

@@ -44,6 +44,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.releasecanvas.app.R
+import com.releasecanvas.app.data.locale.AppLocale
 import com.releasecanvas.app.data.model.LocationStatus
 import com.releasecanvas.app.ui.ReleaseViewModel
 import com.releasecanvas.app.ui.theme.screenBody
@@ -93,6 +94,10 @@ fun ReviewScreen(
                 .verticalScroll(rememberScrollState()),
         ) {
             ReviewRow("Release template", state.selectedTemplateOption.displayName)
+            ReviewRow(
+                stringResource(R.string.review_release_language),
+                AppLocale.displayName(state.releaseLanguageTag),
+            )
             ReviewRow("Model", draft.modelName)
             ReviewRow("Email", draft.modelEmail)
             ReviewRow("Photographer", draft.shooterName)

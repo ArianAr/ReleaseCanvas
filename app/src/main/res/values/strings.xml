@@ -119,4 +119,11 @@
     <string name="template_jurisdiction_hint">e.g. US generic, EU-style — not legal certification</string>
     <string name="template_version_label">Version label</string>
     <string name="template_body_label">Release wording</string>
+    <string name="language_section">Languages</string>
+    <string name="ui_language">App UI language</string>
+    <string name="ui_language_hint">Buttons, labels, and menus. Independent of the release wording language.</string>
+    <string name="ui_language_system">Follow system</string>
+    <string name="release_language">Release wording language</string>
+    <string name="release_language_hint">Terms preview and PDF legal text. Can differ from the app UI language.</string>
+    <string name="review_release_language">Release language</string>
 </resources>

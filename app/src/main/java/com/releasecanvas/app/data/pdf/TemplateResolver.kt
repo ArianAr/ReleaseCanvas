@@ -40,13 +40,14 @@ object TemplateResolver {
         customs: List<CustomTemplate>,
         modelName: String,
         photographerName: String,
+        languageTag: String = "en",
     ): String {
         val custom = customs.firstOrNull { it.id == templateId }
         if (custom != null) {
             return applyPlaceholders(custom.body, modelName, photographerName)
         }
         val builtIn = ReleaseTemplate.fromId(templateId)
-        return ReleaseTerms.body(builtIn, modelName, photographerName)
+        return ReleaseTerms.body(builtIn, modelName, photographerName, languageTag)
     }
 
     fun resolveOption(
