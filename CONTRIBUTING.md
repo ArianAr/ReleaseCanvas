@@ -53,6 +53,8 @@ Open the repo root in Android Studio and wait for Gradle sync.
 - **Never commit** `*.jks`, `*.keystore`, or `keystore.properties`
 - Template: `keystore.properties.example` → local `keystore.properties`
 - `./gradlew :app:assembleRelease` → `app/build/outputs/apk/release/app-release.apk`
+- **CI:** secrets `RELEASE_KEYSTORE_BASE64`, `RELEASE_STORE_PASSWORD`, `RELEASE_KEY_ALIAS`, `RELEASE_KEY_PASSWORD`  
+  Tag `v*` → workflow **Release signed APK** attaches the APK to the GitHub Release
 
 ### Web companion
 
