@@ -8,8 +8,9 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 
 ## [Unreleased]
 
-### Added
-- (none yet)
+### Fixed
+- App UI language switcher applies immediately (AppCompatActivity + AppCompat theme)
+- Onboarding no longer restarts on every cold start (wait for DataStore before treating as incomplete)
 
 ## [1.7.0] - 2026-07-24
 

@@ -2,11 +2,11 @@ package com.releasecanvas.app
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -15,7 +15,11 @@ import com.releasecanvas.app.ui.ReleaseViewModel
 import com.releasecanvas.app.ui.navigation.AppNav
 import com.releasecanvas.app.ui.theme.ReleaseCanvasTheme
 
-class MainActivity : ComponentActivity() {
+/**
+ * AppCompatActivity is required so [androidx.appcompat.app.AppCompatDelegate.setApplicationLocales]
+ * actually recreates the UI and applies per-app language (ComponentActivity alone is not enough).
+ */
+class MainActivity : AppCompatActivity() {
 
     private val viewModel: ReleaseViewModel by viewModels {
         ReleaseViewModel.factory(application)
