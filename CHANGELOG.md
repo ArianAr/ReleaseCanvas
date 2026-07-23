@@ -9,7 +9,11 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 ## [Unreleased]
 
 ### Added
-- (none yet)
+- About screen, terms preview, history management
+- Age/authority attestation checkbox
+- Email/share subject-body polish
+- Multi-page PDF overflow
+
 
 ## [1.1.0] - 2026-07-23
 

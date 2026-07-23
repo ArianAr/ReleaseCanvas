@@ -102,12 +102,23 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Please read the [Code of Conduct](CODE_O
 - Bug reports & features: [Issues](https://github.com/ArianAr/ReleaseCanvas/issues)  
 - Security: [SECURITY.md](SECURITY.md) (private reporting preferred)
 
-## Roadmap (ideas)
+## Roadmap
 
-- [ ] Cloud backup (Drive / custom storage) behind a storage interface  
-- [ ] Editable / multi-jurisdiction legal templates  
-- [ ] Batch multi-model releases  
-- [ ] Optional share-to-email polish  
+### Shipped
+- [x] Form → terms preview → signature → review → PDF export  
+- [x] Optional shoot metadata + city/country (manual / reverse geocode)  
+- [x] Multi-template release picker (unofficial wording samples)  
+- [x] About screen, history clear/remove, attestation checkbox  
+- [x] Share / email PDF with subject & body; multi-page PDF overflow  
+
+### Next (see GitHub milestones)
+| Milestone | Focus |
+|-----------|--------|
+| **v1.2 Product depth** | Completing remaining polish items on the board |
+| **v1.3 Scale** | [Batch multi-model releases](https://github.com/ArianAr/ReleaseCanvas/issues/20), [cloud backup interface](https://github.com/ArianAr/ReleaseCanvas/issues/21), editable templates |
+| **v1.0 Backlog / security** | Private vulnerability reporting toggle (repo Settings) |
+
+Issues & milestones: https://github.com/ArianAr/ReleaseCanvas/milestones  
 
 ## License
 
