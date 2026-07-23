@@ -19,11 +19,15 @@ object TemplateResolver {
 
     fun customOptions(customs: List<CustomTemplate>): List<TemplateOption> =
         customs.map {
+            val jurisdiction = it.jurisdiction.trim()
             TemplateOption(
                 id = it.id,
                 displayName = it.name,
                 version = it.version,
-                shortDescription = "Custom import",
+                shortDescription = when {
+                    jurisdiction.isNotEmpty() -> "Custom · $jurisdiction"
+                    else -> "Custom (editable)"
+                },
                 isCustom = true,
             )
         }
@@ -50,11 +54,15 @@ object TemplateResolver {
         customs: List<CustomTemplate>,
     ): TemplateOption {
         customs.firstOrNull { it.id == templateId }?.let {
+            val jurisdiction = it.jurisdiction.trim()
             return TemplateOption(
                 id = it.id,
                 displayName = it.name,
                 version = it.version,
-                shortDescription = "Custom import",
+                shortDescription = when {
+                    jurisdiction.isNotEmpty() -> "Custom · $jurisdiction"
+                    else -> "Custom (editable)"
+                },
                 isCustom = true,
             )
         }

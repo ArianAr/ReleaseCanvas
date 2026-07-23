@@ -65,6 +65,12 @@ fun FormScreen(
     var showImportNameDialog by remember { mutableStateOf(false) }
     var pendingImportBody by remember { mutableStateOf<String?>(null) }
     var importName by remember { mutableStateOf("") }
+    var showEditDialog by remember { mutableStateOf(false) }
+    var editName by remember { mutableStateOf("") }
+    var editVersion by remember { mutableStateOf("") }
+    var editJurisdiction by remember { mutableStateOf("") }
+    var editBody by remember { mutableStateOf("") }
+    var editId by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -166,14 +172,40 @@ fun FormScreen(
                 ) {
                     Text(stringResource(R.string.import_template))
                 }
+                Spacer(Modifier.width(8.dp))
                 if (selected.isCustom) {
-                    Spacer(Modifier.width(8.dp))
                     OutlinedButton(
-                        onClick = { viewModel.deleteCustomTemplate(selected.id) },
+                        onClick = {
+                            val custom = viewModel.customTemplateById(selected.id)
+                            if (custom != null) {
+                                editId = custom.id
+                                editName = custom.name
+                                editVersion = custom.version
+                                editJurisdiction = custom.jurisdiction
+                                editBody = custom.body
+                                showEditDialog = true
+                            }
+                        },
                         modifier = Modifier.weight(1f),
                     ) {
-                        Text(stringResource(R.string.delete_custom_template))
+                        Text(stringResource(R.string.edit_custom_template))
                     }
+                } else {
+                    OutlinedButton(
+                        onClick = { viewModel.forkBuiltInAsCustom(selected.id) },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text(stringResource(R.string.fork_template))
+                    }
+                }
+            }
+            if (selected.isCustom) {
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = { viewModel.deleteCustomTemplate(selected.id) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(stringResource(R.string.delete_custom_template))
                 }
             }
             Text(
@@ -330,13 +362,15 @@ fun FormScreen(
             },
             title = { Text(stringResource(R.string.import_template_name_title)) },
             text = {
-                OutlinedTextField(
-                    value = importName,
-                    onValueChange = { importName = it },
-                    label = { Text(stringResource(R.string.import_template_name_label)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                Column {
+                    OutlinedTextField(
+                        value = importName,
+                        onValueChange = { importName = it },
+                        label = { Text(stringResource(R.string.import_template_name_label)) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
             },
             confirmButton = {
                 TextButton(
@@ -359,6 +393,73 @@ fun FormScreen(
                         pendingImportBody = null
                     },
                 ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
+    }
+
+    if (showEditDialog && editId != null) {
+        AlertDialog(
+            onDismissRequest = { showEditDialog = false },
+            title = { Text(stringResource(R.string.edit_template_title)) },
+            text = {
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    OutlinedTextField(
+                        value = editName,
+                        onValueChange = { editName = it },
+                        label = { Text(stringResource(R.string.import_template_name_label)) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = editJurisdiction,
+                        onValueChange = { editJurisdiction = it },
+                        label = { Text(stringResource(R.string.template_jurisdiction)) },
+                        supportingText = { Text(stringResource(R.string.template_jurisdiction_hint)) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = editVersion,
+                        onValueChange = { editVersion = it },
+                        label = { Text(stringResource(R.string.template_version_label)) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = editBody,
+                        onValueChange = { editBody = it },
+                        label = { Text(stringResource(R.string.template_body_label)) },
+                        minLines = 8,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val id = editId ?: return@TextButton
+                        viewModel.saveCustomTemplate(
+                            com.releasecanvas.app.data.model.CustomTemplate(
+                                id = id,
+                                name = editName,
+                                version = editVersion.ifBlank { "CUSTOM_V1" },
+                                body = editBody,
+                                jurisdiction = editJurisdiction,
+                            ),
+                        )
+                        showEditDialog = false
+                    },
+                ) {
+                    Text(stringResource(R.string.profile_save))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showEditDialog = false }) {
                     Text(stringResource(R.string.cancel))
                 }
             },
