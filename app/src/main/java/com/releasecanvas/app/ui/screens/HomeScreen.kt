@@ -28,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -53,6 +54,7 @@ import com.releasecanvas.app.ui.theme.screenBody
 fun HomeScreen(
     viewModel: ReleaseViewModel,
     onNewRelease: () -> Unit,
+    onBatchRelease: () -> Unit = {},
     onAbout: () -> Unit = {},
     onProfile: () -> Unit = {},
 ) {
@@ -98,6 +100,13 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(R.string.new_release))
+            }
+            Spacer(Modifier.height(12.dp))
+            OutlinedButton(
+                onClick = onBatchRelease,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.batch_release))
             }
             Spacer(Modifier.height(12.dp))
             Text(

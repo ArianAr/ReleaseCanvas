@@ -47,6 +47,7 @@ import com.releasecanvas.app.R
 import com.releasecanvas.app.data.locale.AppLocale
 import com.releasecanvas.app.data.model.LocationStatus
 import com.releasecanvas.app.ui.ReleaseViewModel
+import com.releasecanvas.app.ui.components.BatchProgressBanner
 import com.releasecanvas.app.ui.theme.screenBody
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,6 +94,10 @@ fun ReviewScreen(
                 .screenBody(padding)
                 .verticalScroll(rememberScrollState()),
         ) {
+            state.batch?.let { batch ->
+                BatchProgressBanner(batch = batch)
+                Spacer(Modifier.height(12.dp))
+            }
             ReviewRow("Release template", state.selectedTemplateOption.displayName)
             ReviewRow(
                 stringResource(R.string.review_release_language),

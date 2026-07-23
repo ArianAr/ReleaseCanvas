@@ -126,4 +126,21 @@
     <string name="release_language">Langue du texte d’autorisation</string>
     <string name="release_language_hint">Aperçu des conditions et texte légal du PDF. Peut différer de l’interface.</string>
     <string name="review_release_language">Langue de l’autorisation</string>
+    <string name="batch_release">Lot multi-modèles</string>
+    <string name="batch_title">Lot multi-modèles</string>
+    <string name="batch_intro">Renseignez une fois les détails de séance, ajoutez chaque modèle, puis signez un PDF par personne.</string>
+    <string name="batch_shared_section">Détails de séance partagés</string>
+    <string name="batch_shared_hint">Modèle, photographe et description s’appliquent à tous les modèles du lot.</string>
+    <string name="batch_models_section">Modèles</string>
+    <string name="batch_models_hint">Ajoutez au moins deux modèles. Chaque personne signe séparément.</string>
+    <string name="batch_model_n">Modèle %1$d</string>
+    <string name="batch_add_model">Ajouter un modèle</string>
+    <string name="batch_remove_model">Retirer le modèle</string>
+    <string name="batch_start">Commencer les signatures</string>
+    <string name="batch_progress">Modèle %1$d sur %2$d · %3$s</string>
+    <string name="batch_next_model">Modèle suivant</string>
+    <string name="batch_end_early">Terminer le lot</string>
+    <string name="batch_complete_title">Lot terminé</string>
+    <string name="batch_model_exported">%1$d sur %2$d modèles exportés</string>
+    <string name="batch_exports_heading">PDF de ce lot</string>
 </resources>

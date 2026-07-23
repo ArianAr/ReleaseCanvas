@@ -126,4 +126,21 @@
     <string name="release_language">Idioma del texto de cesión</string>
     <string name="release_language_hint">Vista previa de términos y texto legal del PDF. Puede diferir del idioma de la interfaz.</string>
     <string name="review_release_language">Idioma de la cesión</string>
+    <string name="batch_release">Lote multi-modelo</string>
+    <string name="batch_title">Lote multi-modelo</string>
+    <string name="batch_intro">Define una vez los datos de la sesión, añade cada modelo y firma un PDF por persona.</string>
+    <string name="batch_shared_section">Detalles compartidos de la sesión</string>
+    <string name="batch_shared_hint">Plantilla, fotógrafo y descripción se aplican a todos los modelos del lote.</string>
+    <string name="batch_models_section">Modelos</string>
+    <string name="batch_models_hint">Añade al menos dos modelos. Cada persona firmará por separado.</string>
+    <string name="batch_model_n">Modelo %1$d</string>
+    <string name="batch_add_model">Añadir modelo</string>
+    <string name="batch_remove_model">Quitar modelo</string>
+    <string name="batch_start">Empezar a firmar</string>
+    <string name="batch_progress">Modelo %1$d de %2$d · %3$s</string>
+    <string name="batch_next_model">Siguiente modelo</string>
+    <string name="batch_end_early">Terminar lote</string>
+    <string name="batch_complete_title">Lote completado</string>
+    <string name="batch_model_exported">Exportados %1$d de %2$d modelos</string>
+    <string name="batch_exports_heading">PDF de este lote</string>
 </resources>

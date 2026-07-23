@@ -29,8 +29,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.releasecanvas.app.R
 import com.releasecanvas.app.ui.ReleaseViewModel
+import com.releasecanvas.app.ui.components.BatchProgressBanner
 import com.releasecanvas.app.ui.components.SignaturePad
 import com.releasecanvas.app.ui.components.emitBitmap
 import com.releasecanvas.app.ui.components.rememberSignaturePadState
@@ -43,6 +45,7 @@ fun SignatureScreen(
     onBack: () -> Unit,
     onContinue: () -> Unit,
 ) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val padState = rememberSignaturePadState()
     var showEmptyError by remember { mutableStateOf(false) }
 
@@ -63,6 +66,10 @@ fun SignatureScreen(
                 .fillMaxSize()
                 .screenBody(padding),
         ) {
+            state.batch?.let { batch ->
+                BatchProgressBanner(batch = batch)
+                Spacer(Modifier.height(12.dp))
+            }
             Text(
                 text = stringResource(R.string.signature_hint),
                 style = MaterialTheme.typography.bodyMedium,

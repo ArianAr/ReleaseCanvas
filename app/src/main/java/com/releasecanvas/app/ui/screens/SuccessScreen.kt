@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.provider.DocumentsContract
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.Button
@@ -46,9 +49,13 @@ fun SuccessScreen(
     viewModel: ReleaseViewModel,
     onDone: () -> Unit,
     onNewRelease: () -> Unit,
+    onNextBatchModel: () -> Unit = {},
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val export = state.lastExport
+    val batch = state.batch
+    val batchActive = batch != null
+    val hasNextModel = batch?.hasNext == true
     val context = LocalContext.current
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -58,14 +65,27 @@ fun SuccessScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.success_title)) })
+            TopAppBar(
+                title = {
+                    Text(
+                        stringResource(
+                            if (batchActive && !hasNextModel && (batch?.completedExports?.isNotEmpty() == true)) {
+                                R.string.batch_complete_title
+                            } else {
+                                R.string.success_title
+                            },
+                        ),
+                    )
+                },
+            )
         },
         snackbarHost = { SnackbarHost(snackbar) },
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .screenBody(padding),
+                .screenBody(padding)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(24.dp))
@@ -76,6 +96,18 @@ fun SuccessScreen(
                 modifier = Modifier.size(64.dp),
             )
             Spacer(Modifier.height(16.dp))
+            if (batchActive) {
+                Text(
+                    text = stringResource(
+                        R.string.batch_model_exported,
+                        batch!!.completedExports.size,
+                        batch.total,
+                    ),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(8.dp))
+            }
             Text(
                 text = export?.displayName ?: stringResource(R.string.pdf_saved_fallback),
                 style = MaterialTheme.typography.titleMedium,
@@ -107,6 +139,37 @@ fun SuccessScreen(
                     textAlign = TextAlign.Center,
                 )
             }
+
+            if (batch != null && batch.completedExports.isNotEmpty()) {
+                Spacer(Modifier.height(20.dp))
+                Text(
+                    text = stringResource(R.string.batch_exports_heading),
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Spacer(Modifier.height(8.dp))
+                batch.completedExports.forEach { record ->
+                    Text(
+                        text = "${record.modelName} — ${record.export.displayName}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                val intent = Intent(Intent.ACTION_VIEW).apply {
+                                    setDataAndType(record.export.contentUri, "application/pdf")
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                }
+                                runCatching { context.startActivity(intent) }
+                                    .onFailure {
+                                        scope.launch { snackbar.showSnackbar(openFailed) }
+                                    }
+                            }
+                            .padding(vertical = 4.dp),
+                    )
+                }
+            }
+
             Spacer(Modifier.height(28.dp))
             Button(
                 onClick = {
@@ -204,20 +267,42 @@ fun SuccessScreen(
             ) {
                 Text(stringResource(R.string.open_folder))
             }
-            Spacer(Modifier.height(12.dp))
-            OutlinedButton(
-                onClick = onNewRelease,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(stringResource(R.string.new_release))
+            if (hasNextModel) {
+                Spacer(Modifier.height(12.dp))
+                Button(
+                    onClick = onNextBatchModel,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                ) {
+                    Text(stringResource(R.string.batch_next_model))
+                }
+            }
+            if (!batchActive) {
+                Spacer(Modifier.height(12.dp))
+                OutlinedButton(
+                    onClick = onNewRelease,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(stringResource(R.string.new_release))
+                }
             }
             Spacer(Modifier.height(12.dp))
             OutlinedButton(
                 onClick = onDone,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(stringResource(R.string.done))
+                Text(
+                    stringResource(
+                        if (batchActive && hasNextModel) {
+                            R.string.batch_end_early
+                        } else {
+                            R.string.done
+                        },
+                    ),
+                )
             }
+            Spacer(Modifier.height(24.dp))
         }
     }
 }

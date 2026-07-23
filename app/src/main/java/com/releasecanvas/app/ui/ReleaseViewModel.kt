@@ -10,6 +10,9 @@ import androidx.lifecycle.viewModelScope
 import com.releasecanvas.app.data.locale.AppLocale
 import com.releasecanvas.app.data.locale.LocaleHelper
 import com.releasecanvas.app.data.location.LocationRepository
+import com.releasecanvas.app.data.model.BatchExportRecord
+import com.releasecanvas.app.data.model.BatchModelInput
+import com.releasecanvas.app.data.model.BatchSession
 import com.releasecanvas.app.data.model.CustomTemplate
 import com.releasecanvas.app.data.model.ExportResult
 import com.releasecanvas.app.data.model.FormErrors
@@ -18,6 +21,7 @@ import com.releasecanvas.app.data.model.LocationStatus
 import com.releasecanvas.app.data.model.PhotographerProfile
 import com.releasecanvas.app.data.model.ReleaseDraft
 import com.releasecanvas.app.data.model.TemplateOption
+import java.util.UUID
 import com.releasecanvas.app.data.pdf.PdfCompiler
 import com.releasecanvas.app.data.pdf.TemplateResolver
 import com.releasecanvas.app.data.prefs.PreferencesStore
@@ -56,6 +60,9 @@ data class ReleaseUiState(
     val uiLanguageTag: String = AppLocale.UI_FOLLOW_SYSTEM,
     /** Release/template language independent of UI */
     val releaseLanguageTag: String = "en",
+    /** Active multi-model batch session, or null for single-release flow. */
+    val batch: BatchSession? = null,
+    val batchSetupError: String? = null,
 )
 
 class ReleaseViewModel(
@@ -408,12 +415,23 @@ class ReleaseViewModel(
                 )
                 result
             }.onSuccess { result ->
-                _uiState.update {
-                    it.copy(
+                _uiState.update { current ->
+                    val batch = current.batch
+                    val updatedBatch = if (batch != null) {
+                        val record = BatchExportRecord(
+                            modelName = current.draft.modelName.trim(),
+                            export = result,
+                        )
+                        batch.copy(completedExports = batch.completedExports + record)
+                    } else {
+                        null
+                    }
+                    current.copy(
                         isExporting = false,
                         lastExport = result,
                         locationPreviewStatus = result.metadata.locationStatus,
                         locationPreviewText = Formatters.formatLocation(result.metadata),
+                        batch = updatedBatch,
                     )
                 }
                 onSuccess()
@@ -431,6 +449,110 @@ class ReleaseViewModel(
 
     fun clearExportError() {
         _uiState.update { it.copy(exportError = null) }
+    }
+
+    fun clearBatchSetupError() {
+        _uiState.update { it.copy(batchSetupError = null) }
+    }
+
+    /** Prepare a fresh draft for batch setup (shared shoot fields; no model yet). */
+    fun prepareBatchSetup() {
+        resetForNewRelease()
+        _uiState.update { it.copy(batch = null, batchSetupError = null, lastExport = null) }
+    }
+
+    /**
+     * Start signing [models] in order using the current draft's shared shoot fields.
+     * Returns false if validation fails (error stored on [ReleaseUiState.batchSetupError]).
+     */
+    fun startBatch(models: List<BatchModelInput>): Boolean {
+        val draft = _uiState.value.draft
+        val sharedErrors = Validation.validateSharedShoot(draft.shooterName, draft.description)
+        if (sharedErrors.hasErrors) {
+            _uiState.update {
+                it.copy(
+                    formErrors = sharedErrors,
+                    batchSetupError = "Fill photographer name and shoot description",
+                )
+            }
+            return false
+        }
+        val rosterError = Validation.validateBatchModels(
+            names = models.map { it.modelName },
+            emails = models.map { it.modelEmail },
+            minModels = 2,
+        )
+        if (rosterError != null) {
+            _uiState.update { it.copy(batchSetupError = rosterError) }
+            return false
+        }
+        val cleaned = models
+            .map {
+                it.copy(
+                    modelName = it.modelName.trim(),
+                    modelEmail = it.modelEmail.trim(),
+                )
+            }
+            .filter { it.modelName.isNotEmpty() }
+        val session = BatchSession(models = cleaned, currentIndex = 0)
+        applyBatchModelToDraft(cleaned.first(), clearSignature = true)
+        _uiState.update {
+            it.copy(
+                batch = session,
+                batchSetupError = null,
+                formErrors = FormErrors(),
+                attestationAccepted = false,
+                exportError = null,
+                lastExport = null,
+            )
+        }
+        viewModelScope.launch {
+            preferencesStore.setShooterName(draft.shooterName)
+            preferencesStore.setLastTemplateId(draft.templateId)
+        }
+        return true
+    }
+
+    /** Load next model into the draft. Returns false if batch is finished or inactive. */
+    fun advanceToNextBatchModel(): Boolean {
+        val batch = _uiState.value.batch ?: return false
+        if (!batch.hasNext) return false
+        val nextIndex = batch.currentIndex + 1
+        val model = batch.models[nextIndex]
+        applyBatchModelToDraft(model, clearSignature = true)
+        _uiState.update {
+            it.copy(
+                batch = batch.copy(currentIndex = nextIndex),
+                attestationAccepted = false,
+                exportError = null,
+                lastExport = null,
+                formErrors = FormErrors(),
+            )
+        }
+        return true
+    }
+
+    fun endBatch() {
+        _uiState.update { it.copy(batch = null, batchSetupError = null) }
+    }
+
+    fun newBatchModelId(): String = "batch_${UUID.randomUUID()}"
+
+    private fun applyBatchModelToDraft(model: BatchModelInput, clearSignature: Boolean) {
+        val oldSig = _uiState.value.draft.signatureBitmap
+        if (clearSignature && oldSig != null && !oldSig.isRecycled) {
+            oldSig.recycle()
+        }
+        _uiState.update { state ->
+            state.copy(
+                draft = state.draft.copy(
+                    modelName = model.modelName,
+                    modelEmail = model.modelEmail,
+                    signatureBitmap = if (clearSignature) null else state.draft.signatureBitmap,
+                ),
+                hasSignatureStrokes = if (clearSignature) false else state.hasSignatureStrokes,
+            )
+        }
     }
 
     fun resetForNewRelease() {

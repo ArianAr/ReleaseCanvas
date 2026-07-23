@@ -18,6 +18,7 @@ Capture shoot details and a finger/stylus signature, then export a PDF stamped w
 - Optional shoot metadata (shoot ID, contacts, client, notes)
 - **Release template picker** (generic, 500px-style unofficial, stock RF-style, editorial, social/web)
 - **Two language pickers**: app UI language × release wording language (en, es, fr, it, de, fa; Persian RTL)
+- **Batch multi-model**: shared shoot details, then sign/export one PDF per model in sequence
 - Optional **city / country** (manual) or best-effort reverse geocode from GPS when online
 - Interactive signature pad (clear / undo)
 - Best-effort GPS via Fused Location Provider (export works without location)

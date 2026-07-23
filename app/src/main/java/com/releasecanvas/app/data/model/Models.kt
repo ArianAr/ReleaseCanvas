@@ -74,3 +74,41 @@ data class FormErrors(
     val hasErrors: Boolean
         get() = modelName != null || modelEmail != null || shooterName != null || description != null
 }
+
+/** One model in a batch multi-model session (name + email only; signature collected later). */
+data class BatchModelInput(
+    val id: String,
+    val modelName: String = "",
+    val modelEmail: String = "",
+)
+
+/** One completed PDF within a batch session. */
+data class BatchExportRecord(
+    val modelName: String,
+    val export: ExportResult,
+)
+
+/**
+ * Active multi-model signing session. Shared shoot fields live on [ReleaseDraft];
+ * each model is signed and exported in order via [currentIndex].
+ */
+data class BatchSession(
+    val models: List<BatchModelInput>,
+    val currentIndex: Int = 0,
+    val completedExports: List<BatchExportRecord> = emptyList(),
+) {
+    val currentModel: BatchModelInput?
+        get() = models.getOrNull(currentIndex)
+
+    val total: Int
+        get() = models.size
+
+    val humanIndex: Int
+        get() = currentIndex + 1
+
+    val hasNext: Boolean
+        get() = currentIndex < models.lastIndex
+
+    val isComplete: Boolean
+        get() = completedExports.size >= models.size && models.isNotEmpty()
+}

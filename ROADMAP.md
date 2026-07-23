@@ -36,11 +36,11 @@ Living product plan. **GitHub [milestones](https://github.com/ArianAr/ReleaseCan
 
 ## Next
 
-### v1.6 — Scale (later)
+### v1.6 — Scale
 | Issue | Theme |
 |-------|--------|
-| [#20](https://github.com/ArianAr/ReleaseCanvas/issues/20) | Batch multi-model releases |
-| [#21](https://github.com/ArianAr/ReleaseCanvas/issues/21) | Cloud backup behind a storage interface |
+| [#20](https://github.com/ArianAr/ReleaseCanvas/issues/20) | Batch multi-model releases — **shipped in app 1.6.0** |
+| [#21](https://github.com/ArianAr/ReleaseCanvas/issues/21) | Cloud backup behind a storage interface (later) |
 
 ### v1.3 — Profile, branding & onboarding (shipped in app 1.3.0)
 - [x] [#30](https://github.com/ArianAr/ReleaseCanvas/issues/30) Photographer profile defaults

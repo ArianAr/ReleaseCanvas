@@ -126,4 +126,21 @@
     <string name="release_language">زبان متن رضایت‌نامه</string>
     <string name="release_language_hint">پیش‌نمایش شرایط و متن حقوقی PDF. می‌تواند با زبان رابط فرق کند.</string>
     <string name="review_release_language">زبان رضایت‌نامه</string>
+    <string name="batch_release">دسته چندمدلی</string>
+    <string name="batch_title">دسته چندمدلی</string>
+    <string name="batch_intro">جزئیات مشترک جلسه را یک‌بار وارد کنید، مدل‌ها را اضافه کنید، سپس برای هر نفر جدا امضا و خروجی بگیرید.</string>
+    <string name="batch_shared_section">جزئیات مشترک جلسه</string>
+    <string name="batch_shared_hint">قالب، عکاس و توضیحات برای همه مدل‌های این دسته اعمال می‌شود.</string>
+    <string name="batch_models_section">مدل‌ها</string>
+    <string name="batch_models_hint">حداقل دو مدل اضافه کنید. هر نفر جدا امضا می‌کند.</string>
+    <string name="batch_model_n">مدل %1$d</string>
+    <string name="batch_add_model">افزودن مدل</string>
+    <string name="batch_remove_model">حذف مدل</string>
+    <string name="batch_start">شروع امضا</string>
+    <string name="batch_progress">مدل %1$d از %2$d · %3$s</string>
+    <string name="batch_next_model">مدل بعدی</string>
+    <string name="batch_end_early">پایان دسته</string>
+    <string name="batch_complete_title">دسته کامل شد</string>
+    <string name="batch_model_exported">%1$d از %2$d مدل صادر شد</string>
+    <string name="batch_exports_heading">PDFهای این دسته</string>
 </resources>
