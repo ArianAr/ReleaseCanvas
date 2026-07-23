@@ -115,7 +115,11 @@
     <!-- STEP: export -->
     <section id="step-export" class="panel" aria-labelledby="export-title" hidden>
       <h1 id="export-title">Export PDF</h1>
-      <p class="hint">Location is optional. Time is recorded in UTC when you create the PDF.</p>
+      <p class="hint">
+        Location is optional. Time is recorded in UTC when you create the PDF.
+        If you allow GPS, we try a best-effort reverse geocode (OpenStreetMap) for city/country —
+        manual city/country on the form still win when filled.
+      </p>
       <p id="locationStatus" class="meta">Location: not requested</p>
       <div class="row tight">
         <button type="button" class="btn secondary" id="btnLocation">Use device location</button>
