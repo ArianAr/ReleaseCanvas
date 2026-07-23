@@ -74,11 +74,15 @@ To keep a copy off-device:
 
 ## Screenshots
 
-Mock UI frames (replace with device captures anytime):
+Device captures (Android). EXIF stripped; location redacted in review/success.
 
-| Home | Form | Signature | Success |
-|------|------|-----------|---------|
-| ![Home](docs/screenshots/01-home.svg) | ![Form](docs/screenshots/02-form.svg) | ![Signature](docs/screenshots/03-signature.svg) | ![Success](docs/screenshots/04-success.svg) |
+| Home | Form | Terms | Signature |
+|------|------|-------|-----------|
+| ![Home](docs/screenshots/01-home.jpg) | ![Form](docs/screenshots/02-form.jpg) | ![Terms](docs/screenshots/03-terms.jpg) | ![Signature](docs/screenshots/04-signature.jpg) |
+
+| Review | Success | History |
+|--------|---------|---------|
+| ![Review](docs/screenshots/05-review.jpg) | ![Success](docs/screenshots/06-success.jpg) | ![History](docs/screenshots/07-home-history.jpg) |
 
 ## Requirements
 
