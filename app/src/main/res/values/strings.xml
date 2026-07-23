@@ -141,7 +141,7 @@
     <string name="template_body_label">Release wording</string>
     <string name="language_section">Languages</string>
     <string name="ui_language">App UI language</string>
-    <string name="ui_language_hint">Buttons, labels, and menus. Independent of the release wording language.</string>
+    <string name="ui_language_hint">Buttons, labels, and menus. Applies immediately (may restart the screen). Independent of release wording language. Profile Save is only for name/logo fields.</string>
     <string name="ui_language_system">Follow system</string>
     <string name="release_language">Release wording language</string>
     <string name="release_language_hint">Terms preview and PDF legal text. Can differ from the app UI language.</string>

@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -82,8 +83,13 @@ class ReleaseViewModel(
     val photographerProfile: StateFlow<PhotographerProfile> = preferencesStore.photographerProfile
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PhotographerProfile())
 
-    val onboardingDone: StateFlow<Boolean> = preferencesStore.onboardingDone
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+    /**
+     * `null` = DataStore not loaded yet (do not treat as “needs onboarding”).
+     * Using `false` as the stateIn default caused the tour to open on every cold start.
+     */
+    val onboardingDone: StateFlow<Boolean?> = preferencesStore.onboardingDone
+        .map { it }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     fun completeOnboarding() {
         viewModelScope.launch { preferencesStore.setOnboardingDone(true) }
@@ -95,10 +101,11 @@ class ReleaseViewModel(
 
     fun updateUiLanguage(tag: String) {
         val normalized = AppLocale.normalizeUiTag(tag)
+        // Optimistic UI update; apply locale on main (may recreate activity).
+        _uiState.update { it.copy(uiLanguageTag = normalized) }
+        LocaleHelper.applyUiLanguage(normalized)
         viewModelScope.launch {
             preferencesStore.setUiLanguageTag(normalized)
-            LocaleHelper.applyUiLanguage(normalized)
-            _uiState.update { it.copy(uiLanguageTag = normalized) }
         }
     }
 

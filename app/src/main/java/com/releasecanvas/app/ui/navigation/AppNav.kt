@@ -40,11 +40,13 @@ fun AppNav(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
+    // null = prefs still loading — never treat that as “show onboarding”
     val onboardingDone by viewModel.onboardingDone.collectAsStateWithLifecycle()
 
     LaunchedEffect(onboardingDone) {
+        val done = onboardingDone ?: return@LaunchedEffect
         val route = navController.currentDestination?.route
-        if (!onboardingDone && route != Routes.ONBOARDING) {
+        if (!done && route != Routes.ONBOARDING) {
             navController.navigate(Routes.ONBOARDING) {
                 launchSingleTop = true
             }

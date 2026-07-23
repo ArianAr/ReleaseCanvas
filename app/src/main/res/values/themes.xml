@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ReleaseCanvas" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- AppCompat parent required for per-app locales via AppCompatDelegate. -->
+    <style name="Theme.ReleaseCanvas" parent="Theme.AppCompat.DayNight.NoActionBar" />
 </resources>
