@@ -25,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.releasecanvas.app.R
-import com.releasecanvas.app.data.pdf.ReleaseTerms
 import com.releasecanvas.app.ui.ReleaseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,12 +35,8 @@ fun TermsPreviewScreen(
     onContinue: () -> Unit,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val draft = state.draft
-    val body = ReleaseTerms.body(
-        draft.template,
-        draft.modelName,
-        draft.shooterName,
-    )
+    val option = state.selectedTemplateOption
+    val body = viewModel.termsBodyForCurrentDraft()
 
     Scaffold(
         topBar = {
@@ -65,11 +60,11 @@ fun TermsPreviewScreen(
                 .padding(horizontal = 20.dp),
         ) {
             Text(
-                text = draft.template.displayName,
+                text = option.displayName,
                 style = MaterialTheme.typography.titleMedium,
             )
             Text(
-                text = stringResource(R.string.terms_preview_version, draft.template.version),
+                text = stringResource(R.string.terms_preview_version, option.version),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

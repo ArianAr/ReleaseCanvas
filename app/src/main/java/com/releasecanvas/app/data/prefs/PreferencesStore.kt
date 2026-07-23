@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.releasecanvas.app.data.model.CustomTemplate
 import com.releasecanvas.app.data.model.HistoryEntry
 import com.releasecanvas.app.data.model.PhotographerProfile
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +22,7 @@ class PreferencesStore(private val context: Context) {
     private val shooterNameKey = stringPreferencesKey("shooter_name")
     private val historyKey = stringPreferencesKey("export_history")
     private val lastTemplateKey = stringPreferencesKey("last_release_template")
+    private val customTemplatesKey = stringPreferencesKey("custom_templates")
     private val profileStudioKey = stringPreferencesKey("profile_studio_name")
     private val profileEmailKey = stringPreferencesKey("profile_email")
     private val profilePhoneKey = stringPreferencesKey("profile_phone")
@@ -47,6 +49,10 @@ class PreferencesStore(private val context: Context) {
 
     val lastTemplateId: Flow<String> = context.dataStore.data.map { prefs ->
         prefs[lastTemplateKey].orEmpty()
+    }
+
+    val customTemplates: Flow<List<CustomTemplate>> = context.dataStore.data.map { prefs ->
+        parseCustomTemplates(prefs[customTemplatesKey].orEmpty())
     }
 
     val history: Flow<List<HistoryEntry>> = context.dataStore.data.map { prefs ->
@@ -84,6 +90,32 @@ class PreferencesStore(private val context: Context) {
     suspend fun setLastTemplateId(id: String) {
         context.dataStore.edit { prefs ->
             prefs[lastTemplateKey] = id
+        }
+    }
+
+    suspend fun setCustomTemplates(templates: List<CustomTemplate>) {
+        context.dataStore.edit { prefs ->
+            prefs[customTemplatesKey] = serializeCustomTemplates(templates)
+        }
+    }
+
+    suspend fun addCustomTemplate(template: CustomTemplate) {
+        context.dataStore.edit { prefs ->
+            val current = parseCustomTemplates(prefs[customTemplatesKey].orEmpty()).toMutableList()
+            current.removeAll { it.id == template.id }
+            current.add(0, template)
+            prefs[customTemplatesKey] = serializeCustomTemplates(current)
+        }
+    }
+
+    suspend fun removeCustomTemplate(id: String) {
+        context.dataStore.edit { prefs ->
+            val current = parseCustomTemplates(prefs[customTemplatesKey].orEmpty())
+                .filterNot { it.id == id }
+            prefs[customTemplatesKey] = serializeCustomTemplates(current)
+            if (prefs[lastTemplateKey] == id) {
+                prefs[lastTemplateKey] = "generic"
+            }
         }
     }
 
@@ -140,6 +172,42 @@ class PreferencesStore(private val context: Context) {
                     .put("uriString", entry.uriString)
                     .put("signedAtUtc", entry.signedAtUtc)
                     .put("modelName", entry.modelName),
+            )
+        }
+        return array.toString()
+    }
+
+    private fun parseCustomTemplates(raw: String): List<CustomTemplate> {
+        if (raw.isBlank()) return emptyList()
+        return runCatching {
+            val array = JSONArray(raw)
+            buildList {
+                for (i in 0 until array.length()) {
+                    val obj = array.getJSONObject(i)
+                    add(
+                        CustomTemplate(
+                            id = obj.optString("id"),
+                            name = obj.optString("name"),
+                            version = obj.optString("version", "CUSTOM_V1"),
+                            body = obj.optString("body"),
+                            languageTag = obj.optString("languageTag", "und"),
+                        ),
+                    )
+                }
+            }.filter { it.id.isNotBlank() && it.body.isNotBlank() }
+        }.getOrDefault(emptyList())
+    }
+
+    private fun serializeCustomTemplates(templates: List<CustomTemplate>): String {
+        val array = JSONArray()
+        templates.forEach { t ->
+            array.put(
+                JSONObject()
+                    .put("id", t.id)
+                    .put("name", t.name)
+                    .put("version", t.version)
+                    .put("body", t.body)
+                    .put("languageTag", t.languageTag),
             )
         }
         return array.toString()

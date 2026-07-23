@@ -106,4 +106,10 @@
     <string name="onboarding_4_title">Export a stamped PDF</string>
     <string name="onboarding_4_body">Confirm attestation, then export a PDF with time and location metadata to Documents/ReleaseCanvas.</string>
     <string name="about_show_tips">Show getting-started tips</string>
+    <string name="import_template">Import .txt / .md</string>
+    <string name="import_template_hint">Use {{MODEL}} and {{PHOTOGRAPHER}} placeholders in imported text. Not legal advice.</string>
+    <string name="delete_custom_template">Delete custom</string>
+    <string name="import_template_name_title">Name this template</string>
+    <string name="import_template_name_label">Template name</string>
+    <string name="import_template_confirm">Import</string>
 </resources>

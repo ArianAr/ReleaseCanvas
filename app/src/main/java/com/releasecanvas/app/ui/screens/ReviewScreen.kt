@@ -92,7 +92,7 @@ fun ReviewScreen(
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
-            ReviewRow("Release template", draft.template.displayName)
+            ReviewRow("Release template", state.selectedTemplateOption.displayName)
             ReviewRow("Model", draft.modelName)
             ReviewRow("Email", draft.modelEmail)
             ReviewRow("Photographer", draft.shooterName)
