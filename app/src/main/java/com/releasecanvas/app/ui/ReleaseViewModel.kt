@@ -64,6 +64,12 @@ class ReleaseViewModel(
     fun updateModelEmail(value: String) = updateDraft { copy(modelEmail = value) }
     fun updateShooterName(value: String) = updateDraft { copy(shooterName = value) }
     fun updateDescription(value: String) = updateDraft { copy(description = value) }
+    fun updateShootId(value: String) = updateDraft { copy(shootId = value) }
+    fun updatePhotographerEmail(value: String) = updateDraft { copy(photographerEmail = value) }
+    fun updatePhotographerPhone(value: String) = updateDraft { copy(photographerPhone = value) }
+    fun updateClientAgency(value: String) = updateDraft { copy(clientAgency = value) }
+    fun updateNotes(value: String) = updateDraft { copy(notes = value) }
+    fun updateLocationName(value: String) = updateDraft { copy(locationName = value) }
     fun updateCity(value: String) = updateDraft { copy(city = value) }
     fun updateCountry(value: String) = updateDraft { copy(country = value) }
 

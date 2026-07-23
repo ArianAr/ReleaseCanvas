@@ -92,12 +92,14 @@ fun ReviewScreen(
             ReviewRow("Email", draft.modelEmail)
             ReviewRow("Photographer", draft.shooterName)
             ReviewRow("Description", draft.description)
-            if (draft.city.isNotBlank()) {
-                ReviewRow("City", draft.city)
-            }
-            if (draft.country.isNotBlank()) {
-                ReviewRow("Country", draft.country)
-            }
+            if (draft.shootId.isNotBlank()) ReviewRow("Shoot ID", draft.shootId)
+            if (draft.photographerEmail.isNotBlank()) ReviewRow("Photographer email", draft.photographerEmail)
+            if (draft.photographerPhone.isNotBlank()) ReviewRow("Photographer phone", draft.photographerPhone)
+            if (draft.clientAgency.isNotBlank()) ReviewRow("Client / agency", draft.clientAgency)
+            if (draft.locationName.isNotBlank()) ReviewRow("Shoot location", draft.locationName)
+            if (draft.notes.isNotBlank()) ReviewRow("Notes", draft.notes)
+            if (draft.city.isNotBlank()) ReviewRow("City", draft.city)
+            if (draft.country.isNotBlank()) ReviewRow("Country", draft.country)
             Spacer(Modifier.height(12.dp))
             Text("Signature", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(8.dp))
