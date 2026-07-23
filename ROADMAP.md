@@ -53,11 +53,15 @@ Agreed with maintainer:
 | [#33](https://github.com/ArianAr/ReleaseCanvas/issues/33) | Accessibility pass (TalkBack, targets, contrast) |
 | [#34](https://github.com/ArianAr/ReleaseCanvas/issues/34) | Custom template import (offline `.txt` / `.md`) |
 | [#36](https://github.com/ArianAr/ReleaseCanvas/issues/36) | Editable multi-jurisdiction legal templates |
-| [#37](https://github.com/ArianAr/ReleaseCanvas/issues/37) | Multi-language releases: English, Spanish, French, Italian, German, Persian (RTL) |
+| [#37](https://github.com/ArianAr/ReleaseCanvas/issues/37) | **Full multi-language app UI** + release/PDF text: English, Spanish, French, Italian, German, Persian (**RTL**) |
 
 Related notes:
 - **#36** complements **#34** (import) and built-in template picker; built-ins stay as fork-on-edit baselines where possible.
-- **#37** covers UI strings, terms bodies, PDF language, and Persian RTL; missing strings fall back to English.
+- **#37** is app-wide localization, not PDF-only:
+  - All screens/strings (Home → form → terms → sign → review → success → about/history)
+  - In-app language picker (+ optional follow-system)
+  - Built-in template bodies + PDF in the selected language
+  - Persian **RTL** layout; missing strings fall back to English
 - Jurisdiction packs remain **unofficial samples**, not attorney-certified law (see Non-goals).
 
 ---
