@@ -10,6 +10,8 @@ Capture shoot details and a finger/stylus signature, then export a PDF stamped w
 
 > **Legal disclaimer:** the included release wording is a **generic template**, not legal advice. Have counsel review language for your jurisdiction before commercial use.
 
+> **AI-assisted development:** most of this codebase was produced with AI coding assistance. **All changes were reviewed, tested, and approved by humans** before merge. AI does not replace maintainer responsibility for quality or fitness for purpose.
+
 ---
 
 ## Features

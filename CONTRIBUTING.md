@@ -8,6 +8,13 @@ easy to maintain and friendly to new contributors.
 Participation is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By
 contributing, you agree to uphold it.
 
+## AI-assisted contributions
+
+Much of this repository was written with AI coding tools. That is welcome for
+contributors as well, with the same bar as any change: **you** must understand,
+review, and test what you submit. Maintainers will review and test before merge;
+AI output is never merged blindly.
+
 ## Ways to contribute
 
 - Report bugs and suggest features via [issues](https://github.com/ArianAr/ReleaseCanvas/issues)
