@@ -4,7 +4,7 @@ Living product plan. **GitHub [milestones](https://github.com/ArianAr/ReleaseCan
 
 > New roadmap items should be agreed with the maintainer before being added here.
 
-**Current release:** **[v1.6.1](https://github.com/ArianAr/ReleaseCanvas/releases/tag/v1.6.1)** (`versionName` / `versionCode` in `app/build.gradle.kts`). Full history: [CHANGELOG.md](CHANGELOG.md).
+**Current release:** **[v1.7.0](https://github.com/ArianAr/ReleaseCanvas/releases/tag/v1.7.0)** (`versionName` / `versionCode` in `app/build.gradle.kts`). Full history: [CHANGELOG.md](CHANGELOG.md).
 
 > **AI-assisted development:** most of the project code and docs have been drafted with AI assistance. **Everything is reviewed, tested, and approved by humans** before it lands on `main`. Maintainers remain accountable for product decisions and quality.
 
@@ -12,17 +12,17 @@ Living product plan. **GitHub [milestones](https://github.com/ArianAr/ReleaseCan
 
 ## Next
 
-### Web companion (sign & export) — in progress / shipping
-- Static **web** app for browsers (including iPhone Safari): form → terms → signature → PDF download/share  
-- **No** history, profile, batch, or full parity with Android  
-- Hosted on **GitHub Pages** from `web/`  
-- Native **iOS app remains deferred** (no Apple device for testing)
-
-_Other work: open an issue and agree scope before adding it here._
+_No committed next items._ Open an issue and agree scope before adding work here.
 
 ---
 
 ## Shipped
+
+### v1.7.0 — Web companion & release pipeline
+- [x] Static **web** app (`web/`): form → terms → signature → PDF; reverse geocode; localStorage branding  
+- [x] **GitHub Pages** deploy for `web/`  
+- [x] **GHA signed release APK** on `v*` tags (secrets-only keystore)  
+- [x] Platform messaging: Android full product; web fills iOS/desktop gap; native iOS deferred  
 
 ### v1.6.1 — Share / save to cloud
 - [x] [#21](https://github.com/ArianAr/ReleaseCanvas/issues/21) Optional off-device PDF copies via **system share sheet** (Drive, Dropbox, email, …) from success and history  
