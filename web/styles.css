@@ -1,0 +1,287 @@
+:root {
+  --bg: #f7f8f6;
+  --surface: #ffffff;
+  --ink: #1b263b;
+  --muted: #415a77;
+  --primary: #3a86ff;
+  --primary-ink: #ffffff;
+  --border: #e0e1dd;
+  --danger: #e63946;
+  --banner: #e8f1ff;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(13, 27, 42, 0.08);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.app {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1rem 1rem 2.5rem;
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-bottom: max(2.5rem, env(safe-area-inset-bottom));
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.brand {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  margin: 0.15rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.link-android {
+  font-size: 0.85rem;
+  color: var(--primary);
+  white-space: nowrap;
+}
+
+.banner {
+  background: var(--banner);
+  border: 1px solid #c5d9f7;
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  font-size: 0.88rem;
+  margin-bottom: 1rem;
+  color: var(--ink);
+}
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.step-ind {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.step-ind.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.step-ind.done {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.panel {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.15rem 1.1rem 1.35rem;
+  border: 1px solid var(--border);
+}
+
+.panel[hidden] {
+  display: none !important;
+}
+
+h1 {
+  font-size: 1.25rem;
+  margin: 0 0 0.5rem;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin: 0 0 0.85rem;
+}
+
+.hint.legal {
+  margin-bottom: 1rem;
+}
+
+.opt {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin: 0.75rem 0;
+}
+
+input,
+select,
+textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  color: var(--ink);
+  background: #fff;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid color-mix(in srgb, var(--primary) 45%, transparent);
+  border-color: var(--primary);
+}
+
+.btn {
+  appearance: none;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 2.75rem;
+}
+
+.btn.primary {
+  background: var(--primary);
+  color: var(--primary-ink);
+}
+
+.btn.secondary {
+  background: #eef1f4;
+  color: var(--ink);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.btn.full {
+  width: 100%;
+  margin-top: 0.65rem;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.row.tight {
+  margin-top: 0.65rem;
+}
+
+.row .btn {
+  flex: 1 1 auto;
+}
+
+.terms-box {
+  max-height: min(50vh, 22rem);
+  overflow: auto;
+  padding: 0.85rem;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 0.92rem;
+  white-space: pre-wrap;
+}
+
+.meta {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0 0 0.65rem;
+}
+
+.pad-wrap {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: #fff;
+  touch-action: none;
+  overflow: hidden;
+}
+
+#sigPad {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  cursor: crosshair;
+}
+
+.check {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-weight: 400;
+  margin: 1rem 0 0.5rem;
+}
+
+.check input {
+  width: auto;
+  margin: 0.2rem 0 0;
+  flex-shrink: 0;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+.foot {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.foot a {
+  color: var(--primary);
+}
+
+.footer-note {
+  margin-top: 1.25rem;
+}

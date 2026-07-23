@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0D1B2A" />
+  <meta name="description" content="ReleaseCanvas Web — sign a model release and download a PDF. Companion to the Android app for browsers (including iPhone)." />
+  <title>ReleaseCanvas Web</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <!-- pdf-lib: client-side PDF generation (no server) -->
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div>
+        <p class="brand">ReleaseCanvas Web</p>
+        <p class="tagline">Sign &amp; export a model release PDF in the browser</p>
+      </div>
+      <a class="link-android" href="https://github.com/ArianAr/ReleaseCanvas" target="_blank" rel="noopener">Android app &amp; source</a>
+    </header>
+
+    <aside class="banner" role="note">
+      <strong>Platforms:</strong> The full native app is <strong>Android-only</strong> for now
+      (no iOS build — we lack an Apple device for proper testing).
+      This web companion covers <strong>signing and PDF export only</strong>
+      (no history, profile, batch, or offline MediaStore). Prefer the Android app when you can.
+    </aside>
+
+    <nav class="steps" aria-label="Progress">
+      <span data-step-ind="form" class="step-ind active">1. Details</span>
+      <span data-step-ind="terms" class="step-ind">2. Terms</span>
+      <span data-step-ind="sign" class="step-ind">3. Sign</span>
+      <span data-step-ind="export" class="step-ind">4. Export</span>
+    </nav>
+
+    <!-- STEP: form -->
+    <section id="step-form" class="panel active" aria-labelledby="form-title">
+      <h1 id="form-title">Release details</h1>
+      <p class="hint legal">Templates are unofficial samples, not legal advice and not official forms of any platform or stock agency.</p>
+
+      <label>
+        Release template
+        <select id="templateId"></select>
+      </label>
+      <p id="templateDesc" class="hint"></p>
+
+      <label>
+        Model name
+        <input id="modelName" type="text" autocomplete="name" required />
+      </label>
+      <label>
+        Model email
+        <input id="modelEmail" type="email" autocomplete="email" required />
+      </label>
+      <label>
+        Photographer name
+        <input id="photographerName" type="text" autocomplete="name" required />
+      </label>
+      <label>
+        Shoot description
+        <textarea id="description" rows="3" required></textarea>
+      </label>
+      <label>
+        Shoot ID <span class="opt">(optional)</span>
+        <input id="shootId" type="text" />
+      </label>
+      <label>
+        City <span class="opt">(optional)</span>
+        <input id="city" type="text" />
+      </label>
+      <label>
+        Country <span class="opt">(optional)</span>
+        <input id="country" type="text" />
+      </label>
+
+      <p id="formError" class="error" hidden></p>
+      <button type="button" class="btn primary" id="btnToTerms">Continue to terms</button>
+    </section>
+
+    <!-- STEP: terms -->
+    <section id="step-terms" class="panel" aria-labelledby="terms-title" hidden>
+      <h1 id="terms-title">Review terms</h1>
+      <p class="hint">Read carefully before signing. This is not legal advice.</p>
+      <p id="termsMeta" class="meta"></p>
+      <div id="termsBody" class="terms-box"></div>
+      <div class="row">
+        <button type="button" class="btn secondary" id="btnBackForm">Back</button>
+        <button type="button" class="btn primary" id="btnToSign">I have read these terms</button>
+      </div>
+    </section>
+
+    <!-- STEP: sign -->
+    <section id="step-sign" class="panel" aria-labelledby="sign-title" hidden>
+      <h1 id="sign-title">Signature</h1>
+      <p class="hint">Sign inside the box with your finger, stylus, or mouse.</p>
+      <div class="pad-wrap">
+        <canvas id="sigPad" width="600" height="220" aria-label="Signature pad"></canvas>
+      </div>
+      <div class="row tight">
+        <button type="button" class="btn secondary" id="btnClearSig">Clear</button>
+        <button type="button" class="btn secondary" id="btnUndoSig">Undo</button>
+      </div>
+      <label class="check">
+        <input type="checkbox" id="attestation" />
+        <span>I confirm I am of legal age of majority (or a parent/guardian with authority) and I accept the release terms.</span>
+      </label>
+      <p id="signError" class="error" hidden></p>
+      <div class="row">
+        <button type="button" class="btn secondary" id="btnBackTerms">Back</button>
+        <button type="button" class="btn primary" id="btnToExport">Continue to export</button>
+      </div>
+    </section>
+
+    <!-- STEP: export -->
+    <section id="step-export" class="panel" aria-labelledby="export-title" hidden>
+      <h1 id="export-title">Export PDF</h1>
+      <p class="hint">Location is optional. Time is recorded in UTC when you create the PDF.</p>
+      <p id="locationStatus" class="meta">Location: not requested</p>
+      <div class="row tight">
+        <button type="button" class="btn secondary" id="btnLocation">Use device location</button>
+      </div>
+      <p id="exportError" class="error" hidden></p>
+      <p id="exportBusy" class="meta" hidden>Creating PDF…</p>
+      <div class="row">
+        <button type="button" class="btn secondary" id="btnBackSign">Back</button>
+        <button type="button" class="btn primary" id="btnCreatePdf">Create &amp; download PDF</button>
+      </div>
+      <button type="button" class="btn secondary full" id="btnShare" hidden>Share PDF…</button>
+      <button type="button" class="btn ghost full" id="btnNew">Start another release</button>
+      <p class="hint footer-note">
+        Nothing is uploaded to our servers — PDF generation runs in your browser.
+        There is no export history on the web app.
+      </p>
+    </section>
+
+    <footer class="foot">
+      <p>GPL-3.0 · Not legal advice · <a href="https://github.com/ArianAr/ReleaseCanvas">GitHub</a></p>
+    </footer>
+  </div>
+  <script src="./templates.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
