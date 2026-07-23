@@ -53,15 +53,16 @@ Agreed with maintainer:
 | [#33](https://github.com/ArianAr/ReleaseCanvas/issues/33) | Accessibility pass (TalkBack, targets, contrast) |
 | [#34](https://github.com/ArianAr/ReleaseCanvas/issues/34) | Custom template import (offline `.txt` / `.md`) |
 | [#36](https://github.com/ArianAr/ReleaseCanvas/issues/36) | Editable multi-jurisdiction legal templates |
-| [#37](https://github.com/ArianAr/ReleaseCanvas/issues/37) | **Full multi-language app UI** + release/PDF text: English, Spanish, French, Italian, German, Persian (**RTL**) |
+| [#37](https://github.com/ArianAr/ReleaseCanvas/issues/37) | **Two language pickers**: app UI language × release/template language (en, es, fr, it, de, fa; Persian RTL) |
 
 Related notes:
 - **#36** complements **#34** (import) and built-in template picker; built-ins stay as fork-on-edit baselines where possible.
-- **#37** is app-wide localization, not PDF-only:
-  - All screens/strings (Home → form → terms → sign → review → success → about/history)
-  - In-app language picker (+ optional follow-system)
-  - Built-in template bodies + PDF in the selected language
-  - Persian **RTL** layout; missing strings fall back to English
+- **#37** splits localization into **independent** options:
+  - **App UI language** — buttons, labels, errors, About, history, onboarding (optional follow-system)
+  - **Release / template language** — terms preview body + PDF legal text only
+  - Example: UI in **German**, release template in **English** (any combination allowed)
+  - Persian **RTL** applies to UI when UI=`fa`, and to PDF/terms when release language=`fa`
+  - Missing strings/templates fall back to English **per channel**
 - Jurisdiction packs remain **unofficial samples**, not attorney-certified law (see Non-goals).
 
 ---
