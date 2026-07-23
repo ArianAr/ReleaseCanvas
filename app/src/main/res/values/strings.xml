@@ -93,4 +93,17 @@
     <string name="profile_branding_enabled">Show logo, studio name, and accent color on PDFs</string>
     <string name="profile_brand_accent">Brand accent color</string>
     <string name="profile_brand_accent_hint">Hex color, e.g. #3A86FF</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_done">Get started</string>
+    <string name="onboarding_progress">Step %1$d of %2$d</string>
+    <string name="onboarding_1_title">Capture the shoot</string>
+    <string name="onboarding_1_body">Enter model and photographer details, pick a release template, and add optional shoot notes.</string>
+    <string name="onboarding_2_title">Read the terms</string>
+    <string name="onboarding_2_body">Preview the release wording with the model before anyone signs.</string>
+    <string name="onboarding_3_title">Sign on device</string>
+    <string name="onboarding_3_body">Use a finger or stylus on the signature pad. Clear or undo strokes as needed.</string>
+    <string name="onboarding_4_title">Export a stamped PDF</string>
+    <string name="onboarding_4_body">Confirm attestation, then export a PDF with time and location metadata to Documents/ReleaseCanvas.</string>
+    <string name="about_show_tips">Show getting-started tips</string>
 </resources>

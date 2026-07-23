@@ -1,7 +1,10 @@
 package com.releasecanvas.app.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -10,6 +13,7 @@ import com.releasecanvas.app.ui.ReleaseViewModel
 import com.releasecanvas.app.ui.screens.AboutScreen
 import com.releasecanvas.app.ui.screens.FormScreen
 import com.releasecanvas.app.ui.screens.HomeScreen
+import com.releasecanvas.app.ui.screens.OnboardingScreen
 import com.releasecanvas.app.ui.screens.ProfileScreen
 import com.releasecanvas.app.ui.screens.ReviewScreen
 import com.releasecanvas.app.ui.screens.SignatureScreen
@@ -25,6 +29,7 @@ object Routes {
     const val SUCCESS = "success"
     const val ABOUT = "about"
     const val PROFILE = "profile"
+    const val ONBOARDING = "onboarding"
 }
 
 @Composable
@@ -33,11 +38,32 @@ fun AppNav(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
+    val onboardingDone by viewModel.onboardingDone.collectAsStateWithLifecycle()
+
+    LaunchedEffect(onboardingDone) {
+        val route = navController.currentDestination?.route
+        if (!onboardingDone && route != Routes.ONBOARDING) {
+            navController.navigate(Routes.ONBOARDING) {
+                launchSingleTop = true
+            }
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = Routes.HOME,
         modifier = modifier,
     ) {
+        composable(Routes.ONBOARDING) {
+            OnboardingScreen(
+                onFinished = {
+                    viewModel.completeOnboarding()
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.ONBOARDING) { inclusive = true }
+                    }
+                },
+            )
+        }
         composable(Routes.HOME) {
             HomeScreen(
                 viewModel = viewModel,
@@ -50,7 +76,15 @@ fun AppNav(
             )
         }
         composable(Routes.ABOUT) {
-            AboutScreen(onBack = { navController.popBackStack() })
+            AboutScreen(
+                onBack = { navController.popBackStack() },
+                onShowTips = {
+                    viewModel.reopenOnboarding()
+                    navController.navigate(Routes.ONBOARDING) {
+                        popUpTo(Routes.HOME)
+                    }
+                },
+            )
         }
         composable(Routes.PROFILE) {
             ProfileScreen(

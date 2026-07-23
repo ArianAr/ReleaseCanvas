@@ -14,12 +14,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.releasecanvas.app.BuildConfig
 import com.releasecanvas.app.R
@@ -28,6 +31,7 @@ import com.releasecanvas.app.R
 @Composable
 fun AboutScreen(
     onBack: () -> Unit,
+    onShowTips: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -54,6 +58,7 @@ fun AboutScreen(
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.semantics { heading() },
             )
             Spacer(Modifier.height(4.dp))
             Text(
@@ -104,6 +109,15 @@ fun AboutScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth(),
             )
+            Spacer(Modifier.height(20.dp))
+            OutlinedButton(
+                onClick = onShowTips,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+            ) {
+                Text(stringResource(R.string.about_show_tips))
+            }
             Spacer(Modifier.height(24.dp))
         }
     }
