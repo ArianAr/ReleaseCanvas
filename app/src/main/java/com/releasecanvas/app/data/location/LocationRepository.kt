@@ -52,15 +52,33 @@ class LocationRepository(private val context: Context) {
         return fine || coarse
     }
 
+    /**
+     * @param includeGps when false, never reads GPS (privacy opt-out). Manual city/country
+     * still apply when provided.
+     */
     @SuppressLint("MissingPermission")
     suspend fun captureForSigning(
         timeoutMs: Long = 10_000L,
         manualCity: String = "",
         manualCountry: String = "",
+        includeGps: Boolean = true,
         clock: () -> Instant = { Instant.now() },
     ): SigningMetadata {
         val signedAt = clock()
         val manual = manualPlace(manualCity, manualCountry)
+
+        if (!includeGps) {
+            return SigningMetadata(
+                signedAtUtc = signedAt,
+                latitude = null,
+                longitude = null,
+                locationAccuracyM = null,
+                locationStatus = LocationStatus.Unavailable,
+                placeCity = manual?.city,
+                placeCountry = manual?.country,
+                placeSource = manual?.source ?: PlaceSource.None,
+            )
+        }
 
         if (!hasLocationPermission()) {
             return SigningMetadata(

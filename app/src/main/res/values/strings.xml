@@ -62,8 +62,13 @@
     <string name="location_unavailable_warning">Location unavailable — PDF will note this.</string>
     <string name="success_title">Release exported</string>
     <string name="pdf_saved_fallback">PDF saved</string>
-    <string name="saved_path_detail">Saved to internal shared storage:\nDocuments/ReleaseCanvas/</string>
-    <string name="saved_path_hint">Open the file with any PDF app, share it to Drive/Dropbox/email, or browse that folder in Files. Automatic cloud sync is not built in.</string>
+    <string name="saved_path_detail">Saved to shared storage:\nDocuments/ReleaseCanvas/</string>
+    <string name="saved_path_hint">This folder is shared on the device — other apps and anyone with access to Files can open the PDF (model name, email, signature, and location if included). Share only with people you trust. Automatic cloud sync is not built in.</string>
+    <string name="privacy_shared_storage_warning">PDFs are written to shared Documents/ReleaseCanvas. They are not private app storage.</string>
+    <string name="include_location_in_pdf">Include GPS / place stamp in the PDF</string>
+    <string name="include_location_in_pdf_hint">Off by default. When off, the PDF will not contain coordinates (manual city/country still appear if you entered them). Location is only captured if this is enabled.</string>
+    <string name="refresh_location">Refresh location</string>
+    <string name="location_not_included">Location not included in PDF (optional)</string>
     <string name="open_pdf">Open PDF</string>
     <string name="share_pdf">Share / save to cloud</string>
     <string name="share_pdf_chooser_title">Share or save PDF</string>
@@ -87,7 +92,7 @@
     <string name="about_legal_heading">Legal disclaimer</string>
     <string name="about_legal_body">Release templates are generic wording samples for convenience. They are not attorney-reviewed contracts, not official forms of any stock agency or platform, and not legal advice. Have counsel review language for your jurisdiction before commercial use.</string>
     <string name="about_privacy_heading">Privacy</string>
-    <string name="about_privacy_body">ReleaseCanvas works offline for core signing. Optional GPS and reverse geocode use device location services and may use network. PDFs are written to Documents/ReleaseCanvas via MediaStore. History is stored only on this device. Optional cloud copies use the system share sheet (e.g. Drive, Dropbox) under your account — there is no automatic cloud sync and no ReleaseCanvas server.</string>
+    <string name="about_privacy_body">ReleaseCanvas works offline for core signing. Optional GPS (only if you opt in on Review) and reverse geocode may use location services and network. PDFs are written to shared Documents/ReleaseCanvas via MediaStore — other apps can read those files. App preferences (history, profile, templates) are excluded from Auto Backup where rules apply. Optional cloud copies use the system share sheet under your account — no automatic cloud sync and no ReleaseCanvas server.</string>
     <string name="about_license_heading">License</string>
     <string name="about_license_body">ReleaseCanvas is free software under the GNU General Public License v3.0. Source is available on GitHub: ArianAr/ReleaseCanvas.</string>
     <string name="terms_preview_title">Review terms</string>

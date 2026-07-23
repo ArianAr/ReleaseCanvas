@@ -62,6 +62,12 @@ If a platform ever grants an explicit redistribution license, we could revisit e
 
 Not yet. **Native iOS is blocked on testing access** (no Apple hardware in the maintainer setup). Photographers on iOS can use the **[web companion](web/)** (GitHub Pages) for form → sign → download/share PDF. The full feature set remains on **Android**.
 
+### Where are PDFs stored? Are they private?
+
+Exports go to **shared** storage: `Documents/ReleaseCanvas/` (MediaStore). That means **other apps** and anyone using the system Files app can open them. They contain model name, email, signature image, and (only if you opt in on Review) GPS. Treat them as sensitive.
+
+App preferences (history list, profile, custom templates) are **excluded from Auto Backup** via backup/data-extraction rules where the OS supports them.
+
 ### How do I back up PDFs to Google Drive / Dropbox / the cloud?
 
 ReleaseCanvas is **offline-first**: every release is written under **Documents/ReleaseCanvas** on the device. There is **no automatic cloud sync** and no multi-vendor storage SDK.

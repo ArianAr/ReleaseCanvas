@@ -20,6 +20,7 @@ import com.releasecanvas.app.data.model.HistoryEntry
 import com.releasecanvas.app.data.model.LocationStatus
 import com.releasecanvas.app.data.model.PhotographerProfile
 import com.releasecanvas.app.data.model.ReleaseDraft
+import com.releasecanvas.app.data.model.SigningMetadata
 import com.releasecanvas.app.data.model.TemplateOption
 import java.util.UUID
 import com.releasecanvas.app.data.pdf.PdfCompiler
@@ -49,6 +50,10 @@ data class ReleaseUiState(
     val attestationAccepted: Boolean = false,
     val locationPreviewStatus: LocationStatus = LocationStatus.Acquiring,
     val locationPreviewText: String = "Acquiring GPS…",
+    /** Privacy opt-in: when false, GPS is not captured or written to the PDF. */
+    val includeLocationInPdf: Boolean = false,
+    /** Frozen signing metadata for this review session (preview + export). */
+    val frozenSigningMetadata: SigningMetadata? = null,
     val isExporting: Boolean = false,
     val exportError: String? = null,
     val lastExport: ExportResult? = null,
@@ -359,9 +364,50 @@ class ReleaseViewModel(
         _uiState.update { it.copy(attestationAccepted = accepted, exportError = null) }
     }
 
-    fun refreshLocationPreview() {
+    fun setIncludeLocationInPdf(include: Boolean) {
+        _uiState.update {
+            it.copy(
+                includeLocationInPdf = include,
+                // Force a new capture when the user toggles GPS consent
+                frozenSigningMetadata = null,
+                locationPreviewText = if (include) "Acquiring GPS…" else "Location not included in PDF (optional)",
+                locationPreviewStatus = if (include) LocationStatus.Acquiring else LocationStatus.Unavailable,
+            )
+        }
+        if (include) {
+            refreshLocationPreview(force = true)
+        }
+    }
+
+    fun refreshLocationPreview(force: Boolean = false) {
         viewModelScope.launch {
-            val draft = _uiState.value.draft
+            val state = _uiState.value
+            if (!force && state.frozenSigningMetadata != null && state.includeLocationInPdf) {
+                val meta = state.frozenSigningMetadata
+                _uiState.update {
+                    it.copy(
+                        locationPreviewStatus = meta.locationStatus,
+                        locationPreviewText = Formatters.formatLocation(meta),
+                    )
+                }
+                return@launch
+            }
+            val draft = state.draft
+            if (!state.includeLocationInPdf) {
+                val meta = locationRepository.captureForSigning(
+                    manualCity = draft.city,
+                    manualCountry = draft.country,
+                    includeGps = false,
+                )
+                _uiState.update {
+                    it.copy(
+                        frozenSigningMetadata = meta,
+                        locationPreviewStatus = meta.locationStatus,
+                        locationPreviewText = "Location not included in PDF (optional)",
+                    )
+                }
+                return@launch
+            }
             _uiState.update {
                 it.copy(
                     locationPreviewStatus = LocationStatus.Acquiring,
@@ -372,9 +418,11 @@ class ReleaseViewModel(
                 timeoutMs = 8_000L,
                 manualCity = draft.city,
                 manualCountry = draft.country,
+                includeGps = true,
             )
             _uiState.update {
                 it.copy(
+                    frozenSigningMetadata = meta,
                     locationPreviewStatus = meta.locationStatus,
                     locationPreviewText = Formatters.formatLocation(meta),
                 )
@@ -399,12 +447,15 @@ class ReleaseViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isExporting = true, exportError = null) }
             runCatching {
-                val metadata = locationRepository.captureForSigning(
-                    manualCity = state.draft.city,
-                    manualCountry = state.draft.country,
-                )
+                val draft = state.draft
+                val metadata = state.frozenSigningMetadata
+                    ?: locationRepository.captureForSigning(
+                        manualCity = draft.city,
+                        manualCountry = draft.country,
+                        includeGps = state.includeLocationInPdf,
+                    )
                 val bytes = pdfCompiler.compile(
-                    draft = state.draft,
+                    draft = draft,
                     metadata = metadata,
                     attestationAccepted = true,
                     profile = state.profile,
