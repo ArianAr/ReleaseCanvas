@@ -109,6 +109,22 @@ export ANDROID_HOME=$HOME/Android/Sdk   # or your Studio SDK path
 
 Debug APK: `app/build/outputs/apk/debug/app-debug.apk`
 
+### Release APK (signed, free self-signed keystore)
+
+Signing does **not** require Google Play or any fee. Use a local keystore that is **never committed**.
+
+1. Keystore file at repo root: `release-canvas.jks` (already gitignored via `*.jks`)
+2. Copy `keystore.properties.example` → `keystore.properties` and set passwords/alias  
+3. Build:
+
+```bash
+./gradlew :app:assembleRelease
+```
+
+Output: `app/build/outputs/apk/release/app-release.apk`
+
+If `keystore.properties` is missing, the release build is unsigned/debug-signed depending on the toolchain — always keep `keystore.properties` local for real installs.
+
 ## Usage flow
 
 1. **New release** → fill form  

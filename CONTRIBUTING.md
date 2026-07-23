@@ -48,6 +48,12 @@ Open the repo root in Android Studio and wait for Gradle sync.
 ./gradlew :app:testDebugUnitTest
 ```
 
+### Release signing (maintainers)
+
+- **Never commit** `*.jks`, `*.keystore`, or `keystore.properties`
+- Template: `keystore.properties.example` → local `keystore.properties`
+- `./gradlew :app:assembleRelease` → `app/build/outputs/apk/release/app-release.apk`
+
 ### Web companion
 
 Static files under `web/` (no bundler). Preview:
