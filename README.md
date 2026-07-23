@@ -25,6 +25,21 @@ Capture shoot details and a finger/stylus signature, then export a PDF stamped w
 - Photographer name remembered between sessions (DataStore)
 - Fully offline after install (location optional; geocode needs network when used)
 
+
+## FAQ
+
+### Why aren’t official 500px / Getty / stock-agency release forms in the app?
+
+ReleaseCanvas does **not** redistribute third-party platform forms. Official model-release text is typically **copyrighted**, may be **trademark-branded**, and is governed by each platform’s **terms of service**. Shipping those documents as if they were “the official form” would imply endorsement and create legal risk for users and maintainers.
+
+What we provide instead:
+
+- **Inspired, unofficial sample templates** (e.g. “500px-style (unofficial)”, stock RF-style) clearly labeled as samples, **not** legal advice
+- **Custom template import and editing** so you can use wording you have the right to use (counsel-reviewed text, your studio’s form, etc.)
+- Export as your own PDF with signature and metadata
+
+If a platform ever grants an explicit redistribution license, we could revisit embedding their form. Until then, treat built-ins as starting points and import official text only when **you** are licensed to use it.
+
 ## Screenshots
 
 Mock UI frames (replace with device captures anytime):
