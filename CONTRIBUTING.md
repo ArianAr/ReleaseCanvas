@@ -98,3 +98,13 @@ project’s [GNU GPL v3](LICENSE).
 ## Versioning
 
 See [CHANGELOG.md](CHANGELOG.md) for the `versionName` / `versionCode` policy and how to cut a tagged release manually (no GitHub Actions required).
+
+## Version bumps and releases
+
+After merging a **minor** or **major** feature set to `main`:
+
+1. Bump `versionName` / `versionCode` in `app/build.gradle.kts`
+2. Update [CHANGELOG.md](CHANGELOG.md)
+3. Tag `vX.Y.Z` and create a GitHub Release (`gh release create`)
+
+See the **Version bumps & releases** section in CHANGELOG for the full checklist.
