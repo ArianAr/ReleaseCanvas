@@ -31,9 +31,11 @@ class ReleaseTermsLocaleTest {
 
     @Test
     fun persian_body_contains_farsi_markers() {
-        val fa = ReleaseTerms.body(ReleaseTemplate.SOCIAL_WEB, "مینا", "علی", "fa")
+        val fa = ReleaseTerms.body(ReleaseTemplate.GENERIC, "مینا", "علی", "fa")
         assertTrue(fa.contains("مینا"))
         assertTrue(fa.contains("علی"))
+        assertTrue(fa.contains("رضایت") || fa.contains("رضایت‌نامه") || fa.contains("کپی‌رایت"))
+        assertFalse(fa.contains("آرین")) // no hardcoded personal photographer name
         assertTrue(AppLocale.isRtl("fa"))
         assertFalse(AppLocale.isRtl("de"))
     }
