@@ -1,0 +1,55 @@
+# Built application files
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+
+# Generated folders
+bin/
+gen/
+out/
+build/
+app/build/
+captures/
+.externalNativeBuild/
+.cxx/
+.kotlin/
+
+# Gradle
+.gradle/
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+.navigation/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# Logs & profiling
+*.log
+*.hprof
+
+# Keystores (never commit secrets)
+*.jks
+*.keystore
+secrets.properties
+keystore.properties
+
+# NDK
+obj/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+gradle/gradle-daemon-jvm.properties

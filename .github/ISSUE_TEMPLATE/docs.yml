@@ -1,0 +1,22 @@
+name: Documentation
+description: Gaps, fixes, or improvements to project docs
+title: "[Docs]: "
+labels: ["documentation", "needs-triage"]
+body:
+  - type: textarea
+    id: location
+    attributes:
+      label: Where
+      description: File or section (README, CONTRIBUTING, in-app copy, etc.)
+    validations:
+      required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: What’s wrong or missing
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ReleaseCanvas</string>
+    <string name="home_title">ReleaseCanvas</string>
+    <string name="home_subtitle">Offline model release signing for portrait photographers</string>
+    <string name="new_release">New release</string>
+    <string name="recent_releases">Recent releases</string>
+    <string name="no_recent">No exports yet. Create your first release.</string>
+    <string name="form_title">Release details</string>
+    <string name="model_name">Model name</string>
+    <string name="model_email">Model email</string>
+    <string name="shooter_name">Photographer name</string>
+    <string name="description">Shoot description</string>
+    <string name="optional_place_section">Place (optional)</string>
+    <string name="optional_place_hint">If left blank, we try to derive city/country from GPS when online. Manual values override geocode.</string>
+    <string name="city_optional">City (optional)</string>
+    <string name="country_optional">Country (optional)</string>
+    <string name="continue_action">Continue</string>
+    <string name="signature_title">Signature</string>
+    <string name="signature_hint">Sign inside the box with your finger or stylus</string>
+    <string name="clear">Clear</string>
+    <string name="undo">Undo</string>
+    <string name="review_title">Review &amp; export</string>
+    <string name="sign_and_export">Sign &amp; export</string>
+    <string name="location_acquiring">Acquiring GPS…</string>
+    <string name="location_unavailable_warning">Location unavailable — PDF will note this.</string>
+    <string name="success_title">Release exported</string>
+    <string name="open_pdf">Open PDF</string>
+    <string name="share_pdf">Share</string>
+    <string name="done">Done</string>
+    <string name="back">Back</string>
+    <string name="error_required">Required</string>
+    <string name="error_email">Enter a valid email</string>
+    <string name="error_signature_empty">Please provide a signature</string>
+    <string name="about_legal">Legal text is a generic template, not legal advice. Review with counsel for your jurisdiction.</string>
+    <string name="exporting">Creating PDF…</string>
+</resources>

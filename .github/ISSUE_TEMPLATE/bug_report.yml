@@ -1,0 +1,71 @@
+name: Bug report
+description: Something is broken or behaves unexpectedly
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+        **Security issues?** Use [private vulnerability reporting](https://github.com/ArianAr/ReleaseCanvas/security/advisories/new) instead.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Clear description of what went wrong
+      placeholder: Export fails when model name contains…
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps that trigger the issue
+      placeholder: |
+        1. Open app
+        2. Start new release
+        3. …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device / emulator
+      placeholder: Pixel 8 / API 34 emulator
+  - type: input
+    id: android-version
+    attributes:
+      label: Android version
+      placeholder: 14 / API 34
+  - type: input
+    id: app-version
+    attributes:
+      label: App version / commit
+      placeholder: 1.0.0 or commit SHA
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / screenshots
+      description: Logcat snippets, crash stacks, or screenshots (redact personal data)
+      render: shell
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues for duplicates
+          required: true
+        - label: This report does not contain real model PII I am not allowed to share
+          required: true
