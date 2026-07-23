@@ -41,8 +41,10 @@ Thumbs.db
 # Keystores (never commit secrets)
 *.jks
 *.keystore
+release-canvas.jks
 secrets.properties
 keystore.properties
+
 
 # NDK
 obj/
