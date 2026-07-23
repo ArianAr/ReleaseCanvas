@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -52,6 +53,7 @@ fun HomeScreen(
     viewModel: ReleaseViewModel,
     onNewRelease: () -> Unit,
     onAbout: () -> Unit = {},
+    onProfile: () -> Unit = {},
 ) {
     val history by viewModel.history.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -63,6 +65,12 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.home_title)) },
                 actions = {
+                    IconButton(onClick = onProfile) {
+                        Icon(
+                            Icons.Outlined.Person,
+                            contentDescription = stringResource(R.string.profile_title),
+                        )
+                    }
                     IconButton(onClick = onAbout) {
                         Icon(
                             Icons.Outlined.Info,

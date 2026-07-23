@@ -10,6 +10,7 @@ import com.releasecanvas.app.ui.ReleaseViewModel
 import com.releasecanvas.app.ui.screens.AboutScreen
 import com.releasecanvas.app.ui.screens.FormScreen
 import com.releasecanvas.app.ui.screens.HomeScreen
+import com.releasecanvas.app.ui.screens.ProfileScreen
 import com.releasecanvas.app.ui.screens.ReviewScreen
 import com.releasecanvas.app.ui.screens.SignatureScreen
 import com.releasecanvas.app.ui.screens.SuccessScreen
@@ -23,6 +24,7 @@ object Routes {
     const val REVIEW = "review"
     const val SUCCESS = "success"
     const val ABOUT = "about"
+    const val PROFILE = "profile"
 }
 
 @Composable
@@ -44,10 +46,17 @@ fun AppNav(
                     navController.navigate(Routes.FORM)
                 },
                 onAbout = { navController.navigate(Routes.ABOUT) },
+                onProfile = { navController.navigate(Routes.PROFILE) },
             )
         }
         composable(Routes.ABOUT) {
             AboutScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Routes.PROFILE) {
+            ProfileScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+            )
         }
         composable(Routes.FORM) {
             FormScreen(
