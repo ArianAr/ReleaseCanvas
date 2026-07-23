@@ -48,6 +48,16 @@ Open the repo root in Android Studio and wait for Gradle sync.
 ./gradlew :app:testDebugUnitTest
 ```
 
+### Web companion
+
+Static files under `web/` (no bundler). Preview:
+
+```bash
+cd web && python3 -m http.server 8080
+```
+
+Pushing to `main` under `web/**` deploys GitHub Pages via `.github/workflows/deploy-pages.yml` (enable **Settings → Pages → GitHub Actions** once).
+
 ## Project map
 
 ```

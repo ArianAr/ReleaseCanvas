@@ -9,7 +9,8 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 ## [Unreleased]
 
 ### Added
-- (none yet)
+- **Web companion** (`web/`): browser sign & PDF export (no history); GitHub Pages deploy workflow
+- Platform docs: Android full product; web for iOS/desktop gap; native iOS deferred (no Apple test device)
 
 ## [1.6.1] - 2026-07-24
 

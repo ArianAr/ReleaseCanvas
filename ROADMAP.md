@@ -12,7 +12,13 @@ Living product plan. **GitHub [milestones](https://github.com/ArianAr/ReleaseCan
 
 ## Next
 
-_No committed next items._ Open an issue and agree scope before adding work here.
+### Web companion (sign & export) — in progress / shipping
+- Static **web** app for browsers (including iPhone Safari): form → terms → signature → PDF download/share  
+- **No** history, profile, batch, or full parity with Android  
+- Hosted on **GitHub Pages** from `web/`  
+- Native **iOS app remains deferred** (no Apple device for testing)
+
+_Other work: open an issue and agree scope before adding it here._
 
 ---
 
@@ -80,12 +86,14 @@ _No unapproved items. Propose additions before filing issues or editing this sec
 
 ## Non-goals (for now)
 
-- iOS / KMP  
+- **Native iOS app** until we have access to Apple hardware for testing (web companion fills the gap)  
+- Kotlin Multiplatform dual-UI rewrite  
 - Cryptographic / blockchain “notary” timestamps  
 - Shipping **attorney-certified** jurisdiction packs out of the box (editable templates ≠ legal certification)  
-- GitHub Actions CI (explicitly deferred)  
-- **Automatic cloud sync** or multi-vendor storage SDKs — off-device copies use the **system share sheet** only  
+- Full GitHub Actions **CI** for Android (Pages deploy for `web/` is allowed)  
+- **Automatic cloud sync** or multi-vendor storage SDKs — off-device copies use the **system share sheet** (Android) or browser download/share (web)  
 - Embedding **official** third-party release forms (e.g. 500px) without an explicit redistribution license  
+- Web **history**, profile, or batch (Android-only for now)
 
 ---
 

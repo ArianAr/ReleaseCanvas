@@ -12,6 +12,19 @@ Capture shoot details and a finger/stylus signature, then export a PDF stamped w
 
 > **AI-assisted development:** most of this codebase was produced with AI coding assistance. **All changes were reviewed, tested, and approved by humans** before merge. AI does not replace maintainer responsibility for quality or fitness for purpose.
 
+### Platforms
+
+| Surface | Status |
+|---------|--------|
+| **Android app** | Full product (API 29+) — preferred when available |
+| **Web companion** | **Sign & export only** (static site, GitHub Pages) — fills the gap for iPhone/desktop browsers |
+| **Native iOS app** | **Not available yet** — we do not have an Apple device for proper testing |
+
+Web scope intentionally **excludes** history, profile/branding, batch, and full localization. Prefer Android for the complete workflow.
+
+- Source: [`web/`](web/) · local: `cd web && python3 -m http.server 8080`
+- Live site (after Pages is enabled): `https://arianar.github.io/ReleaseCanvas/`
+
 ---
 
 ## Features
@@ -44,6 +57,10 @@ What we provide instead:
 - Export as your own PDF with signature and metadata
 
 If a platform ever grants an explicit redistribution license, we could revisit embedding their form. Until then, treat built-ins as starting points and import official text only when **you** are licensed to use it.
+
+### Is there an iPhone app?
+
+Not yet. **Native iOS is blocked on testing access** (no Apple hardware in the maintainer setup). Photographers on iOS can use the **[web companion](web/)** (GitHub Pages) for form → sign → download/share PDF. The full feature set remains on **Android**.
 
 ### How do I back up PDFs to Google Drive / Dropbox / the cloud?
 
