@@ -18,6 +18,12 @@ _No committed next items._ Open an issue and agree scope before adding work here
 
 ## Shipped
 
+### v1.7.1 — Locale, onboarding & Persian templates
+- [x] UI language switcher (AppCompat)
+- [x] Onboarding persistence fix
+- [x] Formal Persian release wording
+- [x] Device screenshots in README
+
 ### v1.7.0 — Web companion & release pipeline
 - [x] Static **web** app (`web/`): form → terms → signature → PDF; reverse geocode; localStorage branding  
 - [x] **GitHub Pages** deploy for `web/`  
