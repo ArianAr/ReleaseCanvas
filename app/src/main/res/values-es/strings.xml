@@ -46,9 +46,9 @@
     <string name="success_title">Cesión exportada</string>
     <string name="pdf_saved_fallback">PDF guardado</string>
     <string name="saved_path_detail">Guardado en almacenamiento compartido:\nDocuments/ReleaseCanvas/</string>
-    <string name="saved_path_hint">Abre el archivo con cualquier app de PDF, compártelo o busca esa carpeta en Archivos.</string>
+    <string name="saved_path_hint">Abre el archivo con cualquier app de PDF, compártelo a Drive/Dropbox/email, o busca esa carpeta en Archivos. No hay sincronización automática en la nube.</string>
     <string name="open_pdf">Abrir PDF</string>
-    <string name="share_pdf">Compartir</string>
+    <string name="share_pdf">Compartir / guardar en la nube</string>
     <string name="open_folder">Explorar carpeta Documents</string>
     <string name="open_pdf_failed">No hay app para abrir PDF</string>
     <string name="share_pdf_failed">No se pudo abrir el menú de compartir</string>
@@ -67,7 +67,7 @@
     <string name="about_legal_heading">Aviso legal</string>
     <string name="about_legal_body">Las plantillas de cesión son muestras genéricas. No son contratos revisados por abogados, ni formularios oficiales de agencias o plataformas, ni asesoramiento jurídico. Consulta a un abogado antes del uso comercial.</string>
     <string name="about_privacy_heading">Privacidad</string>
-    <string name="about_privacy_body">ReleaseCanvas funciona sin conexión para la firma principal. El GPS y la geocodificación opcionales usan servicios de ubicación y pueden usar red. Los PDF se escriben en Documents/ReleaseCanvas vía MediaStore. El historial solo se guarda en este dispositivo.</string>
+    <string name="about_privacy_body">ReleaseCanvas funciona sin conexión para la firma principal. El GPS y la geocodificación opcionales usan ubicación y pueden usar red. Los PDF van a Documents/ReleaseCanvas vía MediaStore. El historial solo está en este dispositivo. Las copias en la nube usan el menú de compartir del sistema (p. ej. Drive, Dropbox) con tu cuenta — no hay sincronización automática ni servidor de ReleaseCanvas.</string>
     <string name="about_license_heading">Licencia</string>
     <string name="about_license_body">ReleaseCanvas es software libre bajo la GNU GPL v3.0. El código está en GitHub: ArianAr/ReleaseCanvas.</string>
     <string name="terms_preview_title">Revisar términos</string>
@@ -143,4 +143,7 @@
     <string name="batch_complete_title">Lote completado</string>
     <string name="batch_model_exported">Exportados %1$d de %2$d modelos</string>
     <string name="batch_exports_heading">PDF de este lote</string>
+    <string name="share_pdf_chooser_title">Compartir o guardar PDF</string>
+    <string name="share_pdf_body_short">PDF de cesión firmado: %1$s\n\nEnviado desde ReleaseCanvas.</string>
+    <string name="share_pdf_cd">Compartir PDF (Drive, Dropbox, email, …)</string>
 </resources>

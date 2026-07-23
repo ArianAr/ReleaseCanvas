@@ -46,9 +46,9 @@
     <string name="success_title">Release exportiert</string>
     <string name="pdf_saved_fallback">PDF gespeichert</string>
     <string name="saved_path_detail">Gespeichert im gemeinsamen Speicher:\nDocuments/ReleaseCanvas/</string>
-    <string name="saved_path_hint">Mit einer PDF-App öffnen, teilen oder den Ordner in Dateien finden.</string>
+    <string name="saved_path_hint">Mit einer PDF-App öffnen, an Drive/Dropbox/E-Mail teilen oder den Ordner in Dateien finden. Keine automatische Cloud-Synchronisation.</string>
     <string name="open_pdf">PDF öffnen</string>
-    <string name="share_pdf">Teilen</string>
+    <string name="share_pdf">Teilen / in die Cloud speichern</string>
     <string name="open_folder">Documents-Ordner öffnen</string>
     <string name="open_pdf_failed">Keine App zum Öffnen von PDFs</string>
     <string name="share_pdf_failed">Teilen-Menü konnte nicht geöffnet werden</string>
@@ -67,7 +67,7 @@
     <string name="about_legal_heading">Rechtlicher Hinweis</string>
     <string name="about_legal_body">Release-Vorlagen sind generische Textbeispiele. Keine anwaltlich geprüften Verträge, keine offiziellen Agenturformulare, keine Rechtsberatung.</string>
     <string name="about_privacy_heading">Datenschutz</string>
-    <string name="about_privacy_body">ReleaseCanvas arbeitet offline für die Kernsignatur. Optionales GPS/Geocoding nutzt Standortdienste und ggf. Netzwerk. PDFs unter Documents/ReleaseCanvas. Verlauf nur auf diesem Gerät.</string>
+    <string name="about_privacy_body">ReleaseCanvas arbeitet offline für die Kernsignatur. Optionales GPS/Geocoding nutzt Standort und ggf. Netzwerk. PDFs unter Documents/ReleaseCanvas. Verlauf nur auf diesem Gerät. Cloud-Kopien über das System-Teilen-Menü (z. B. Drive, Dropbox) mit Ihrem Konto — keine automatische Sync und kein ReleaseCanvas-Server.</string>
     <string name="about_license_heading">Lizenz</string>
     <string name="about_license_body">ReleaseCanvas ist freie Software unter GNU GPL v3.0. Quellcode auf GitHub: ArianAr/ReleaseCanvas.</string>
     <string name="terms_preview_title">Bedingungen lesen</string>
@@ -143,4 +143,7 @@
     <string name="batch_complete_title">Batch abgeschlossen</string>
     <string name="batch_model_exported">%1$d von %2$d Models exportiert</string>
     <string name="batch_exports_heading">PDFs in diesem Batch</string>
+    <string name="share_pdf_chooser_title">PDF teilen oder speichern</string>
+    <string name="share_pdf_body_short">Unterzeichnetes Model-Release-PDF: %1$s\n\nGesendet von ReleaseCanvas.</string>
+    <string name="share_pdf_cd">PDF teilen (Drive, Dropbox, E-Mail, …)</string>
 </resources>

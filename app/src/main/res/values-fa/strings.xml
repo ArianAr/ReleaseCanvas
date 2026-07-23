@@ -46,9 +46,9 @@
     <string name="success_title">رضایت‌نامه صادر شد</string>
     <string name="pdf_saved_fallback">PDF ذخیره شد</string>
     <string name="saved_path_detail">ذخیره در حافظه مشترک:\nDocuments/ReleaseCanvas/</string>
-    <string name="saved_path_hint">با هر برنامه PDF باز کنید، به‌اشتراک بگذارید یا پوشه را در Files پیدا کنید.</string>
+    <string name="saved_path_hint">با هر برنامه PDF باز کنید، به Drive/Dropbox/ایمیل به‌اشتراک بگذارید، یا پوشه را در Files پیدا کنید. همگام‌سازی خودکار ابری وجود ندارد.</string>
     <string name="open_pdf">باز کردن PDF</string>
-    <string name="share_pdf">اشتراک‌گذاری</string>
+    <string name="share_pdf">اشتراک / ذخیره در ابر</string>
     <string name="open_folder">مرور پوشه Documents</string>
     <string name="open_pdf_failed">برنامه‌ای برای باز کردن PDF نیست</string>
     <string name="share_pdf_failed">باز کردن اشتراک ممکن نشد</string>
@@ -67,7 +67,7 @@
     <string name="about_legal_heading">سلب مسئولیت حقوقی</string>
     <string name="about_legal_body">قالب‌های رضایت‌نامه نمونه‌های عمومی‌اند. قرارداد بازبینی‌شده وکیل، فرم رسمی آژانس یا مشاوره حقوقی نیستند.</string>
     <string name="about_privacy_heading">حریم خصوصی</string>
-    <string name="about_privacy_body">ReleaseCanvas برای امضای اصلی آفلاین کار می‌کند. GPS و ژئوکد اختیاری از موقعیت و شبکه استفاده می‌کنند. PDFها در Documents/ReleaseCanvas. تاریخچه فقط روی این دستگاه.</string>
+    <string name="about_privacy_body">ReleaseCanvas برای امضای اصلی آفلاین کار می‌کند. GPS و ژئوکد اختیاری از موقعیت و شبکه استفاده می‌کنند. PDFها در Documents/ReleaseCanvas. تاریخچه فقط روی این دستگاه. کپی ابری از طریق منوی اشتراک سیستم (مانند Drive، Dropbox) با حساب شما — همگام‌سازی خودکار و سرور ReleaseCanvas وجود ندارد.</string>
     <string name="about_license_heading">مجوز</string>
     <string name="about_license_body">ReleaseCanvas نرم‌افزار آزاد تحت GNU GPL v3.0 است. کد در GitHub: ArianAr/ReleaseCanvas.</string>
     <string name="terms_preview_title">بازبینی شرایط</string>
@@ -143,4 +143,7 @@
     <string name="batch_complete_title">دسته کامل شد</string>
     <string name="batch_model_exported">%1$d از %2$d مدل صادر شد</string>
     <string name="batch_exports_heading">PDFهای این دسته</string>
+    <string name="share_pdf_chooser_title">اشتراک یا ذخیره PDF</string>
+    <string name="share_pdf_body_short">PDF امضاشده رضایت‌نامه: %1$s\n\nارسال از ReleaseCanvas.</string>
+    <string name="share_pdf_cd">اشتراک PDF (Drive، Dropbox، ایمیل، …)</string>
 </resources>

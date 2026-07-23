@@ -39,9 +39,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.releasecanvas.app.R
 import com.releasecanvas.app.ui.ReleaseViewModel
-import com.releasecanvas.app.util.Formatters
-import kotlinx.coroutines.launch
 import com.releasecanvas.app.ui.theme.screenBody
+import com.releasecanvas.app.util.Formatters
+import com.releasecanvas.app.util.PdfIntents
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -173,15 +174,8 @@ fun SuccessScreen(
             Spacer(Modifier.height(28.dp))
             Button(
                 onClick = {
-                    val uri = export?.contentUri
-                    if (uri == null) return@Button
-                    val intent = Intent(Intent.ACTION_VIEW).apply {
-                        setDataAndType(uri, "application/pdf")
-                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    }
-                    try {
-                        context.startActivity(intent)
-                    } catch (_: ActivityNotFoundException) {
+                    val uri = export?.contentUri ?: return@Button
+                    if (!PdfIntents.openPdf(context, uri)) {
                         scope.launch { snackbar.showSnackbar(openFailed) }
                     }
                 },
@@ -194,27 +188,14 @@ fun SuccessScreen(
             OutlinedButton(
                 onClick = {
                     val exp = export ?: return@OutlinedButton
-                    val subject = context.getString(
-                        R.string.email_subject,
-                        state.draft.modelName.ifBlank { exp.displayName },
+                    val ok = PdfIntents.sharePdf(
+                        context = context,
+                        uri = exp.contentUri,
+                        modelName = state.draft.modelName,
+                        displayName = exp.displayName,
+                        signedAtUtc = Formatters.formatUtc(exp.metadata.signedAtUtc),
                     )
-                    val body = context.getString(
-                        R.string.email_body,
-                        exp.displayName,
-                        Formatters.formatUtc(exp.metadata.signedAtUtc),
-                    )
-                    val intent = Intent(Intent.ACTION_SEND).apply {
-                        type = "application/pdf"
-                        putExtra(Intent.EXTRA_STREAM, exp.contentUri)
-                        putExtra(Intent.EXTRA_SUBJECT, subject)
-                        putExtra(Intent.EXTRA_TEXT, body)
-                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    }
-                    try {
-                        context.startActivity(
-                            Intent.createChooser(intent, context.getString(R.string.share_pdf)),
-                        )
-                    } catch (_: ActivityNotFoundException) {
+                    if (!ok) {
                         scope.launch { snackbar.showSnackbar(shareFailed) }
                     }
                 },

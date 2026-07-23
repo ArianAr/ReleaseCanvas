@@ -11,6 +11,15 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 ### Added
 - (none yet)
 
+## [1.6.1] - 2026-07-24
+
+### Added
+- Share / save to cloud via system share sheet (Drive, Dropbox, email, …) from success and history
+- Clearer copy that automatic cloud sync is a non-goal; local PDF remains source of truth
+
+### Changed
+- [#21](https://github.com/ArianAr/ReleaseCanvas/issues/21) reframed from multi-backend storage to optional share-to-cloud
+
 ## [1.6.0] - 2026-07-24
 
 ### Added

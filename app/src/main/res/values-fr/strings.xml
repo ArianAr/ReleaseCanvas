@@ -46,9 +46,9 @@
     <string name="success_title">Autorisation exportée</string>
     <string name="pdf_saved_fallback">PDF enregistré</string>
     <string name="saved_path_detail">Enregistré dans le stockage partagé :\nDocuments/ReleaseCanvas/</string>
-    <string name="saved_path_hint">Ouvrez le fichier avec une app PDF, partagez-le ou parcourez ce dossier dans Fichiers.</string>
+    <string name="saved_path_hint">Ouvrez le fichier avec une app PDF, partagez-le vers Drive/Dropbox/e-mail, ou parcourez ce dossier dans Fichiers. Pas de synchro cloud automatique.</string>
     <string name="open_pdf">Ouvrir le PDF</string>
-    <string name="share_pdf">Partager</string>
+    <string name="share_pdf">Partager / enregistrer dans le cloud</string>
     <string name="open_folder">Parcourir Documents</string>
     <string name="open_pdf_failed">Aucune app pour ouvrir les PDF</string>
     <string name="share_pdf_failed">Impossible d’ouvrir le partage</string>
@@ -67,7 +67,7 @@
     <string name="about_legal_heading">Avertissement juridique</string>
     <string name="about_legal_body">Les modèles d’autorisation sont des exemples génériques. Ce ne sont pas des contrats validés par un avocat, ni des formulaires officiels d’agences, ni un conseil juridique.</string>
     <string name="about_privacy_heading">Confidentialité</string>
-    <string name="about_privacy_body">ReleaseCanvas fonctionne hors ligne pour la signature. GPS et géocodage optionnels utilisent la localisation et éventuellement le réseau. PDF via MediaStore dans Documents/ReleaseCanvas. Historique local uniquement.</string>
+    <string name="about_privacy_body">ReleaseCanvas fonctionne hors ligne pour la signature. GPS et géocodage optionnels utilisent la localisation et éventuellement le réseau. PDF via MediaStore dans Documents/ReleaseCanvas. Historique local uniquement. Les copies cloud passent par le menu de partage système (Drive, Dropbox, etc.) avec votre compte — pas de synchro automatique ni de serveur ReleaseCanvas.</string>
     <string name="about_license_heading">Licence</string>
     <string name="about_license_body">ReleaseCanvas est un logiciel libre sous GNU GPL v3.0. Code sur GitHub : ArianAr/ReleaseCanvas.</string>
     <string name="terms_preview_title">Lire les conditions</string>
@@ -143,4 +143,7 @@
     <string name="batch_complete_title">Lot terminé</string>
     <string name="batch_model_exported">%1$d sur %2$d modèles exportés</string>
     <string name="batch_exports_heading">PDF de ce lot</string>
+    <string name="share_pdf_chooser_title">Partager ou enregistrer le PDF</string>
+    <string name="share_pdf_body_short">PDF d’autorisation signé : %1$s\n\nEnvoyé depuis ReleaseCanvas.</string>
+    <string name="share_pdf_cd">Partager le PDF (Drive, Dropbox, e-mail, …)</string>
 </resources>
