@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.releasecanvas.app.ui.ReleaseViewModel
 import com.releasecanvas.app.ui.screens.AboutScreen
+import com.releasecanvas.app.ui.screens.BatchSetupScreen
 import com.releasecanvas.app.ui.screens.FormScreen
 import com.releasecanvas.app.ui.screens.HomeScreen
 import com.releasecanvas.app.ui.screens.OnboardingScreen
@@ -23,6 +24,7 @@ import com.releasecanvas.app.ui.screens.TermsPreviewScreen
 object Routes {
     const val HOME = "home"
     const val FORM = "form"
+    const val BATCH_SETUP = "batch_setup"
     const val TERMS = "terms"
     const val SIGNATURE = "signature"
     const val REVIEW = "review"
@@ -71,6 +73,10 @@ fun AppNav(
                     viewModel.resetForNewRelease()
                     navController.navigate(Routes.FORM)
                 },
+                onBatchRelease = {
+                    viewModel.prepareBatchSetup()
+                    navController.navigate(Routes.BATCH_SETUP)
+                },
                 onAbout = { navController.navigate(Routes.ABOUT) },
                 onProfile = { navController.navigate(Routes.PROFILE) },
             )
@@ -99,6 +105,20 @@ fun AppNav(
                 onContinue = {
                     if (viewModel.validateForm()) {
                         navController.navigate(Routes.TERMS)
+                    }
+                },
+            )
+        }
+        composable(Routes.BATCH_SETUP) {
+            BatchSetupScreen(
+                viewModel = viewModel,
+                onBack = {
+                    viewModel.endBatch()
+                    navController.popBackStack()
+                },
+                onStart = {
+                    navController.navigate(Routes.TERMS) {
+                        popUpTo(Routes.BATCH_SETUP)
                     }
                 },
             )
@@ -132,12 +152,21 @@ fun AppNav(
             SuccessScreen(
                 viewModel = viewModel,
                 onDone = {
+                    viewModel.endBatch()
                     navController.popBackStack(Routes.HOME, inclusive = false)
                 },
                 onNewRelease = {
+                    viewModel.endBatch()
                     viewModel.resetForNewRelease()
                     navController.navigate(Routes.FORM) {
                         popUpTo(Routes.HOME)
+                    }
+                },
+                onNextBatchModel = {
+                    if (viewModel.advanceToNextBatchModel()) {
+                        navController.navigate(Routes.TERMS) {
+                            popUpTo(Routes.HOME)
+                        }
                     }
                 },
             )

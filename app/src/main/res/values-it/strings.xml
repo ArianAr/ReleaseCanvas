@@ -126,4 +126,21 @@
     <string name="release_language">Lingua testo liberatoria</string>
     <string name="release_language_hint">Anteprima termini e testo legale PDF. Può differire dall’interfaccia.</string>
     <string name="review_release_language">Lingua liberatoria</string>
+    <string name="batch_release">Lotto multi-modello</string>
+    <string name="batch_title">Lotto multi-modello</string>
+    <string name="batch_intro">Imposta una volta i dettagli della sessione, aggiungi ogni modello e firma un PDF per persona.</string>
+    <string name="batch_shared_section">Dettagli sessione condivisi</string>
+    <string name="batch_shared_hint">Modello, fotografo e descrizione valgono per tutti i modelli del lotto.</string>
+    <string name="batch_models_section">Modelli</string>
+    <string name="batch_models_hint">Aggiungi almeno due modelli. Ognuno firmerà separatamente.</string>
+    <string name="batch_model_n">Modello %1$d</string>
+    <string name="batch_add_model">Aggiungi modello</string>
+    <string name="batch_remove_model">Rimuovi modello</string>
+    <string name="batch_start">Inizia le firme</string>
+    <string name="batch_progress">Modello %1$d di %2$d · %3$s</string>
+    <string name="batch_next_model">Modello successivo</string>
+    <string name="batch_end_early">Termina lotto</string>
+    <string name="batch_complete_title">Lotto completato</string>
+    <string name="batch_model_exported">Esportati %1$d di %2$d modelli</string>
+    <string name="batch_exports_heading">PDF di questo lotto</string>
 </resources>

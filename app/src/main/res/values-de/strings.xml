@@ -126,4 +126,21 @@
     <string name="release_language">Sprache des Release-Texts</string>
     <string name="release_language_hint">Bedingungen-Vorschau und PDF-Rechtstext. Kann von der UI-Sprache abweichen.</string>
     <string name="review_release_language">Release-Sprache</string>
+    <string name="batch_release">Batch Mehrere Models</string>
+    <string name="batch_title">Batch Mehrere Models</string>
+    <string name="batch_intro">Gemeinsame Shooting-Daten einmal setzen, Models hinzufügen, dann pro Person unterschreiben und exportieren.</string>
+    <string name="batch_shared_section">Gemeinsame Shooting-Details</string>
+    <string name="batch_shared_hint">Vorlage, Fotograf und Beschreibung gelten für alle Models im Batch.</string>
+    <string name="batch_models_section">Models</string>
+    <string name="batch_models_hint">Mindestens zwei Models. Jede Person unterschreibt separat.</string>
+    <string name="batch_model_n">Model %1$d</string>
+    <string name="batch_add_model">Model hinzufügen</string>
+    <string name="batch_remove_model">Model entfernen</string>
+    <string name="batch_start">Unterschreiben starten</string>
+    <string name="batch_progress">Model %1$d von %2$d · %3$s</string>
+    <string name="batch_next_model">Nächstes Model</string>
+    <string name="batch_end_early">Batch beenden</string>
+    <string name="batch_complete_title">Batch abgeschlossen</string>
+    <string name="batch_model_exported">%1$d von %2$d Models exportiert</string>
+    <string name="batch_exports_heading">PDFs in diesem Batch</string>
 </resources>

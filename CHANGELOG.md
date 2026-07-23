@@ -11,6 +11,13 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 ### Added
 - (none yet)
 
+## [1.6.0] - 2026-07-24
+
+### Added
+- **Batch multi-model releases**: shared shoot details + model roster, then sign/export one PDF per model
+- Progress banner (model N of M) on terms, signature, and review
+- Success screen lists all PDFs in the batch with **Next model** / **End batch**
+
 ## [1.5.0] - 2026-07-24
 
 ### Added

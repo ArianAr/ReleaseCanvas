@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.releasecanvas.app.R
 import com.releasecanvas.app.data.locale.AppLocale
 import com.releasecanvas.app.ui.ReleaseViewModel
+import com.releasecanvas.app.ui.components.BatchProgressBanner
 import com.releasecanvas.app.ui.theme.screenBody
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,6 +64,10 @@ fun TermsPreviewScreen(
                 .fillMaxSize()
                 .screenBody(padding),
         ) {
+            state.batch?.let { batch ->
+                BatchProgressBanner(batch = batch)
+                Spacer(Modifier.height(12.dp))
+            }
             Text(
                 text = option.displayName,
                 style = MaterialTheme.typography.titleMedium,
