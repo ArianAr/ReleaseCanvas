@@ -4,7 +4,7 @@ Living product plan. **GitHub [milestones](https://github.com/ArianAr/ReleaseCan
 
 > New roadmap items should be agreed with the maintainer before being added here.
 
-**Current release:** **[v1.7.0](https://github.com/ArianAr/ReleaseCanvas/releases/tag/v1.7.0)** (`versionName` / `versionCode` in `app/build.gradle.kts`). Full history: [CHANGELOG.md](CHANGELOG.md).
+**Current release:** **[v1.7.1](https://github.com/ArianAr/ReleaseCanvas/releases/tag/v1.7.1)** (`versionName` / `versionCode` in `app/build.gradle.kts`). Full history: [CHANGELOG.md](CHANGELOG.md).
 
 > **AI-assisted development:** most of the project code and docs have been drafted with AI assistance. **Everything is reviewed, tested, and approved by humans** before it lands on `main`. Maintainers remain accountable for product decisions and quality.
 

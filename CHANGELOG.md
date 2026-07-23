@@ -8,10 +8,18 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 
 ## [Unreleased]
 
+### Added
+- (none yet)
+
+## [1.7.1] - 2026-07-24
+
 ### Fixed
 - App UI language switcher applies immediately (AppCompatActivity + AppCompat theme)
 - Onboarding no longer restarts on every cold start (wait for DataStore before treating as incomplete)
 - Persian (`fa`) release templates rewritten in proper formal IR model-release style (`{model}` / `{photographer}` placeholders)
+
+### Changed
+- README device screenshots (EXIF-stripped) replace mock SVGs
 
 ## [1.7.0] - 2026-07-24
 
