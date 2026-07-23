@@ -19,6 +19,7 @@ Capture shoot details and a finger/stylus signature, then export a PDF stamped w
 - **Release template picker** (generic, 500px-style unofficial, stock RF-style, editorial, social/web)
 - **Two language pickers**: app UI language × release wording language (en, es, fr, it, de, fa; Persian RTL)
 - **Batch multi-model**: shared shoot details, then sign/export one PDF per model in sequence
+- **Share / save to cloud** via the system share sheet (Drive, Dropbox, email, …) — no automatic sync
 - Optional **city / country** (manual) or best-effort reverse geocode from GPS when online
 - Interactive signature pad (clear / undo)
 - Best-effort GPS via Fused Location Provider (export works without location)
@@ -41,6 +42,16 @@ What we provide instead:
 - Export as your own PDF with signature and metadata
 
 If a platform ever grants an explicit redistribution license, we could revisit embedding their form. Until then, treat built-ins as starting points and import official text only when **you** are licensed to use it.
+
+### How do I back up PDFs to Google Drive / Dropbox / the cloud?
+
+ReleaseCanvas is **offline-first**: every release is written under **Documents/ReleaseCanvas** on the device. There is **no automatic cloud sync** and no multi-vendor storage SDK.
+
+To keep a copy off-device:
+
+1. After export, tap **Share / save to cloud** (or use the share icon on a history row).
+2. Pick **Drive**, **Dropbox**, **Files**, email, etc. from the system share sheet.
+3. The file leaves the device only under **your** account and the app you choose.
 
 ## Screenshots
 

@@ -40,7 +40,7 @@ Living product plan. **GitHub [milestones](https://github.com/ArianAr/ReleaseCan
 | Issue | Theme |
 |-------|--------|
 | [#20](https://github.com/ArianAr/ReleaseCanvas/issues/20) | Batch multi-model releases — **shipped in app 1.6.0** |
-| [#21](https://github.com/ArianAr/ReleaseCanvas/issues/21) | Cloud backup behind a storage interface (later) |
+| [#21](https://github.com/ArianAr/ReleaseCanvas/issues/21) | Optional **share / save to cloud** via system share sheet — **shipped in app 1.6.1** (no multi-backend storage; no automatic sync) |
 
 ### v1.3 — Profile, branding & onboarding (shipped in app 1.3.0)
 - [x] [#30](https://github.com/ArianAr/ReleaseCanvas/issues/30) Photographer profile defaults
@@ -79,6 +79,7 @@ _No unapproved items. Propose additions before adding to this file or filing iss
 - Cryptographic / blockchain “notary” timestamps
 - Shipping **attorney-certified** jurisdiction packs out of the box (editable templates ≠ legal certification)
 - GitHub Actions CI (explicitly deferred)
+- **Automatic cloud sync** or multi-vendor storage SDKs (Drive/Dropbox/etc.) — optional off-device copies use the system share sheet only
 
 ---
 

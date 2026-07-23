@@ -63,9 +63,12 @@
     <string name="success_title">Release exported</string>
     <string name="pdf_saved_fallback">PDF saved</string>
     <string name="saved_path_detail">Saved to internal shared storage:\nDocuments/ReleaseCanvas/</string>
-    <string name="saved_path_hint">Open the file with any PDF app, share it, or browse that folder in Files.</string>
+    <string name="saved_path_hint">Open the file with any PDF app, share it to Drive/Dropbox/email, or browse that folder in Files. Automatic cloud sync is not built in.</string>
     <string name="open_pdf">Open PDF</string>
-    <string name="share_pdf">Share</string>
+    <string name="share_pdf">Share / save to cloud</string>
+    <string name="share_pdf_chooser_title">Share or save PDF</string>
+    <string name="share_pdf_body_short">Signed model release PDF: %1$s\n\nSent from ReleaseCanvas.</string>
+    <string name="share_pdf_cd">Share PDF (Drive, Dropbox, email, …)</string>
     <string name="open_folder">Browse Documents folder</string>
     <string name="open_pdf_failed">No app found to open PDFs</string>
     <string name="share_pdf_failed">Could not open share sheet</string>
@@ -84,7 +87,7 @@
     <string name="about_legal_heading">Legal disclaimer</string>
     <string name="about_legal_body">Release templates are generic wording samples for convenience. They are not attorney-reviewed contracts, not official forms of any stock agency or platform, and not legal advice. Have counsel review language for your jurisdiction before commercial use.</string>
     <string name="about_privacy_heading">Privacy</string>
-    <string name="about_privacy_body">ReleaseCanvas works offline for core signing. Optional GPS and reverse geocode use device location services and may use network. PDFs are written to Documents/ReleaseCanvas via MediaStore. History is stored only on this device.</string>
+    <string name="about_privacy_body">ReleaseCanvas works offline for core signing. Optional GPS and reverse geocode use device location services and may use network. PDFs are written to Documents/ReleaseCanvas via MediaStore. History is stored only on this device. Optional cloud copies use the system share sheet (e.g. Drive, Dropbox) under your account — there is no automatic cloud sync and no ReleaseCanvas server.</string>
     <string name="about_license_heading">License</string>
     <string name="about_license_body">ReleaseCanvas is free software under the GNU General Public License v3.0. Source is available on GitHub: ArianAr/ReleaseCanvas.</string>
     <string name="terms_preview_title">Review terms</string>

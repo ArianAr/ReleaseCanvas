@@ -1,6 +1,5 @@
 package com.releasecanvas.app.ui.screens
 
-import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +18,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -30,6 +30,8 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -37,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +51,8 @@ import com.releasecanvas.app.R
 import com.releasecanvas.app.data.model.HistoryEntry
 import com.releasecanvas.app.ui.ReleaseViewModel
 import com.releasecanvas.app.ui.theme.screenBody
+import com.releasecanvas.app.util.PdfIntents
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,6 +67,10 @@ fun HomeScreen(
     val context = LocalContext.current
     var pendingDelete by remember { mutableStateOf<HistoryEntry?>(null) }
     var showClearAll by remember { mutableStateOf(false) }
+    val snackbar = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val openFailed = stringResource(R.string.open_pdf_failed)
+    val shareFailed = stringResource(R.string.share_pdf_failed)
 
     Scaffold(
         topBar = {
@@ -83,6 +92,7 @@ fun HomeScreen(
                 },
             )
         },
+        snackbarHost = { SnackbarHost(snackbar) },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -164,11 +174,13 @@ fun HomeScreen(
                                     Text(
                                         entry.modelName.ifBlank { entry.displayName },
                                         modifier = Modifier.clickable {
-                                            val intent = Intent(Intent.ACTION_VIEW).apply {
-                                                setDataAndType(Uri.parse(entry.uriString), "application/pdf")
-                                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                            val ok = PdfIntents.openPdf(
+                                                context,
+                                                Uri.parse(entry.uriString),
+                                            )
+                                            if (!ok) {
+                                                scope.launch { snackbar.showSnackbar(openFailed) }
                                             }
-                                            runCatching { context.startActivity(intent) }
                                         },
                                     )
                                 },
@@ -176,11 +188,34 @@ fun HomeScreen(
                                     Text("${entry.displayName}\n${entry.signedAtUtc}")
                                 },
                                 trailingContent = {
-                                    IconButton(onClick = { pendingDelete = entry }) {
-                                        Icon(
-                                            Icons.Outlined.Delete,
-                                            contentDescription = stringResource(R.string.remove_history_item),
-                                        )
+                                    Row {
+                                        IconButton(
+                                            onClick = {
+                                                val ok = PdfIntents.sharePdf(
+                                                    context = context,
+                                                    uri = Uri.parse(entry.uriString),
+                                                    modelName = entry.modelName,
+                                                    displayName = entry.displayName,
+                                                    signedAtUtc = entry.signedAtUtc,
+                                                )
+                                                if (!ok) {
+                                                    scope.launch {
+                                                        snackbar.showSnackbar(shareFailed)
+                                                    }
+                                                }
+                                            },
+                                        ) {
+                                            Icon(
+                                                Icons.Outlined.Share,
+                                                contentDescription = stringResource(R.string.share_pdf_cd),
+                                            )
+                                        }
+                                        IconButton(onClick = { pendingDelete = entry }) {
+                                            Icon(
+                                                Icons.Outlined.Delete,
+                                                contentDescription = stringResource(R.string.remove_history_item),
+                                            )
+                                        }
                                     }
                                 },
                             )
