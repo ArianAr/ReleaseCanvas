@@ -11,6 +11,14 @@
     <string name="model_email">Model email</string>
     <string name="shooter_name">Photographer name</string>
     <string name="description">Shoot description</string>
+    <string name="optional_shoot_section">Shoot details (optional)</string>
+    <string name="optional_shoot_hint">All fields below are optional and only appear on the PDF when filled.</string>
+    <string name="shoot_id_optional">Shoot ID (optional)</string>
+    <string name="photographer_email_optional">Photographer email (optional)</string>
+    <string name="photographer_phone_optional">Photographer phone (optional)</string>
+    <string name="client_agency_optional">Client / agency (optional)</string>
+    <string name="location_name_optional">Shoot location name (optional)</string>
+    <string name="notes_optional">Notes (optional)</string>
     <string name="optional_place_section">Place (optional)</string>
     <string name="optional_place_hint">If left blank, we try to derive city/country from GPS when online. Manual values override geocode.</string>
     <string name="city_optional">City (optional)</string>

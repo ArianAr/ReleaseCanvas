@@ -31,9 +31,17 @@ class PdfCompiler {
         y = drawBodyLine(canvas, y, "Model: ${draft.modelName}")
         y = drawBodyLine(canvas, y, "Model email: ${draft.modelEmail}")
         y = drawBodyLine(canvas, y, "Photographer: ${draft.shooterName}")
+        optionalLine(draft.photographerEmail)?.let { y = drawBodyLine(canvas, y, "Photographer email: $it") }
+        optionalLine(draft.photographerPhone)?.let { y = drawBodyLine(canvas, y, "Photographer phone: $it") }
+        optionalLine(draft.clientAgency)?.let { y = drawBodyLine(canvas, y, "Client / agency: $it") }
         y += SECTION_GAP
-        y = drawSectionHeading(canvas, y, "Shoot description")
-        y = drawWrapped(canvas, y, draft.description.trim(), bodyPaint)
+        y = drawSectionHeading(canvas, y, "Shoot details")
+        optionalLine(draft.shootId)?.let { y = drawBodyLine(canvas, y, "Shoot ID: $it") }
+        optionalLine(draft.locationName)?.let { y = drawBodyLine(canvas, y, "Shoot location: $it") }
+        y = drawBodyLine(canvas, y, "Description: ${draft.description.trim()}")
+        optionalLine(draft.notes)?.let {
+            y = drawWrapped(canvas, y, "Notes: $it", bodyPaint)
+        }
         y += SECTION_GAP
         y = drawSectionHeading(canvas, y, "Release terms")
         val terms = ReleaseTerms.body(draft.modelName.trim(), draft.shooterName.trim())
@@ -128,6 +136,9 @@ class PdfCompiler {
             "Not a substitute for legal advice."
         drawWrapped(canvas, y, footer, smallPaint)
     }
+
+    private fun optionalLine(value: String): String? =
+        value.trim().takeIf { it.isNotEmpty() }
 
     private fun statusLabel(status: LocationStatus): String = when (status) {
         LocationStatus.Available -> "Available"

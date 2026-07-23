@@ -102,6 +102,67 @@ fun FormScreen(
             )
             Spacer(Modifier.height(16.dp))
             Text(
+                text = stringResource(R.string.optional_shoot_section),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = stringResource(R.string.optional_shoot_hint),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(12.dp))
+            OutlinedTextField(
+                value = draft.shootId,
+                onValueChange = viewModel::updateShootId,
+                label = { Text(stringResource(R.string.shoot_id_optional)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(Modifier.height(12.dp))
+            OutlinedTextField(
+                value = draft.photographerEmail,
+                onValueChange = viewModel::updatePhotographerEmail,
+                label = { Text(stringResource(R.string.photographer_email_optional)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(Modifier.height(12.dp))
+            OutlinedTextField(
+                value = draft.photographerPhone,
+                onValueChange = viewModel::updatePhotographerPhone,
+                label = { Text(stringResource(R.string.photographer_phone_optional)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(Modifier.height(12.dp))
+            OutlinedTextField(
+                value = draft.clientAgency,
+                onValueChange = viewModel::updateClientAgency,
+                label = { Text(stringResource(R.string.client_agency_optional)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(Modifier.height(12.dp))
+            OutlinedTextField(
+                value = draft.locationName,
+                onValueChange = viewModel::updateLocationName,
+                label = { Text(stringResource(R.string.location_name_optional)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(Modifier.height(12.dp))
+            OutlinedTextField(
+                value = draft.notes,
+                onValueChange = viewModel::updateNotes,
+                label = { Text(stringResource(R.string.notes_optional)) },
+                minLines = 2,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(Modifier.height(16.dp))
+            Text(
                 text = stringResource(R.string.optional_place_section),
                 style = MaterialTheme.typography.titleMedium,
             )

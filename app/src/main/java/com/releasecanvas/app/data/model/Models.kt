@@ -9,6 +9,14 @@ data class ReleaseDraft(
     val modelEmail: String = "",
     val shooterName: String = "",
     val description: String = "",
+    /** Optional photographer-defined shoot identifier. */
+    val shootId: String = "",
+    val photographerEmail: String = "",
+    val photographerPhone: String = "",
+    val clientAgency: String = "",
+    val notes: String = "",
+    /** Optional human-readable shoot location name (distinct from GPS city/country). */
+    val locationName: String = "",
     /** Optional manual city (overrides reverse geocode when set). */
     val city: String = "",
     /** Optional manual country (overrides reverse geocode when set). */
