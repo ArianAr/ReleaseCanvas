@@ -13,6 +13,7 @@ import com.releasecanvas.app.data.model.HistoryEntry
 import com.releasecanvas.app.data.model.LocationStatus
 import com.releasecanvas.app.data.model.ReleaseDraft
 import com.releasecanvas.app.data.pdf.PdfCompiler
+import com.releasecanvas.app.data.pdf.ReleaseTemplate
 import com.releasecanvas.app.data.prefs.PreferencesStore
 import com.releasecanvas.app.data.storage.DocumentStore
 import com.releasecanvas.app.util.Formatters
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -58,12 +60,24 @@ class ReleaseViewModel(
                 }
             }
         }
+        viewModelScope.launch {
+            val templateId = preferencesStore.lastTemplateId.first()
+            if (templateId.isNotBlank()) {
+                _uiState.update {
+                    it.copy(draft = it.draft.copy(template = ReleaseTemplate.fromId(templateId)))
+                }
+            }
+        }
     }
 
     fun updateModelName(value: String) = updateDraft { copy(modelName = value) }
     fun updateModelEmail(value: String) = updateDraft { copy(modelEmail = value) }
     fun updateShooterName(value: String) = updateDraft { copy(shooterName = value) }
     fun updateDescription(value: String) = updateDraft { copy(description = value) }
+    fun updateTemplate(template: ReleaseTemplate) {
+        updateDraft { copy(template = template) }
+        viewModelScope.launch { preferencesStore.setLastTemplateId(template.id) }
+    }
     fun updateShootId(value: String) = updateDraft { copy(shootId = value) }
     fun updatePhotographerEmail(value: String) = updateDraft { copy(photographerEmail = value) }
     fun updatePhotographerPhone(value: String) = updateDraft { copy(photographerPhone = value) }
@@ -91,6 +105,7 @@ class ReleaseViewModel(
         if (!errors.hasErrors) {
             viewModelScope.launch {
                 preferencesStore.setShooterName(draft.shooterName)
+                preferencesStore.setLastTemplateId(draft.template.id)
             }
         }
         return !errors.hasErrors

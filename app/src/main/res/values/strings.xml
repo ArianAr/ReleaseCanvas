@@ -7,6 +7,9 @@
     <string name="recent_releases">Recent releases</string>
     <string name="no_recent">No exports yet. Create your first release.</string>
     <string name="form_title">Release details</string>
+    <string name="release_template_section">Release form</string>
+    <string name="release_template">Release template</string>
+    <string name="release_template_disclaimer">Templates are unofficial wording samples, not attorney-reviewed contracts and not official forms of any stock/platform company.</string>
     <string name="model_name">Model name</string>
     <string name="model_email">Model email</string>
     <string name="shooter_name">Photographer name</string>
