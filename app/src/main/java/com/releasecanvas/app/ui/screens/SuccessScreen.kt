@@ -38,6 +38,7 @@ import com.releasecanvas.app.R
 import com.releasecanvas.app.ui.ReleaseViewModel
 import com.releasecanvas.app.util.Formatters
 import kotlinx.coroutines.launch
+import com.releasecanvas.app.ui.theme.screenBody
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,8 +65,7 @@ fun SuccessScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 20.dp),
+                .screenBody(padding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(24.dp))

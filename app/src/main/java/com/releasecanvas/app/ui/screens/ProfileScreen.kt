@@ -53,6 +53,7 @@ import com.releasecanvas.app.data.model.PhotographerProfile
 import com.releasecanvas.app.ui.ReleaseViewModel
 import kotlinx.coroutines.launch
 import java.io.File
+import com.releasecanvas.app.ui.theme.screenBody
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -118,8 +119,7 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 20.dp)
+                .screenBody(padding)
                 .verticalScroll(rememberScrollState()),
         ) {
             Text(

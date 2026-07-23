@@ -26,6 +26,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.releasecanvas.app.BuildConfig
 import com.releasecanvas.app.R
+import com.releasecanvas.app.ui.theme.screenBody
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,8 +52,7 @@ fun AboutScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 20.dp)
+                .screenBody(padding)
                 .verticalScroll(rememberScrollState()),
         ) {
             Text(

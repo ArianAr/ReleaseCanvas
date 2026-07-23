@@ -46,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.releasecanvas.app.R
 import com.releasecanvas.app.data.model.HistoryEntry
 import com.releasecanvas.app.ui.ReleaseViewModel
+import com.releasecanvas.app.ui.theme.screenBody
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,8 +85,7 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 20.dp),
+                .screenBody(padding),
         ) {
             Text(
                 text = stringResource(R.string.home_subtitle),
