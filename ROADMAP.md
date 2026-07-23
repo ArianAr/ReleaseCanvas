@@ -42,7 +42,7 @@ Living product plan. **GitHub [milestones](https://github.com/ArianAr/ReleaseCan
 | [#20](https://github.com/ArianAr/ReleaseCanvas/issues/20) | Batch multi-model releases |
 | [#21](https://github.com/ArianAr/ReleaseCanvas/issues/21) | Cloud backup behind a storage interface |
 
-### v1.4 — UX & branding
+### v1.4 — UX, branding & localization
 Agreed with maintainer:
 
 | Issue | Theme |
@@ -52,6 +52,13 @@ Agreed with maintainer:
 | [#32](https://github.com/ArianAr/ReleaseCanvas/issues/32) | Onboarding / first-run tips |
 | [#33](https://github.com/ArianAr/ReleaseCanvas/issues/33) | Accessibility pass (TalkBack, targets, contrast) |
 | [#34](https://github.com/ArianAr/ReleaseCanvas/issues/34) | Custom template import (offline `.txt` / `.md`) |
+| [#36](https://github.com/ArianAr/ReleaseCanvas/issues/36) | Editable multi-jurisdiction legal templates |
+| [#37](https://github.com/ArianAr/ReleaseCanvas/issues/37) | Multi-language releases: English, Spanish, French, Italian, German, Persian (RTL) |
+
+Related notes:
+- **#36** complements **#34** (import) and built-in template picker; built-ins stay as fork-on-edit baselines where possible.
+- **#37** covers UI strings, terms bodies, PDF language, and Persian RTL; missing strings fall back to English.
+- Jurisdiction packs remain **unofficial samples**, not attorney-certified law (see Non-goals).
 
 ---
 
@@ -65,7 +72,7 @@ _No unapproved items. Propose additions before adding to this file or filing iss
 
 - iOS / KMP
 - Cryptographic / blockchain “notary” timestamps
-- Shipping attorney-certified jurisdiction packs out of the box
+- Shipping **attorney-certified** jurisdiction packs out of the box (editable templates ≠ legal certification)
 - GitHub Actions CI (explicitly deferred)
 
 ---
