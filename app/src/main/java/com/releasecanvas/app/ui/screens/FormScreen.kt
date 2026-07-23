@@ -1,15 +1,22 @@
 package com.releasecanvas.app.ui.screens
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,24 +26,29 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.releasecanvas.app.R
-import com.releasecanvas.app.data.pdf.ReleaseTemplate
 import com.releasecanvas.app.ui.ReleaseViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +60,33 @@ fun FormScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val draft = state.draft
     val errors = state.formErrors
+    val selected = state.selectedTemplateOption
     var templateMenuExpanded by remember { mutableStateOf(false) }
+    var showImportNameDialog by remember { mutableStateOf(false) }
+    var pendingImportBody by remember { mutableStateOf<String?>(null) }
+    var importName by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    val importLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument(),
+    ) { uri: Uri? ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            val text = withContext(Dispatchers.IO) {
+                context.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() }
+            }
+            if (!text.isNullOrBlank()) {
+                pendingImportBody = text
+                importName = uri.lastPathSegment
+                    ?.substringAfterLast('/')
+                    ?.substringBeforeLast('.')
+                    ?.ifBlank { "Imported template" }
+                    ?: "Imported template"
+                showImportNameDialog = true
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -85,12 +123,12 @@ fun FormScreen(
                 onExpandedChange = { templateMenuExpanded = it },
             ) {
                 OutlinedTextField(
-                    value = draft.template.displayName,
+                    value = selected.displayName,
                     onValueChange = {},
                     readOnly = true,
                     label = { Text(stringResource(R.string.release_template)) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = templateMenuExpanded) },
-                    supportingText = { Text(draft.template.shortDescription) },
+                    supportingText = { Text(selected.shortDescription) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .menuAnchor(MenuAnchorType.PrimaryNotEditable),
@@ -99,25 +137,51 @@ fun FormScreen(
                     expanded = templateMenuExpanded,
                     onDismissRequest = { templateMenuExpanded = false },
                 ) {
-                    ReleaseTemplate.entries.forEach { template ->
+                    state.templateOptions.forEach { option ->
                         DropdownMenuItem(
                             text = {
                                 Column {
-                                    Text(template.displayName)
+                                    Text(option.displayName)
                                     Text(
-                                        template.shortDescription,
+                                        option.shortDescription,
                                         style = MaterialTheme.typography.bodySmall,
                                     )
                                 }
                             },
                             onClick = {
-                                viewModel.updateTemplate(template)
+                                viewModel.updateTemplateId(option.id)
                                 templateMenuExpanded = false
                             },
                         )
                     }
                 }
             }
+            Spacer(Modifier.height(8.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                OutlinedButton(
+                    onClick = {
+                        importLauncher.launch(arrayOf("text/plain", "text/*", "text/markdown", "application/octet-stream"))
+                    },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(stringResource(R.string.import_template))
+                }
+                if (selected.isCustom) {
+                    Spacer(Modifier.width(8.dp))
+                    OutlinedButton(
+                        onClick = { viewModel.deleteCustomTemplate(selected.id) },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text(stringResource(R.string.delete_custom_template))
+                    }
+                }
+            }
+            Text(
+                text = stringResource(R.string.import_template_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp),
+            )
             Spacer(Modifier.height(16.dp))
             OutlinedTextField(
                 value = draft.modelName,
@@ -256,5 +320,48 @@ fun FormScreen(
             }
             Spacer(Modifier.height(24.dp))
         }
+    }
+
+    if (showImportNameDialog && pendingImportBody != null) {
+        AlertDialog(
+            onDismissRequest = {
+                showImportNameDialog = false
+                pendingImportBody = null
+            },
+            title = { Text(stringResource(R.string.import_template_name_title)) },
+            text = {
+                OutlinedTextField(
+                    value = importName,
+                    onValueChange = { importName = it },
+                    label = { Text(stringResource(R.string.import_template_name_label)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val body = pendingImportBody
+                        if (body != null) {
+                            viewModel.importCustomTemplate(importName, body)
+                        }
+                        showImportNameDialog = false
+                        pendingImportBody = null
+                    },
+                ) {
+                    Text(stringResource(R.string.import_template_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showImportNameDialog = false
+                        pendingImportBody = null
+                    },
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
     }
 }

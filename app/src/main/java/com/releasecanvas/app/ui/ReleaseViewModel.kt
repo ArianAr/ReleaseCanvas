@@ -8,14 +8,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.releasecanvas.app.data.location.LocationRepository
+import com.releasecanvas.app.data.model.CustomTemplate
 import com.releasecanvas.app.data.model.ExportResult
 import com.releasecanvas.app.data.model.FormErrors
 import com.releasecanvas.app.data.model.HistoryEntry
 import com.releasecanvas.app.data.model.LocationStatus
 import com.releasecanvas.app.data.model.PhotographerProfile
 import com.releasecanvas.app.data.model.ReleaseDraft
+import com.releasecanvas.app.data.model.TemplateOption
 import com.releasecanvas.app.data.pdf.PdfCompiler
-import com.releasecanvas.app.data.pdf.ReleaseTemplate
+import com.releasecanvas.app.data.pdf.TemplateResolver
 import com.releasecanvas.app.data.prefs.PreferencesStore
 import com.releasecanvas.app.data.storage.DocumentStore
 import com.releasecanvas.app.util.Formatters
@@ -45,6 +47,9 @@ data class ReleaseUiState(
     val lastExport: ExportResult? = null,
     val profile: PhotographerProfile = PhotographerProfile(),
     val profileSavedMessage: String? = null,
+    val customTemplates: List<CustomTemplate> = emptyList(),
+    val templateOptions: List<TemplateOption> = TemplateResolver.builtInOptions(),
+    val selectedTemplateOption: TemplateOption = TemplateResolver.resolveOption("generic", emptyList()),
 )
 
 class ReleaseViewModel(
@@ -92,10 +97,29 @@ class ReleaseViewModel(
             }
         }
         viewModelScope.launch {
+            preferencesStore.customTemplates.collect { customs ->
+                val options = TemplateResolver.allOptions(customs)
+                _uiState.update { state ->
+                    val id = state.draft.templateId
+                    val selected = TemplateResolver.resolveOption(id, customs)
+                    state.copy(
+                        customTemplates = customs,
+                        templateOptions = options,
+                        selectedTemplateOption = selected,
+                        draft = state.draft.copy(templateId = selected.id),
+                    )
+                }
+            }
+        }
+        viewModelScope.launch {
             val templateId = preferencesStore.lastTemplateId.first()
             if (templateId.isNotBlank()) {
-                _uiState.update {
-                    it.copy(draft = it.draft.copy(template = ReleaseTemplate.fromId(templateId)))
+                _uiState.update { state ->
+                    val selected = TemplateResolver.resolveOption(templateId, state.customTemplates)
+                    state.copy(
+                        draft = state.draft.copy(templateId = selected.id),
+                        selectedTemplateOption = selected,
+                    )
                 }
             }
         }
@@ -105,9 +129,50 @@ class ReleaseViewModel(
     fun updateModelEmail(value: String) = updateDraft { copy(modelEmail = value) }
     fun updateShooterName(value: String) = updateDraft { copy(shooterName = value) }
     fun updateDescription(value: String) = updateDraft { copy(description = value) }
-    fun updateTemplate(template: ReleaseTemplate) {
-        updateDraft { copy(template = template) }
-        viewModelScope.launch { preferencesStore.setLastTemplateId(template.id) }
+    fun updateTemplateId(templateId: String) {
+        val selected = TemplateResolver.resolveOption(templateId, _uiState.value.customTemplates)
+        _uiState.update {
+            it.copy(
+                draft = it.draft.copy(templateId = selected.id),
+                selectedTemplateOption = selected,
+                formErrors = FormErrors(),
+                exportError = null,
+            )
+        }
+        viewModelScope.launch { preferencesStore.setLastTemplateId(selected.id) }
+    }
+
+    fun importCustomTemplate(name: String, body: String, version: String = "CUSTOM_V1") {
+        val template = CustomTemplate(
+            id = TemplateResolver.newCustomId(),
+            name = name.trim().ifBlank { "Imported template" },
+            version = version.trim().ifBlank { "CUSTOM_V1" },
+            body = body.trim(),
+        )
+        if (template.body.isBlank()) return
+        viewModelScope.launch {
+            preferencesStore.addCustomTemplate(template)
+            updateTemplateId(template.id)
+        }
+    }
+
+    fun deleteCustomTemplate(id: String) {
+        viewModelScope.launch {
+            preferencesStore.removeCustomTemplate(id)
+            if (_uiState.value.draft.templateId == id) {
+                updateTemplateId("generic")
+            }
+        }
+    }
+
+    fun termsBodyForCurrentDraft(): String {
+        val draft = _uiState.value.draft
+        return TemplateResolver.resolveBody(
+            templateId = draft.templateId,
+            customs = _uiState.value.customTemplates,
+            modelName = draft.modelName,
+            photographerName = draft.shooterName,
+        )
     }
     fun updateShootId(value: String) = updateDraft { copy(shootId = value) }
     fun updatePhotographerEmail(value: String) = updateDraft { copy(photographerEmail = value) }
@@ -138,7 +203,7 @@ class ReleaseViewModel(
                 // Keep display name in profile if empty, otherwise leave profile as-is
                 // and only persist last used photographer name for form convenience.
                 preferencesStore.setShooterName(draft.shooterName)
-                preferencesStore.setLastTemplateId(draft.template.id)
+                preferencesStore.setLastTemplateId(draft.templateId)
             }
         }
         return !errors.hasErrors
@@ -257,6 +322,7 @@ class ReleaseViewModel(
                     metadata = metadata,
                     attestationAccepted = true,
                     profile = state.profile,
+                    customTemplates = state.customTemplates,
                 )
                 val result = documentStore.savePdf(bytes, state.draft.modelName, metadata)
                 preferencesStore.addHistoryEntry(
@@ -296,16 +362,22 @@ class ReleaseViewModel(
 
     fun resetForNewRelease() {
         val profile = _uiState.value.profile
-        val template = _uiState.value.draft.template
+        val templateId = _uiState.value.draft.templateId
+        val customs = _uiState.value.customTemplates
+        val options = _uiState.value.templateOptions
+        val selected = TemplateResolver.resolveOption(templateId, customs)
         val oldSig = _uiState.value.draft.signatureBitmap
         if (oldSig != null && !oldSig.isRecycled) oldSig.recycle()
         _uiState.value = ReleaseUiState(
             profile = profile,
+            customTemplates = customs,
+            templateOptions = options,
+            selectedTemplateOption = selected,
             draft = ReleaseDraft(
                 shooterName = profile.displayName,
                 photographerEmail = profile.email,
                 photographerPhone = profile.phone,
-                template = template,
+                templateId = selected.id,
             ),
         )
     }
