@@ -167,14 +167,19 @@ class ReleaseViewModel(
                 }
                 onSuccess()
             }.onFailure { error ->
+                val detail = error.message?.takeIf { it.isNotBlank() } ?: "Unknown error"
                 _uiState.update {
                     it.copy(
                         isExporting = false,
-                        exportError = error.message ?: "Export failed",
+                        exportError = "Export failed: $detail. Your form and signature are still here — try again.",
                     )
                 }
             }
         }
+    }
+
+    fun clearExportError() {
+        _uiState.update { it.copy(exportError = null) }
     }
 
     fun resetForNewRelease() {
