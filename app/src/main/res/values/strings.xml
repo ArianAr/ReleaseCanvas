@@ -6,6 +6,14 @@
     <string name="new_release">New release</string>
     <string name="recent_releases">Recent releases</string>
     <string name="no_recent">No exports yet. Create your first release.</string>
+    <string name="history_note">History is a local list only; removing an entry does not delete the PDF file.</string>
+    <string name="clear_history">Clear list</string>
+    <string name="clear_history_title">Clear history list?</string>
+    <string name="clear_history_body">This clears the recent list in the app. PDF files in Documents/ReleaseCanvas are not deleted.</string>
+    <string name="remove_history_item">Remove</string>
+    <string name="remove_history_title">Remove from history?</string>
+    <string name="remove_history_body">The PDF file itself is not deleted from storage.</string>
+    <string name="cancel">Cancel</string>
     <string name="form_title">Release details</string>
     <string name="release_template_section">Release form</string>
     <string name="release_template">Release template</string>
