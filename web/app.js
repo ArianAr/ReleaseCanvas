@@ -6,7 +6,20 @@
   let current = "form";
   let lastPdfBlob = null;
   let lastPdfName = "";
-  let locationInfo = { status: "not_requested", text: "not requested", lat: null, lon: null };
+  /** @type {{ status: string, text: string, lat: number|null, lon: number|null, city: string, country: string, placeSource: string }} */
+  let locationInfo = emptyLocation("not_requested", "not requested");
+
+  function emptyLocation(status, text) {
+    return {
+      status,
+      text,
+      lat: null,
+      lon: null,
+      city: "",
+      country: "",
+      placeSource: "none",
+    };
+  }
 
   // --- Signature pad ---
   const canvas = $("sigPad");
@@ -223,38 +236,98 @@
     $("locationStatus").textContent = "Location: " + locationInfo.text;
   }
 
+  /**
+   * Best-effort reverse geocode via OpenStreetMap Nominatim (public API).
+   * Requires network. Manual city/country fields override results on export.
+   * Usage policy: identify the app; keep request rate low (user-initiated only).
+   */
+  async function reverseGeocode(lat, lon) {
+    const url =
+      "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
+      encodeURIComponent(String(lat)) +
+      "&lon=" +
+      encodeURIComponent(String(lon)) +
+      "&zoom=10&addressdetails=1";
+    const res = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+        // Nominatim asks for a valid identifying User-Agent / app name.
+        // Browsers may override User-Agent; referrer + this product name still help.
+      },
+    });
+    if (!res.ok) throw new Error("geocode HTTP " + res.status);
+    const data = await res.json();
+    const addr = data.address || {};
+    const city =
+      addr.city ||
+      addr.town ||
+      addr.village ||
+      addr.municipality ||
+      addr.county ||
+      addr.suburb ||
+      "";
+    const country = addr.country || "";
+    return { city: String(city).trim(), country: String(country).trim() };
+  }
+
+  function applyGeocodeToFormIfEmpty(city, country) {
+    if (city && !$("city").value.trim()) $("city").value = city;
+    if (country && !$("country").value.trim()) $("country").value = country;
+  }
+
   $("btnLocation").addEventListener("click", () => {
     if (!navigator.geolocation) {
-      locationInfo = { status: "unavailable", text: "unavailable (not supported)", lat: null, lon: null };
+      locationInfo = emptyLocation("unavailable", "unavailable (not supported)");
       updateLocationLabel();
       return;
     }
-    locationInfo = { status: "acquiring", text: "acquiring…", lat: null, lon: null };
+    locationInfo = emptyLocation("acquiring", "acquiring GPS…");
     updateLocationLabel();
+    $("btnLocation").disabled = true;
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        const acc = Math.round(pos.coords.accuracy || 0);
+        const gpsText = lat.toFixed(5) + ", " + lon.toFixed(5) + " (±" + acc + " m)";
         locationInfo = {
           status: "available",
-          text:
-            pos.coords.latitude.toFixed(5) +
-            ", " +
-            pos.coords.longitude.toFixed(5) +
-            " (±" +
-            Math.round(pos.coords.accuracy || 0) +
-            " m)",
-          lat: pos.coords.latitude,
-          lon: pos.coords.longitude,
+          text: gpsText + " · reverse geocoding…",
+          lat,
+          lon,
+          city: "",
+          country: "",
+          placeSource: "none",
         };
         updateLocationLabel();
+        try {
+          const place = await reverseGeocode(lat, lon);
+          locationInfo.city = place.city;
+          locationInfo.country = place.country;
+          if (place.city || place.country) {
+            locationInfo.placeSource = "reverse_geocode";
+            locationInfo.text =
+              gpsText +
+              " · " +
+              [place.city, place.country].filter(Boolean).join(", ") +
+              " (reverse geocode)";
+            applyGeocodeToFormIfEmpty(place.city, place.country);
+          } else {
+            locationInfo.text = gpsText + " · place name unavailable";
+          }
+        } catch (_e) {
+          locationInfo.text = gpsText + " · reverse geocode failed (offline or blocked)";
+        }
+        updateLocationLabel();
+        $("btnLocation").disabled = false;
       },
       (err) => {
-        locationInfo = {
-          status: "denied",
-          text: "unavailable (" + (err.message || "permission denied") + ")",
-          lat: null,
-          lon: null,
-        };
+        locationInfo = emptyLocation(
+          "denied",
+          "unavailable (" + (err.message || "permission denied") + ")",
+        );
         updateLocationLabel();
+        $("btnLocation").disabled = false;
       },
       { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 },
     );
@@ -365,8 +438,21 @@
 
     drawLine(12, { bold: true, color: rgb(0.23, 0.53, 1) }, "Signing metadata");
     drawLine(11, {}, "Signed at (UTC): " + signedAt);
-    if (d.city || d.country) {
-      drawLine(11, {}, "Place: " + [d.city, d.country].filter(Boolean).join(", "));
+    // Manual form fields override reverse-geocoded place (same idea as Android).
+    const placeCity = d.city || locationInfo.city || "";
+    const placeCountry = d.country || locationInfo.country || "";
+    const placeSource = d.city || d.country
+      ? "manual"
+      : locationInfo.placeSource === "reverse_geocode"
+        ? "reverse geocode"
+        : "";
+    if (placeCity || placeCountry) {
+      const placeLine = [placeCity, placeCountry].filter(Boolean).join(", ");
+      drawLine(
+        11,
+        {},
+        "Place: " + placeLine + (placeSource ? " (" + placeSource + ")" : ""),
+      );
     }
     if (locationInfo.lat != null) {
       drawLine(11, {}, "GPS: " + locationInfo.lat.toFixed(6) + ", " + locationInfo.lon.toFixed(6));
@@ -455,7 +541,9 @@
     $("btnShare").hidden = true;
     clearSig();
     $("attestation").checked = false;
-    locationInfo = { status: "not_requested", text: "not requested", lat: null, lon: null };
+    locationInfo = emptyLocation("not_requested", "not requested");
+    $("btnLocation").disabled = false;
+    updateLocationLabel();
     showStep("form");
   });
 })();

@@ -8,7 +8,7 @@ Browser companion for **sign → PDF export only**. Hosted on **GitHub Pages** (
 |----------|----------------|
 | Form, terms preview, signature pad | Export history |
 | Client-side PDF (pdf-lib CDN) | Photographer profile / branding |
-| Optional GPS + UTC timestamp | Batch multi-model |
+| Optional GPS + UTC + reverse geocode (Nominatim) | Batch multi-model |
 | Download + Web Share (when supported) | Full multi-language UI |
 | Works on iPhone Safari | Native iOS app |
 
