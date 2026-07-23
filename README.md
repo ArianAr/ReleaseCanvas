@@ -27,7 +27,11 @@ Capture shoot details and a finger/stylus signature, then export a PDF stamped w
 
 ## Screenshots
 
-_Add device screenshots here after first release builds (Home → Form → Signature → PDF)._
+Mock UI frames (replace with device captures anytime):
+
+| Home | Form | Signature | Success |
+|------|------|-----------|---------|
+| ![Home](docs/screenshots/01-home.svg) | ![Form](docs/screenshots/02-form.svg) | ![Signature](docs/screenshots/03-signature.svg) | ![Success](docs/screenshots/04-success.svg) |
 
 ## Requirements
 

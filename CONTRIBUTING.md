@@ -94,3 +94,7 @@ will apply them.
 
 By contributing, you agree that your contributions are licensed under the
 project’s [GNU GPL v3](LICENSE).
+
+## Versioning
+
+See [CHANGELOG.md](CHANGELOG.md) for the `versionName` / `versionCode` policy and how to cut a tagged release manually (no GitHub Actions required).
