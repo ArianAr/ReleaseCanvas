@@ -49,6 +49,7 @@ import com.releasecanvas.app.ui.ReleaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.releasecanvas.app.ui.theme.screenBody
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,8 +110,7 @@ fun FormScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 20.dp)
+                .screenBody(padding)
                 .verticalScroll(rememberScrollState()),
         ) {
             Text(

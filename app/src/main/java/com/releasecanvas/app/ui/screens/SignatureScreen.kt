@@ -34,6 +34,7 @@ import com.releasecanvas.app.ui.ReleaseViewModel
 import com.releasecanvas.app.ui.components.SignaturePad
 import com.releasecanvas.app.ui.components.emitBitmap
 import com.releasecanvas.app.ui.components.rememberSignaturePadState
+import com.releasecanvas.app.ui.theme.screenBody
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,8 +61,7 @@ fun SignatureScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 20.dp),
+                .screenBody(padding),
         ) {
             Text(
                 text = stringResource(R.string.signature_hint),

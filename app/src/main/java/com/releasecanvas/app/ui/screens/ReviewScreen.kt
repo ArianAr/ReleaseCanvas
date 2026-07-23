@@ -46,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.releasecanvas.app.R
 import com.releasecanvas.app.data.model.LocationStatus
 import com.releasecanvas.app.ui.ReleaseViewModel
+import com.releasecanvas.app.ui.theme.screenBody
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,8 +89,7 @@ fun ReviewScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 20.dp)
+                .screenBody(padding)
                 .verticalScroll(rememberScrollState()),
         ) {
             ReviewRow("Release template", state.selectedTemplateOption.displayName)
