@@ -142,18 +142,49 @@ class ReleaseViewModel(
         viewModelScope.launch { preferencesStore.setLastTemplateId(selected.id) }
     }
 
-    fun importCustomTemplate(name: String, body: String, version: String = "CUSTOM_V1") {
+    fun importCustomTemplate(
+        name: String,
+        body: String,
+        version: String = "CUSTOM_V1",
+        jurisdiction: String = "",
+    ) {
         val template = CustomTemplate(
             id = TemplateResolver.newCustomId(),
             name = name.trim().ifBlank { "Imported template" },
             version = version.trim().ifBlank { "CUSTOM_V1" },
             body = body.trim(),
+            jurisdiction = jurisdiction.trim(),
         )
         if (template.body.isBlank()) return
         viewModelScope.launch {
             preferencesStore.addCustomTemplate(template)
             updateTemplateId(template.id)
         }
+    }
+
+    fun saveCustomTemplate(template: CustomTemplate) {
+        if (template.body.isBlank() || template.id.isBlank()) return
+        viewModelScope.launch {
+            preferencesStore.addCustomTemplate(template)
+            updateTemplateId(template.id)
+        }
+    }
+
+    fun forkBuiltInAsCustom(builtInId: String) {
+        // Built-in bodies with placeholder tokens for later editing
+        val raw = TemplateResolver.resolveBody(
+            builtInId,
+            emptyList(),
+            "{{MODEL}}",
+            "{{PHOTOGRAPHER}}",
+        )
+        val option = TemplateResolver.resolveOption(builtInId, emptyList())
+        importCustomTemplate(
+            name = "${option.displayName} (copy)",
+            body = raw,
+            version = "${option.version}_EDIT",
+            jurisdiction = "",
+        )
     }
 
     fun deleteCustomTemplate(id: String) {
@@ -164,6 +195,9 @@ class ReleaseViewModel(
             }
         }
     }
+
+    fun customTemplateById(id: String): CustomTemplate? =
+        _uiState.value.customTemplates.firstOrNull { it.id == id }
 
     fun termsBodyForCurrentDraft(): String {
         val draft = _uiState.value.draft

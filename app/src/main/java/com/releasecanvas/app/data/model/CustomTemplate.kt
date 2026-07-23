@@ -11,6 +11,8 @@ data class CustomTemplate(
     val body: String,
     /** BCP-47 tag for future i18n; body is used as authored. */
     val languageTag: String = "und",
+    /** Free-text jurisdiction label (e.g. "US generic", "EU-style") — not legal certification. */
+    val jurisdiction: String = "",
 )
 
 /**

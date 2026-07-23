@@ -112,4 +112,11 @@
     <string name="import_template_name_title">Name this template</string>
     <string name="import_template_name_label">Template name</string>
     <string name="import_template_confirm">Import</string>
+    <string name="edit_custom_template">Edit</string>
+    <string name="fork_template">Duplicate as editable</string>
+    <string name="edit_template_title">Edit release template</string>
+    <string name="template_jurisdiction">Jurisdiction label (optional)</string>
+    <string name="template_jurisdiction_hint">e.g. US generic, EU-style — not legal certification</string>
+    <string name="template_version_label">Version label</string>
+    <string name="template_body_label">Release wording</string>
 </resources>

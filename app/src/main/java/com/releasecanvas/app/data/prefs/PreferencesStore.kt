@@ -191,6 +191,7 @@ class PreferencesStore(private val context: Context) {
                             version = obj.optString("version", "CUSTOM_V1"),
                             body = obj.optString("body"),
                             languageTag = obj.optString("languageTag", "und"),
+                            jurisdiction = obj.optString("jurisdiction", ""),
                         ),
                     )
                 }
@@ -207,7 +208,8 @@ class PreferencesStore(private val context: Context) {
                     .put("name", t.name)
                     .put("version", t.version)
                     .put("body", t.body)
-                    .put("languageTag", t.languageTag),
+                    .put("languageTag", t.languageTag)
+                    .put("jurisdiction", t.jurisdiction),
             )
         }
         return array.toString()
