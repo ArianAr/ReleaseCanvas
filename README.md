@@ -125,6 +125,24 @@ Output: `app/build/outputs/apk/release/app-release.apk`
 
 If `keystore.properties` is missing, the release build is unsigned/debug-signed depending on the toolchain — always keep `keystore.properties` local for real installs.
 
+#### GitHub Actions (signed APK on tags)
+
+Workflow: [`.github/workflows/release-apk.yml`](.github/workflows/release-apk.yml)
+
+| Trigger | Result |
+|---------|--------|
+| Push tag `v*` (e.g. `v1.6.1`) | Build signed APK → attach `ReleaseCanvas-vX.Y.Z.apk` to that GitHub Release |
+| **Actions → Release signed APK → Run workflow** | Build only; APK as workflow artifact (no Release attach) |
+
+Repository secrets (Settings → Secrets and variables → Actions):
+
+- `RELEASE_KEYSTORE_BASE64` — `base64 -w0 release-canvas.jks`
+- `RELEASE_STORE_PASSWORD`
+- `RELEASE_KEY_ALIAS`
+- `RELEASE_KEY_PASSWORD` (usually same as store password)
+
+Never commit the keystore or `keystore.properties`.
+
 ## Usage flow
 
 1. **New release** → fill form  

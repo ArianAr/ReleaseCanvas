@@ -1,0 +1,123 @@
+# Build a signed release APK and attach it to the GitHub Release for tag v*.
+# Secrets (Settings → Secrets and variables → Actions):
+#   RELEASE_KEYSTORE_BASE64  — base64 -w0 release-canvas.jks
+#   RELEASE_STORE_PASSWORD
+#   RELEASE_KEY_ALIAS
+#   RELEASE_KEY_PASSWORD     — usually same as store password
+#
+# Never commit the .jks or keystore.properties.
+name: Release signed APK
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-apk-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses >/dev/null || true
+
+      - name: Install platform & build-tools
+        run: |
+          sdkmanager "platforms;android-36" "build-tools;35.0.0" "platform-tools"
+
+      - name: Decode keystore (from secrets only)
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in RELEASE_KEYSTORE_BASE64 RELEASE_STORE_PASSWORD RELEASE_KEY_ALIAS RELEASE_KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Missing repository secret: $name"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+          echo "$RELEASE_KEYSTORE_BASE64" | base64 -d > release-canvas.jks
+          # Write properties without echoing secret values to logs
+          {
+            printf 'storeFile=release-canvas.jks\n'
+            printf 'storePassword=%s\n' "$RELEASE_STORE_PASSWORD"
+            printf 'keyAlias=%s\n' "$RELEASE_KEY_ALIAS"
+            printf 'keyPassword=%s\n' "$RELEASE_KEY_PASSWORD"
+          } > keystore.properties
+          test -s release-canvas.jks
+          test -s keystore.properties
+
+      - name: Build signed release APK
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleRelease --no-daemon --stacktrace
+
+      - name: Verify APK exists
+        run: |
+          ls -la app/build/outputs/apk/release/
+          test -f app/build/outputs/apk/release/app-release.apk
+
+      - name: Name APK for release
+        id: apk
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VER="${GITHUB_REF_NAME}"
+          else
+            VER="manual-${GITHUB_SHA::7}"
+          fi
+          OUT="ReleaseCanvas-${VER}.apk"
+          cp app/build/outputs/apk/release/app-release.apk "$OUT"
+          echo "path=$OUT" >> "$GITHUB_OUTPUT"
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
+          ls -la "$OUT"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ReleaseCanvas-apk
+          path: ${{ steps.apk.outputs.path }}
+          if-no-files-found: error
+
+      - name: Attach APK to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.apk.outputs.path }}
+          fail_on_unmatched_files: true
+          # If the tag already has a release (gh release create), assets are uploaded onto it.
+          # If not, a release is created for the tag.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cleanup keystore from runner workspace
+        if: always()
+        run: |
+          rm -f release-canvas.jks keystore.properties
