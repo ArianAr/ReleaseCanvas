@@ -31,6 +31,7 @@ data class ReleaseUiState(
     val draft: ReleaseDraft = ReleaseDraft(),
     val formErrors: FormErrors = FormErrors(),
     val hasSignatureStrokes: Boolean = false,
+    val attestationAccepted: Boolean = false,
     val locationPreviewStatus: LocationStatus = LocationStatus.Acquiring,
     val locationPreviewText: String = "Acquiring GPS…",
     val isExporting: Boolean = false,
@@ -128,6 +129,10 @@ class ReleaseViewModel(
         setSignature(null, false)
     }
 
+    fun setAttestationAccepted(accepted: Boolean) {
+        _uiState.update { it.copy(attestationAccepted = accepted, exportError = null) }
+    }
+
     fun refreshLocationPreview() {
         viewModelScope.launch {
             val draft = _uiState.value.draft
@@ -158,6 +163,12 @@ class ReleaseViewModel(
             _uiState.update { it.copy(exportError = "Please provide a signature") }
             return
         }
+        if (!state.attestationAccepted) {
+            _uiState.update {
+                it.copy(exportError = "Confirm age of majority / authority to sign before exporting")
+            }
+            return
+        }
 
         viewModelScope.launch {
             _uiState.update { it.copy(isExporting = true, exportError = null) }
@@ -166,7 +177,11 @@ class ReleaseViewModel(
                     manualCity = state.draft.city,
                     manualCountry = state.draft.country,
                 )
-                val bytes = pdfCompiler.compile(state.draft, metadata)
+                val bytes = pdfCompiler.compile(
+                    draft = state.draft,
+                    metadata = metadata,
+                    attestationAccepted = true,
+                )
                 val result = documentStore.savePdf(bytes, state.draft.modelName, metadata)
                 preferencesStore.addHistoryEntry(
                     HistoryEntry(

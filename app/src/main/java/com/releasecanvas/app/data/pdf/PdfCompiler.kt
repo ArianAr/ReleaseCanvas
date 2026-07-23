@@ -17,7 +17,11 @@ import java.io.ByteArrayOutputStream
 
 class PdfCompiler {
 
-    fun compile(draft: ReleaseDraft, metadata: SigningMetadata): ByteArray {
+    fun compile(
+        draft: ReleaseDraft,
+        metadata: SigningMetadata,
+        attestationAccepted: Boolean = false,
+    ): ByteArray {
         val document = PdfDocument()
         val pageInfo = PdfDocument.PageInfo.Builder(PAGE_WIDTH, PAGE_HEIGHT, 1).create()
         val page = document.startPage(pageInfo)
@@ -69,6 +73,15 @@ class PdfCompiler {
             "GPS: ${coords ?: unavailableGpsReason(metadata.locationStatus)}",
         )
         y = drawBodyLine(canvas, y, "Location status: ${statusLabel(metadata.locationStatus)}")
+        if (attestationAccepted) {
+            y = drawWrapped(
+                canvas,
+                y,
+                "Attestation: Model confirmed they are of legal age of majority " +
+                    "(or parent/guardian with authority) and accept the terms above.",
+                bodyPaint,
+            )
+        }
         y += SECTION_GAP
         drawFooter(canvas, y)
 
