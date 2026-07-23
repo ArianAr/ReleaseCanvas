@@ -25,8 +25,15 @@
     <string name="location_acquiring">Acquiring GPS…</string>
     <string name="location_unavailable_warning">Location unavailable — PDF will note this.</string>
     <string name="success_title">Release exported</string>
+    <string name="pdf_saved_fallback">PDF saved</string>
+    <string name="saved_path_detail">Saved to internal shared storage:\nDocuments/ReleaseCanvas/</string>
+    <string name="saved_path_hint">Open the file with any PDF app, share it, or browse that folder in Files.</string>
     <string name="open_pdf">Open PDF</string>
     <string name="share_pdf">Share</string>
+    <string name="open_folder">Browse Documents folder</string>
+    <string name="open_pdf_failed">No app found to open PDFs</string>
+    <string name="share_pdf_failed">Could not open share sheet</string>
+    <string name="open_folder_failed">Could not open folder on this device — look under Documents/ReleaseCanvas in Files</string>
     <string name="done">Done</string>
     <string name="back">Back</string>
     <string name="error_required">Required</string>
