@@ -9,9 +9,17 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 ## [Unreleased]
 
 ### Added
-- Optional shoot metadata fields (Shoot ID, contacts, client, notes) — see open PRs
-- Multi-template release picker — see open PRs
-- Success-path folder browse polish — see open PRs
+- (none yet)
+
+## [1.1.0] - 2026-07-23
+
+### Added
+- Empty-signature inline error and export error card with retry
+- Success path polish (Documents/ReleaseCanvas copy, open/share errors, folder browse)
+- Optional shoot metadata (Shoot ID, photographer contact, client/agency, location name, notes)
+- Multi-template release picker (generic, 500px-style unofficial, stock RF-style, editorial, social/web)
+- README SVG mock screenshots under `docs/screenshots/`
+- CHANGELOG and versioning / manual release notes
 
 ## [1.0.0] - 2026-07-23
 
