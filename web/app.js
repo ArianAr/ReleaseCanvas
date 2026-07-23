@@ -9,6 +9,9 @@
   /** @type {{ status: string, text: string, lat: number|null, lon: number|null, city: string, country: string, placeSource: string }} */
   let locationInfo = emptyLocation("not_requested", "not requested");
 
+  const BRAND_KEY = "releasecanvas_web_brand_v1";
+  const DEFAULT_ACCENT = "#3A86FF";
+
   function emptyLocation(status, text) {
     return {
       status,
@@ -20,6 +23,172 @@
       placeSource: "none",
     };
   }
+
+  function defaultBrand() {
+    return {
+      displayName: "",
+      studioName: "",
+      brandingEnabled: true,
+      brandAccentHex: DEFAULT_ACCENT,
+      logoDataUrl: "",
+    };
+  }
+
+  function loadBrand() {
+    try {
+      const raw = localStorage.getItem(BRAND_KEY);
+      if (!raw) return defaultBrand();
+      const parsed = JSON.parse(raw);
+      return {
+        ...defaultBrand(),
+        ...parsed,
+        brandAccentHex: normalizeHex(parsed.brandAccentHex || DEFAULT_ACCENT),
+      };
+    } catch (_e) {
+      return defaultBrand();
+    }
+  }
+
+  function saveBrand(brand) {
+    localStorage.setItem(BRAND_KEY, JSON.stringify(brand));
+  }
+
+  function normalizeHex(hex) {
+    const h = String(hex || "").trim();
+    if (/^#[0-9A-Fa-f]{6}$/.test(h)) return h.toUpperCase();
+    if (/^[0-9A-Fa-f]{6}$/.test(h)) return ("#" + h).toUpperCase();
+    return DEFAULT_ACCENT;
+  }
+
+  function hexToRgb(hex) {
+    const h = normalizeHex(hex).slice(1);
+    return {
+      r: parseInt(h.slice(0, 2), 16) / 255,
+      g: parseInt(h.slice(2, 4), 16) / 255,
+      b: parseInt(h.slice(4, 6), 16) / 255,
+    };
+  }
+
+  /** Resize image for localStorage (keep under ~700KB as data URL). */
+  function fileToResizedDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("Could not read image"));
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const maxW = 480;
+          const maxH = 240;
+          let w = img.width;
+          let h = img.height;
+          const scale = Math.min(1, maxW / w, maxH / h);
+          w = Math.max(1, Math.round(w * scale));
+          h = Math.max(1, Math.round(h * scale));
+          const c = document.createElement("canvas");
+          c.width = w;
+          c.height = h;
+          const cctx = c.getContext("2d");
+          cctx.drawImage(img, 0, 0, w, h);
+          // JPEG keeps localStorage smaller than PNG for photos
+          resolve(c.toDataURL("image/jpeg", 0.82));
+        };
+        img.onerror = () => reject(new Error("Invalid image"));
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function applyBrandToUi(brand) {
+    $("brandDisplayName").value = brand.displayName || "";
+    $("brandStudio").value = brand.studioName || "";
+    $("brandEnabled").checked = brand.brandingEnabled !== false;
+    const hex = normalizeHex(brand.brandAccentHex);
+    $("brandAccent").value = hex;
+    $("brandAccentHex").value = hex;
+    const wrap = $("brandLogoPreviewWrap");
+    const img = $("brandLogoPreview");
+    if (brand.logoDataUrl) {
+      img.src = brand.logoDataUrl;
+      wrap.hidden = false;
+    } else {
+      img.removeAttribute("src");
+      wrap.hidden = true;
+    }
+    // Prefill photographer if empty
+    if (brand.displayName && !$("photographerName").value.trim()) {
+      $("photographerName").value = brand.displayName;
+    }
+  }
+
+  function readBrandFromUi() {
+    return {
+      displayName: $("brandDisplayName").value.trim(),
+      studioName: $("brandStudio").value.trim(),
+      brandingEnabled: $("brandEnabled").checked,
+      brandAccentHex: normalizeHex($("brandAccentHex").value || $("brandAccent").value),
+      logoDataUrl: $("brandLogoPreview").getAttribute("src") || "",
+    };
+  }
+
+  function showBrandStatus(msg, isError) {
+    const el = $("brandStatus");
+    el.hidden = false;
+    el.textContent = msg;
+    el.style.color = isError ? "var(--danger)" : "var(--muted)";
+  }
+
+  // Init branding from localStorage
+  let brandState = loadBrand();
+  applyBrandToUi(brandState);
+
+  $("brandAccent").addEventListener("input", () => {
+    $("brandAccentHex").value = $("brandAccent").value.toUpperCase();
+  });
+  $("brandAccentHex").addEventListener("change", () => {
+    const hex = normalizeHex($("brandAccentHex").value);
+    $("brandAccentHex").value = hex;
+    $("brandAccent").value = hex;
+  });
+
+  $("brandLogoFile").addEventListener("change", async () => {
+    const file = $("brandLogoFile").files && $("brandLogoFile").files[0];
+    if (!file) return;
+    try {
+      const dataUrl = await fileToResizedDataUrl(file);
+      $("brandLogoPreview").src = dataUrl;
+      $("brandLogoPreviewWrap").hidden = false;
+      showBrandStatus("Logo ready — click Save branding to keep it.", false);
+    } catch (e) {
+      showBrandStatus(e.message || "Could not load logo", true);
+    }
+    $("brandLogoFile").value = "";
+  });
+
+  $("btnClearLogo").addEventListener("click", () => {
+    $("brandLogoPreview").removeAttribute("src");
+    $("brandLogoPreviewWrap").hidden = true;
+    showBrandStatus("Logo cleared (save branding to persist).", false);
+  });
+
+  $("btnSaveBrand").addEventListener("click", () => {
+    try {
+      brandState = readBrandFromUi();
+      saveBrand(brandState);
+      if (brandState.displayName && !$("photographerName").value.trim()) {
+        $("photographerName").value = brandState.displayName;
+      } else if (brandState.displayName) {
+        // Keep form photographer in sync if it still matches old default
+        $("photographerName").value = brandState.displayName;
+      }
+      showBrandStatus("Branding saved in this browser.", false);
+    } catch (e) {
+      showBrandStatus(
+        "Could not save (storage full?). Try a smaller logo. " + (e.message || ""),
+        true,
+      );
+    }
+  });
 
   // --- Signature pad ---
   const canvas = $("sigPad");
@@ -358,7 +527,17 @@
 
   async function buildPdf() {
     const d = formData();
+    // Prefer latest UI branding (even if user forgot Save); fall back to stored.
+    const brand = (() => {
+      try {
+        return readBrandFromUi();
+      } catch (_e) {
+        return brandState;
+      }
+    })();
+    const accentParts = hexToRgb(brand.brandAccentHex);
     const { PDFDocument, rgb, StandardFonts } = PDFLib;
+    const accent = rgb(accentParts.r, accentParts.g, accentParts.b);
     const pdfDoc = await PDFDocument.create();
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -400,23 +579,60 @@
     const terms = window.RC_fillTemplate(d.template, d.modelName, d.photographerName);
     const signedAt = new Date().toISOString();
 
+    if (brand.brandingEnabled) {
+      if (brand.logoDataUrl) {
+        try {
+          const isPng = brand.logoDataUrl.startsWith("data:image/png");
+          const logoBytes = await fetch(brand.logoDataUrl).then((r) => r.arrayBuffer());
+          const logoImg = isPng
+            ? await pdfDoc.embedPng(logoBytes)
+            : await pdfDoc.embedJpg(logoBytes);
+          const maxLogoW = 120;
+          const maxLogoH = 48;
+          const scale = Math.min(maxLogoW / logoImg.width, maxLogoH / logoImg.height, 1);
+          const lw = logoImg.width * scale;
+          const lh = logoImg.height * scale;
+          ensure(lh + 12);
+          page.drawImage(logoImg, { x: margin, y: y - lh, width: lw, height: lh });
+          y -= lh + 8;
+        } catch (_e) {
+          // skip bad logo
+        }
+      }
+      const studioLine = brand.studioName || brand.displayName;
+      if (studioLine) {
+        drawLine(13, { bold: true, color: accent }, studioLine);
+      }
+      ensure(8);
+      page.drawLine({
+        start: { x: margin, y: y },
+        end: { x: pageSize[0] - margin, y: y },
+        thickness: 2,
+        color: accent,
+      });
+      y -= 14;
+    }
+
     drawLine(18, { bold: true }, "Model Release Agreement");
     y -= 4;
     drawLine(9, { color: rgb(0.35, 0.35, 0.4) }, "Generated by ReleaseCanvas Web · " + d.template.name + " · " + d.template.version);
     y -= 10;
-    drawLine(12, { bold: true, color: rgb(0.23, 0.53, 1) }, "Parties");
+    drawLine(12, { bold: true, color: accent }, "Parties");
     drawLine(11, {}, "Model: " + d.modelName);
     drawLine(11, {}, "Model email: " + d.modelEmail);
     drawLine(11, {}, "Photographer: " + d.photographerName);
+    if (brand.brandingEnabled && brand.studioName) {
+      drawLine(11, {}, "Studio: " + brand.studioName);
+    }
     y -= 8;
-    drawLine(12, { bold: true, color: rgb(0.23, 0.53, 1) }, "Shoot details");
+    drawLine(12, { bold: true, color: accent }, "Shoot details");
     if (d.shootId) drawLine(11, {}, "Shoot ID: " + d.shootId);
     drawLine(11, {}, "Description: " + d.description);
     y -= 8;
-    drawLine(12, { bold: true, color: rgb(0.23, 0.53, 1) }, "Release terms");
+    drawLine(12, { bold: true, color: accent }, "Release terms");
     drawLine(10, {}, terms);
     y -= 10;
-    drawLine(12, { bold: true, color: rgb(0.23, 0.53, 1) }, "Signature");
+    drawLine(12, { bold: true, color: accent }, "Signature");
 
     // Embed signature PNG
     const sigDataUrl = canvas.toDataURL("image/png");
@@ -436,7 +652,7 @@
     page.drawImage(sigImg, { x: margin, y: y - sigH - 4, width: sigW, height: sigH });
     y -= sigH + 16;
 
-    drawLine(12, { bold: true, color: rgb(0.23, 0.53, 1) }, "Signing metadata");
+    drawLine(12, { bold: true, color: accent }, "Signing metadata");
     drawLine(11, {}, "Signed at (UTC): " + signedAt);
     // Manual form fields override reverse-geocoded place (same idea as Android).
     const placeCity = d.city || locationInfo.city || "";
@@ -470,6 +686,13 @@
       { color: rgb(0.4, 0.4, 0.4) },
       "This electronic signature and metadata stamp are intended for record-keeping. Not a substitute for legal advice. Generated in-browser by ReleaseCanvas Web.",
     );
+    if (brand.brandingEnabled) {
+      const prepared = (brand.studioName || brand.displayName || d.photographerName).trim();
+      if (prepared) {
+        y -= 6;
+        drawLine(9, { color: rgb(0.35, 0.35, 0.4) }, "Prepared by " + prepared + " · ReleaseCanvas Web");
+      }
+    }
 
     const bytes = await pdfDoc.save();
     return {

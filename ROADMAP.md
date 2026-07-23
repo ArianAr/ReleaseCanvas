@@ -93,7 +93,7 @@ _No unapproved items. Propose additions before filing issues or editing this sec
 - Full GitHub Actions **CI** for Android (Pages deploy for `web/` is allowed)  
 - **Automatic cloud sync** or multi-vendor storage SDKs — off-device copies use the **system share sheet** (Android) or browser download/share (web)  
 - Embedding **official** third-party release forms (e.g. 500px) without an explicit redistribution license  
-- Web **history**, profile, or batch (Android-only for now)
+- Web **history** or batch (Android-only for now); web branding is localStorage-only (no cross-device sync)
 
 ---
 
