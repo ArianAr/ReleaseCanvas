@@ -74,4 +74,6 @@
     <string name="terms_preview_version">Template version: %1$s</string>
     <string name="terms_preview_hint">Read the release wording carefully before signing. This is not legal advice.</string>
     <string name="terms_preview_continue">I have read these terms</string>
+    <string name="attestation_label">I confirm I am of legal age of majority (or a parent/guardian with authority) and I accept the release terms.</string>
+    <string name="email_pdf">Email PDF</string>
 </resources>
