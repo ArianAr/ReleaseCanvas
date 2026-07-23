@@ -89,4 +89,8 @@
     <string name="profile_clear_logo">Remove logo</string>
     <string name="profile_save">Save profile</string>
     <string name="profile_saved">Profile saved</string>
+    <string name="profile_branding_section">PDF branding</string>
+    <string name="profile_branding_enabled">Show logo, studio name, and accent color on PDFs</string>
+    <string name="profile_brand_accent">Brand accent color</string>
+    <string name="profile_brand_accent_hint">Hex color, e.g. #3A86FF</string>
 </resources>

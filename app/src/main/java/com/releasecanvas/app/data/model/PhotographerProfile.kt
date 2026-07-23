@@ -10,4 +10,8 @@ data class PhotographerProfile(
     val phone: String = "",
     /** Absolute path to logo file in app storage, or empty. */
     val logoPath: String = "",
+    /** When true, logo/studio/accent appear on exported PDFs. */
+    val brandingEnabled: Boolean = true,
+    /** Hex RGB accent for PDF headings, e.g. #3A86FF */
+    val brandAccentHex: String = "#3A86FF",
 )

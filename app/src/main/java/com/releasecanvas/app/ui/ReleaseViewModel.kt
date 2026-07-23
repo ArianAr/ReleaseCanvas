@@ -245,6 +245,7 @@ class ReleaseViewModel(
                     draft = state.draft,
                     metadata = metadata,
                     attestationAccepted = true,
+                    profile = state.profile,
                 )
                 val result = documentStore.savePdf(bytes, state.draft.modelName, metadata)
                 preferencesStore.addHistoryEntry(
