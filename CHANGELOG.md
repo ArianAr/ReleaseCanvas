@@ -11,6 +11,15 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 ### Added
 - (none yet)
 
+## [1.5.0] - 2026-07-24
+
+### Added
+- Independent **app UI language** and **release wording language** pickers (en, es, fr, it, de, fa)
+- Optional “Follow system” for UI language only
+- Localized built-in release templates and PDF chrome labels per release language
+- Persian RTL for UI (when UI=`fa`) and for terms/PDF when release language=`fa`
+- In-app language settings on photographer profile; release language also on the form
+
 ## [1.4.0] - 2026-07-23
 
 ### Added

@@ -52,10 +52,8 @@ Living product plan. **GitHub [milestones](https://github.com/ArianAr/ReleaseCan
 - [x] [#34](https://github.com/ArianAr/ReleaseCanvas/issues/34) Custom template import
 - [x] [#36](https://github.com/ArianAr/ReleaseCanvas/issues/36) Editable multi-jurisdiction templates
 
-### v1.5 — Localization
-| Issue | Theme |
-|-------|--------|
-| [#37](https://github.com/ArianAr/ReleaseCanvas/issues/37) | **Two language pickers**: app UI language × release/template language (en, es, fr, it, de, fa; Persian RTL) |
+### v1.5 — Localization (shipped in app 1.5.0)
+- [x] [#37](https://github.com/ArianAr/ReleaseCanvas/issues/37) Two language pickers: app UI × release/template language (en, es, fr, it, de, fa; Persian RTL)
 
 Related notes:
 - **#36** complements **#34** (import) and built-in template picker; built-ins stay as fork-on-edit baselines where possible.

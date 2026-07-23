@@ -19,12 +19,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.releasecanvas.app.R
+import com.releasecanvas.app.data.locale.AppLocale
 import com.releasecanvas.app.ui.ReleaseViewModel
 import com.releasecanvas.app.ui.theme.screenBody
 
@@ -75,16 +79,24 @@ fun TermsPreviewScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(12.dp))
+            val termsDirection =
+                if (AppLocale.isRtl(state.releaseLanguageTag)) {
+                    LayoutDirection.Rtl
+                } else {
+                    LayoutDirection.Ltr
+                }
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState()),
             ) {
-                Text(
-                    text = body,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                CompositionLocalProvider(LocalLayoutDirection provides termsDirection) {
+                    Text(
+                        text = body,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
                 Spacer(Modifier.height(16.dp))
             }
             Button(

@@ -1,103 +1,96 @@
 package com.releasecanvas.app.data.pdf
 
+import com.releasecanvas.app.data.locale.AppLocale
+
 /**
- * Versioned model-release templates. Not legal advice — photographers should
- * have counsel review language for their jurisdiction.
- *
- * Naming like “500px-style” means **inspired / unofficial**, not an official
- * form from that company.
+ * Versioned model-release templates by language. Not legal advice.
+ * Naming like “500px-style” means inspired / unofficial.
  */
 object ReleaseTerms {
 
-    fun body(template: ReleaseTemplate, modelName: String, photographerName: String): String {
+    fun body(
+        template: ReleaseTemplate,
+        modelName: String,
+        photographerName: String,
+        languageTag: String = "en",
+    ): String {
         val model = modelName.trim()
         val photographer = photographerName.trim()
+        val lang = AppLocale.normalizeReleaseTag(languageTag)
         val raw = when (template) {
-            ReleaseTemplate.GENERIC -> generic(model, photographer, template.version)
-            ReleaseTemplate.FIVE_HUNDRED_PX_STYLE -> fiveHundredPxStyle(model, photographer, template.version)
-            ReleaseTemplate.STOCK_RF_STYLE -> stockRf(model, photographer, template.version)
-            ReleaseTemplate.EDITORIAL_ONLY -> editorial(model, photographer, template.version)
-            ReleaseTemplate.SOCIAL_WEB -> socialWeb(model, photographer, template.version)
+            ReleaseTemplate.GENERIC -> textFor(template, lang, model, photographer)
+            ReleaseTemplate.FIVE_HUNDRED_PX_STYLE -> textFor(template, lang, model, photographer)
+            ReleaseTemplate.STOCK_RF_STYLE -> textFor(template, lang, model, photographer)
+            ReleaseTemplate.EDITORIAL_ONLY -> textFor(template, lang, model, photographer)
+            ReleaseTemplate.SOCIAL_WEB -> textFor(template, lang, model, photographer)
         }
-        return raw.trimIndent().replace(Regex("\\s+"), " ")
+        return raw.trim().replace(Regex("\\s+"), " ")
     }
 
-    private fun generic(model: String, photographer: String, version: String) = """
-        For good and valuable consideration, the receipt and sufficiency of which is hereby
-        acknowledged, I, $model ("Model"), grant to $photographer ("Photographer")
-        and Photographer's licensees, successors, and assigns the irrevocable, perpetual,
-        worldwide right and license to use, reproduce, publish, distribute, display, and
-        create derivative works from photographs and other images of Model captured in
-        connection with the described shoot, in any medium now known or later developed,
-        for any lawful commercial, editorial, promotional, or artistic purpose.
+    private fun textFor(
+        template: ReleaseTemplate,
+        lang: String,
+        model: String,
+        photographer: String,
+    ): String {
+        val version = template.version
+        val map = when (template) {
+            ReleaseTemplate.GENERIC -> generic_bodies
+            ReleaseTemplate.FIVE_HUNDRED_PX_STYLE -> five_hundred_px_style_bodies
+            ReleaseTemplate.STOCK_RF_STYLE -> stock_rf_style_bodies
+            ReleaseTemplate.EDITORIAL_ONLY -> editorial_only_bodies
+            ReleaseTemplate.SOCIAL_WEB -> social_web_bodies
+        }
+        val pattern = map[lang] ?: map.getValue("en")
+        return pattern
+            .replace("{model}", model)
+            .replace("{photographer}", photographer)
+            .replace("{version}", version)
+    }
 
-        Model represents that Model is of legal age and has full authority to grant the
-        rights set forth herein, or is the parent/guardian of the depicted person and has
-        authority to sign on their behalf. Model releases and discharges Photographer from
-        any and all claims, demands, or causes of action arising out of or related to the
-        use of Model's likeness as authorized by this release, to the fullest extent
-        permitted by applicable law.
+    private val generic_bodies: Map<String, String> = mapOf(
+        "en" to "For good and valuable consideration, the receipt and sufficiency of which is hereby acknowledged, I, {model} (\"Model\"), grant to {photographer} (\"Photographer\") and Photographer's licensees, successors, and assigns the irrevocable, perpetual, worldwide right and license to use, reproduce, publish, distribute, display, and create derivative works from photographs and other images of Model captured in connection with the described shoot, in any medium now known or later developed, for any lawful commercial, editorial, promotional, or artistic purpose.\n\nModel represents that Model is of legal age and has full authority to grant the rights set forth herein, or is the parent/guardian of the depicted person and has authority to sign on their behalf. Model releases and discharges Photographer from any and all claims, demands, or causes of action arising out of or related to the use of Model's likeness as authorized by this release, to the fullest extent permitted by applicable law.\n\nModel acknowledges that this document was signed electronically, that the signature below is Model's own, and that the timestamp and location metadata (if available) were captured at the moment of signing for record-keeping purposes.\n\nThis release constitutes the entire agreement between the parties concerning the subject matter hereof and may be signed in electronic form. Terms version: {version}.",
+        "es" to "Por la presente y a cambio de una contraprestación válida, cuya recepción se reconoce, yo, {model} («Modelo»), otorgo a {photographer} («Fotógrafo») y a sus licenciatarios, sucesores y cesionarios el derecho irrevocable, perpetuo y mundial a usar, reproducir, publicar, distribuir, exhibir y crear obras derivadas de fotografías e imágenes del Modelo captadas en la sesión descrita, en cualquier medio, con fines comerciales, editoriales, promocionales o artísticos lícitos.\n\nEl Modelo declara ser mayor de edad y tener plena autoridad para otorgar estos derechos, o ser el padre/tutor de la persona representada. El Modelo libera al Fotógrafo de reclamaciones relacionadas con el uso autorizado de su imagen, en la máxima medida permitida por la ley.\n\nEl Modelo reconoce la firma electrónica y que la marca de tiempo y ubicación (si están) se capturaron al firmar. Esta cesión es el acuerdo completo entre las partes. Versión de términos: {version}.",
+        "fr" to "Pour une contrepartie valable, dont la réception est reconnue, je, {model} (« Modèle »), accorde à {photographer} (« Photographe ») et à ses licenciés, successeurs et ayants droit le droit irrévocable, perpétuel et mondial d’utiliser, reproduire, publier, distribuer, afficher et créer des œuvres dérivées des photographies et images du Modèle issues de la séance décrite, sur tout support, à des fins commerciales, éditoriales, promotionnelles ou artistiques licites.\n\nLe Modèle déclare être majeur et avoir l’autorité d’accorder ces droits, ou être le parent/tuteur de la personne représentée. Le Modèle décharge le Photographe des réclamations liées à l’usage autorisé de son image, dans la mesure permise par la loi.\n\nLe Modèle reconnaît la signature électronique et que l’horodatage et la localisation (le cas échéant) ont été capturés au moment de la signature. Cette autorisation constitue l’intégralité de l’accord. Version des termes : {version}.",
+        "it" to "Per un valido corrispettivo, di cui si riconosce la ricezione, io, {model} («Modello»), concedo a {photographer} («Fotografo») e ai suoi licenziatari, successori e aventi causa il diritto irrevocabile, perpetuo e mondiale di usare, riprodurre, pubblicare, distribuire, esporre e creare opere derivate da fotografie e immagini del Modello realizzate nella sessione descritta, su qualsiasi supporto, per scopi commerciali, editoriali, promozionali o artistici leciti.\n\nIl Modello dichiara di essere maggiorenne e di avere piena autorità a concedere tali diritti, oppure di essere genitore/tutore della persona raffigurata. Il Modello solleva il Fotografo da pretese relative all’uso autorizzato della propria immagine, nella misura massima consentita dalla legge.\n\nIl Modello riconosce la firma elettronica e che data/ora e posizione (se disponibili) sono stati rilevati al momento della firma. Questa liberatoria costituisce l’intero accordo. Versione dei termini: {version}.",
+        "de" to "Für eine gültige Gegenleistung, deren Erhalt hiermit bestätigt wird, gewähre ich, {model} („Model“), {photographer} („Fotograf“) sowie dessen Lizenznehmern, Rechtsnachfolgern und Abtretungsempfängern das unwiderrufliche, unbefristete und weltweite Recht, Fotografien und Bilder des Models aus dem beschriebenen Shooting zu nutzen, zu vervielfältigen, zu veröffentlichen, zu verbreiten, auszustellen und abgeleitete Werke zu erstellen – in jedem Medium und für rechtmäßige kommerzielle, redaktionelle, werbliche oder künstlerische Zwecke.\n\nDas Model erklärt, volljährig zu sein und die Rechte erteilen zu dürfen, oder Erziehungsberechtigter der abgebildeten Person zu sein. Das Model stellt den Fotografen von Ansprüchen frei, die aus der autorisierten Nutzung des Abbilds entstehen, soweit gesetzlich zulässig.\n\nDas Model bestätigt die elektronische Unterschrift sowie Zeit- und Ortsmetadaten (falls vorhanden) zum Zeitpunkt der Unterzeichnung. Diese Freigabe ist die vollständige Vereinbarung. Versionsnummer: {version}.",
+        "fa" to "در ازای عوض معتبر که دریافت آن تصدیق می‌شود، من، {model} («مدل»)، به {photographer} («عکاس») و مجوزگیرندگان، جانشینان و منتقل‌الیهم وی حق غیرقابل‌رجوع، دائمی و جهانی می‌دهم تا عکس‌ها و تصاویر مدل از جلسه توصیف‌شده را در هر رسانه و برای مقاصد تجاری، تحریریه‌ای، تبلیغاتی یا هنری قانونی استفاده، تکثیر، منتشر، توزیع، نمایش و آثار مشتق از آن‌ها ایجاد کنند.\n\nمدل اعلام می‌کند که به سن قانونی رسیده و اختیار اعطای این حقوق را دارد، یا ولی/سرپرست شخص تصویرشده است. مدل عکاس را از هرگونه ادعا ناشی از استفاده مجاز از تصویر خود، تا حد مجاز قانون، مبرا می‌کند.\n\nمدل امضای الکترونیکی و ثبت زمان و مکان (در صورت وجود) در لحظه امضا را می‌پذیرد. این رضایت‌نامه کل توافق طرفین است. نسخه شرایط: {version}.",
+    )
 
-        Model acknowledges that this document was signed electronically, that the signature
-        below is Model's own, and that the timestamp and location metadata (if available)
-        were captured at the moment of signing for record-keeping purposes.
+    private val five_hundred_px_style_bodies: Map<String, String> = mapOf(
+        "en" to "I, {model} (\"Model\"), grant {photographer} (\"Photographer\") permission to display, share, and promote photographs of Model from the described shoot on creative and photography community platforms (including portfolio sites and social networks), and to use such images in Photographer's personal and professional portfolio.\n\nModel understands images may be publicly viewable online and that platform terms of service (of any third-party site) apply separately; this document is not an official form of any platform. Model confirms legal age/authority to sign and releases Photographer from claims arising from authorized online/portfolio use, to the fullest extent permitted by law.\n\nElectronic signature and signing metadata (time/location when available) are acknowledged for record-keeping. Terms version: {version} (unofficial 500px-style template).",
+        "es" to "Yo, {model} («Modelo»), autorizo a {photographer} («Fotógrafo») a mostrar, compartir y promocionar fotografías del Modelo de la sesión descrita en plataformas creativas y de fotografía (incluidos sitios de portfolio y redes sociales), y a usarlas en el portfolio personal y profesional del Fotógrafo.\n\nEl Modelo entiende que las imágenes pueden ser públicas en línea y que las condiciones de cada plataforma aplican por separado; este documento no es un formulario oficial de ninguna plataforma. Confirma edad/autoridad legal y libera al Fotógrafo de reclamaciones por el uso autorizado en línea/portfolio, en la máxima medida permitida.\n\nSe reconoce la firma electrónica y los metadatos de firma. Versión: {version} (plantilla no oficial estilo 500px).",
+        "fr" to "Je, {model} (« Modèle »), autorise {photographer} (« Photographe ») à afficher, partager et promouvoir les photographies du Modèle issues de la séance sur des plateformes créatives et photo (portfolios et réseaux sociaux), et à les utiliser dans le portfolio personnel et professionnel du Photographe.\n\nLe Modèle comprend que les images peuvent être publiques en ligne et que les conditions des plateformes s’appliquent séparément ; ce document n’est pas un formulaire officiel. Confirmation d’âge/autorité et décharge pour l’usage en ligne/portfolio autorisé. Signature électronique et métadonnées reconnues. Version : {version} (modèle non officiel style 500px).",
+        "it" to "Io, {model} («Modello»), autorizzo {photographer} («Fotografo») a mostrare, condividere e promuovere le fotografie del Modello della sessione descritta su piattaforme creative e fotografiche (portfolio e social), e a usarle nel portfolio personale e professionale del Fotografo.\n\nIl Modello comprende che le immagini possono essere pubbliche online e che i termini delle piattaforme si applicano separatamente; questo non è un modulo ufficiale. Conferma età/autorità e solleva il Fotografo per l’uso online/portfolio autorizzato. Firma elettronica e metadati riconosciuti. Versione: {version} (modello non ufficiale stile 500px).",
+        "de" to "Ich, {model} („Model“), gestatte {photographer} („Fotograf“), Fotos des Models aus dem beschriebenen Shooting auf Kreativ- und Fotografie-Community-Plattformen (Portfolio-Seiten und soziale Netzwerke) zu zeigen, zu teilen und zu bewerben sowie im persönlichen und beruflichen Portfolio zu nutzen.\n\nDas Model versteht, dass Bilder online öffentlich sichtbar sein können und Plattform-AGB gesondert gelten; dies ist kein offizielles Formular einer Plattform. Bestätigung der Volljährigkeit/Befugnis und Freistellung für autorisierte Online-/Portfolio-Nutzung. Elektronische Unterschrift und Metadaten werden anerkannt. Version: {version} (inoffizielle 500px-Stil-Vorlage).",
+        "fa" to "من، {model} («مدل»)، به {photographer} («عکاس») اجازه می‌دهم عکس‌های مدل از جلسه توصیف‌شده را در پلتفرم‌های خلاقانه و عکاسی (از جمله سایت‌های پورتفولیو و شبکه‌های اجتماعی) نمایش، اشتراک و تبلیغ کند و در پورتفولیو شخصی و حرفه‌ای خود استفاده نماید.\n\nمدل می‌داند تصاویر ممکن است به‌صورت عمومی آنلاین دیده شوند و شرایط هر پلتفرم جداگانه اعمال می‌شود؛ این سند فرم رسمی هیچ پلتفرمی نیست. تأیید سن/اختیار قانونی و برائت عکاس از ادعاهای ناشی از استفاده مجاز آنلاین/پورتفولیو. امضای الکترونیکی و فراداده امضا تصدیق می‌شود. نسخه: {version} (قالب غیررسمی به سبک ۵۰۰px).",
+    )
 
-        This release constitutes the entire agreement between the parties concerning the
-        subject matter hereof and may be signed in electronic form. Terms version: $version.
-    """
+    private val stock_rf_style_bodies: Map<String, String> = mapOf(
+        "en" to "I, {model} (\"Model\"), grant {photographer} (\"Photographer\") and Photographer's licensees a broad, royalty-free, perpetual, worldwide license to use images of Model from the described shoot for commercial purposes, including advertising, packaging, websites, and resale or licensing through stock or content libraries, without further compensation beyond any agreed shoot fee.\n\nModel waives inspection/approval rights for finished uses where permitted by law, confirms age/authority to sign, and releases Photographer and downstream licensees from claims related to authorized commercial use of Model's likeness.\n\nThis is a generic RF-style template, not the official form of any stock agency. Electronic signature and metadata stamps are for record-keeping. Terms version: {version}.",
+        "es" to "Yo, {model} («Modelo»), otorgo a {photographer} («Fotógrafo») y a sus licenciatarios una licencia amplia, libre de regalías, perpetua y mundial para usar imágenes del Modelo de la sesión con fines comerciales, incluida publicidad, envases, sitios web y reventa o licencia en bancos de imágenes, sin compensación adicional más allá de la tarifa acordada.\n\nEl Modelo renuncia, cuando la ley lo permita, a derechos de inspección/aprobación, confirma edad/autoridad y libera al Fotógrafo y licenciatarios por el uso comercial autorizado.\n\nPlantilla genérica estilo RF, no formulario oficial de ninguna agencia. Firma electrónica y metadatos para registro. Versión: {version}.",
+        "fr" to "Je, {model} (« Modèle »), accorde à {photographer} (« Photographe ») et à ses licenciés une licence large, libre de redevances, perpétuelle et mondiale pour utiliser les images du Modèle à des fins commerciales (publicité, emballage, sites web, revente ou licence via banques d’images), sans compensation supplémentaire au-delà des honoraires convenus.\n\nRenonciation aux droits d’inspection/approbation lorsque la loi le permet, confirmation d’âge/autorité et décharge pour l’usage commercial autorisé.\n\nModèle RF générique, non officiel d’une agence. Signature électronique et métadonnées pour archivage. Version : {version}.",
+        "it" to "Io, {model} («Modello»), concedo a {photographer} («Fotografo») e ai suoi licenziatari una licenza ampia, royalty-free, perpetua e mondiale per usare le immagini del Modello a fini commerciali (pubblicità, packaging, siti web, rivendita o licenza tramite archivi stock), senza compensi ulteriori oltre al compenso concordato.\n\nIl Modello rinuncia, ove consentito, a diritti di ispezione/approvazione, conferma età/autorità e solleva Fotografo e licenziatari per l’uso commerciale autorizzato.\n\nModello generico stile RF, non ufficiale di alcuna agenzia. Firma elettronica e metadati per registrazione. Versione: {version}.",
+        "de" to "Ich, {model} („Model“), gewähre {photographer} („Fotograf“) und dessen Lizenznehmern eine umfassende, lizenzgebührenfreie, unbefristete und weltweite Lizenz zur kommerziellen Nutzung der Bilder (Werbung, Verpackung, Websites, Weiterverkauf/Lizenzierung über Stock-Bibliotheken) ohne weitere Vergütung außer dem vereinbarten Shooting-Honorar.\n\nVerzicht auf Prüf-/Freigaberechte soweit gesetzlich zulässig, Bestätigung der Volljährigkeit/Befugnis und Freistellung für autorisierte kommerzielle Nutzung.\n\nGenerische RF-Vorlage, kein offizielles Agenturformular. Elektronische Unterschrift und Metadaten zur Dokumentation. Version: {version}.",
+        "fa" to "من، {model} («مدل»)، به {photographer} («عکاس») و مجوزگیرندگان وی مجوز گسترده، بدون حق‌الامتیاز، دائمی و جهانی می‌دهم تا تصاویر مدل را برای مقاصد تجاری از جمله تبلیغات، بسته‌بندی، وب‌سایت‌ها و فروش مجدد یا مجوز از طریق کتابخانه‌های استوک استفاده کنند، بدون جبران بیشتر فراتر از حق‌الزحمه توافق‌شده.\n\nمدل در حد مجاز قانون از حقوق بازرسی/تأیید صرف‌نظر می‌کند، سن/اختیار را تأیید و عکاس و مجوزگیرندگان بعدی را از ادعاهای استفاده تجاری مجاز مبرا می‌کند.\n\nقالب عمومی سبک RF است، نه فرم رسمی هیچ آژانسی. امضای الکترونیکی و فراداده برای بایگانی. نسخه: {version}.",
+    )
 
-    private fun fiveHundredPxStyle(model: String, photographer: String, version: String) = """
-        I, $model ("Model"), grant $photographer ("Photographer") permission to display,
-        share, and promote photographs of Model from the described shoot on creative and
-        photography community platforms (including portfolio sites and social networks),
-        and to use such images in Photographer's personal and professional portfolio.
+    private val editorial_only_bodies: Map<String, String> = mapOf(
+        "en" to "I, {model} (\"Model\"), grant {photographer} (\"Photographer\") the right to use images of Model from the described shoot for editorial, journalistic, documentary, educational, and newsworthy purposes only (including print and online editorial publications). Commercial advertising or endorsement uses are not granted by this template unless separately agreed in writing.\n\nModel confirms age/authority to sign and releases Photographer from claims arising from authorized editorial uses, to the fullest extent permitted by law. Electronic signature and metadata are for record-keeping. Terms version: {version}.",
+        "es" to "Yo, {model} («Modelo»), otorgo a {photographer} («Fotógrafo») el derecho a usar imágenes del Modelo de la sesión solo con fines editoriales, periodísticos, documentales, educativos y de interés informativo (incluidas publicaciones impresas y en línea). La publicidad comercial o el endoso no se conceden salvo acuerdo escrito aparte.\n\nConfirma edad/autoridad y libera al Fotógrafo por usos editoriales autorizados. Firma electrónica y metadatos para registro. Versión: {version}.",
+        "fr" to "Je, {model} (« Modèle »), accorde à {photographer} (« Photographe ») le droit d’utiliser les images uniquement à des fins éditoriales, journalistiques, documentaires, éducatives et d’actualité (publications imprimées et en ligne). La publicité commerciale ou l’endossement ne sont pas accordés sauf accord écrit séparé.\n\nConfirmation d’âge/autorité et décharge pour usages éditoriaux autorisés. Signature électronique et métadonnées pour archivage. Version : {version}.",
+        "it" to "Io, {model} («Modello»), concedo a {photographer} («Fotografo») il diritto di usare le immagini solo per scopi editoriali, giornalistici, documentari, educativi e di attualità (pubblicazioni stampate e online). Pubblicità commerciale o endorsement non sono concessi salvo accordo scritto separato.\n\nConferma età/autorità e solleva il Fotografo per usi editoriali autorizzati. Firma elettronica e metadati per registrazione. Versione: {version}.",
+        "de" to "Ich, {model} („Model“), gestatte {photographer} („Fotograf“) die Nutzung der Bilder ausschließlich für redaktionelle, journalistische, dokumentarische, pädagogische und nachrichtliche Zwecke (Print und Online). Kommerzielle Werbung oder Endorsement sind nicht umfasst, sofern nicht schriftlich anders vereinbart.\n\nBestätigung der Volljährigkeit/Befugnis und Freistellung für autorisierte redaktionelle Nutzung. Elektronische Unterschrift und Metadaten zur Dokumentation. Version: {version}.",
+        "fa" to "من، {model} («مدل»)، به {photographer} («عکاس») حق استفاده از تصاویر را فقط برای مقاصد تحریریه‌ای، خبری، مستند، آموزشی و رویدادهای خبری (چاپی و آنلاین) می‌دهم. تبلیغات تجاری یا تأییدیه برند مشمول این قالب نیست مگر توافق کتبی جداگانه.\n\nتأیید سن/اختیار و برائت عکاس از ادعاهای استفاده تحریریه‌ای مجاز. امضای الکترونیکی و فراداده برای بایگانی. نسخه: {version}.",
+    )
 
-        Model understands images may be publicly viewable online and that platform terms
-        of service (of any third-party site) apply separately; this document is not an
-        official form of any platform. Model confirms legal age/authority to sign and
-        releases Photographer from claims arising from authorized online/portfolio use,
-        to the fullest extent permitted by law.
+    private val social_web_bodies: Map<String, String> = mapOf(
+        "en" to "I, {model} (\"Model\"), grant {photographer} (\"Photographer\") permission to use images of Model from the described shoot on websites, blogs, and social media channels, and for light promotional use related to Photographer's services (e.g. website gallery, Instagram, booking materials). Broad third-party advertising campaigns and stock resale are outside the scope of this template unless separately agreed.\n\nModel confirms age/authority to sign and releases Photographer from claims arising from authorized web/social promotional uses, to the fullest extent permitted by law. Electronic signature and metadata are for record-keeping. Terms version: {version}.",
+        "es" to "Yo, {model} («Modelo»), autorizo a {photographer} («Fotógrafo») a usar imágenes del Modelo en sitios web, blogs y redes sociales, y para promoción ligera de sus servicios (galería web, Instagram, materiales de reserva). Campañas publicitarias amplias de terceros y reventa stock quedan fuera salvo acuerdo aparte.\n\nConfirma edad/autoridad y libera al Fotógrafo por usos web/social autorizados. Firma electrónica y metadatos para registro. Versión: {version}.",
+        "fr" to "Je, {model} (« Modèle »), autorise {photographer} (« Photographe ») à utiliser les images sur sites web, blogs et réseaux sociaux, et pour une promotion légère de ses services (galerie, Instagram, supports de réservation). Campagnes publicitaires tierces larges et revente stock hors champ sauf accord séparé.\n\nConfirmation d’âge/autorité et décharge pour usages web/sociaux autorisés. Signature électronique et métadonnées pour archivage. Version : {version}.",
+        "it" to "Io, {model} («Modello»), autorizzo {photographer} («Fotografo») a usare le immagini su siti web, blog e social, e per promozione leggera dei suoi servizi (galleria, Instagram, materiali di booking). Campagne pubblicitarie terze ampie e rivendita stock sono escluse salvo accordo separato.\n\nConferma età/autorità e solleva il Fotografo per usi web/social autorizzati. Firma elettronica e metadati per registrazione. Versione: {version}.",
+        "de" to "Ich, {model} („Model“), gestatte {photographer} („Fotograf“), die Bilder auf Websites, Blogs und Social Media sowie für leichte Werbung der eigenen Dienste (Galerie, Instagram, Buchungsmaterial) zu nutzen. Breite Drittwerbung und Stock-Weiterverkauf sind ausgenommen, sofern nicht anders vereinbart.\n\nBestätigung der Volljährigkeit/Befugnis und Freistellung für autorisierte Web-/Social-Nutzung. Elektronische Unterschrift und Metadaten zur Dokumentation. Version: {version}.",
+        "fa" to "من، {model} («مدل»)، به {photographer} («عکاس») اجازه می‌دهم تصاویر را در وب‌سایت‌ها، وبلاگ‌ها و شبکه‌های اجتماعی و برای تبلیغ سبک خدمات خود (گالری سایت، اینستاگرام، مواد رزرو) استفاده کند. کمپین‌های تبلیغاتی گسترده شخص ثالث و فروش استوک خارج از این قالب است مگر توافق جداگانه.\n\nتأیید سن/اختیار و برائت عکاس از ادعاهای استفاده وب/اجتماعی مجاز. امضای الکترونیکی و فراداده برای بایگانی. نسخه: {version}.",
+    )
 
-        Electronic signature and signing metadata (time/location when available) are
-        acknowledged for record-keeping. Terms version: $version (unofficial 500px-style template).
-    """
-
-    private fun stockRf(model: String, photographer: String, version: String) = """
-        I, $model ("Model"), grant $photographer ("Photographer") and Photographer's
-        licensees a broad, royalty-free, perpetual, worldwide license to use images of
-        Model from the described shoot for commercial purposes, including advertising,
-        packaging, websites, and resale or licensing through stock or content libraries,
-        without further compensation beyond any agreed shoot fee.
-
-        Model waives inspection/approval rights for finished uses where permitted by law,
-        confirms age/authority to sign, and releases Photographer and downstream licensees
-        from claims related to authorized commercial use of Model's likeness.
-
-        This is a generic RF-style template, not the official form of any stock agency.
-        Electronic signature and metadata stamps are for record-keeping. Terms version: $version.
-    """
-
-    private fun editorial(model: String, photographer: String, version: String) = """
-        I, $model ("Model"), grant $photographer ("Photographer") the right to use images
-        of Model from the described shoot for editorial, journalistic, documentary,
-        educational, and newsworthy purposes only (including print and online editorial
-        publications). Commercial advertising or endorsement uses are not granted by this
-        template unless separately agreed in writing.
-
-        Model confirms age/authority to sign and releases Photographer from claims arising
-        from authorized editorial uses, to the fullest extent permitted by law.
-        Electronic signature and metadata are for record-keeping. Terms version: $version.
-    """
-
-    private fun socialWeb(model: String, photographer: String, version: String) = """
-        I, $model ("Model"), grant $photographer ("Photographer") permission to use images
-        of Model from the described shoot on websites, blogs, and social media channels,
-        and for light promotional use related to Photographer's services (e.g. website
-        gallery, Instagram, booking materials). Broad third-party advertising campaigns
-        and stock resale are outside the scope of this template unless separately agreed.
-
-        Model confirms age/authority to sign and releases Photographer from claims arising
-        from authorized web/social promotional uses, to the fullest extent permitted by law.
-        Electronic signature and metadata are for record-keeping. Terms version: $version.
-    """
 }

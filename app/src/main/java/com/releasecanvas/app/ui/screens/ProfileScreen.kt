@@ -51,6 +51,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.releasecanvas.app.R
 import com.releasecanvas.app.data.model.PhotographerProfile
 import com.releasecanvas.app.ui.ReleaseViewModel
+import com.releasecanvas.app.ui.components.LanguagePickerField
 import kotlinx.coroutines.launch
 import java.io.File
 import com.releasecanvas.app.ui.theme.screenBody
@@ -128,6 +129,29 @@ fun ProfileScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.language_section),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Spacer(Modifier.height(8.dp))
+            LanguagePickerField(
+                label = stringResource(R.string.ui_language),
+                supportingText = stringResource(R.string.ui_language_hint),
+                selectedTag = state.uiLanguageTag,
+                includeSystemOption = true,
+                systemOptionLabel = stringResource(R.string.ui_language_system),
+                onSelected = { viewModel.updateUiLanguage(it) },
+            )
+            Spacer(Modifier.height(12.dp))
+            LanguagePickerField(
+                label = stringResource(R.string.release_language),
+                supportingText = stringResource(R.string.release_language_hint),
+                selectedTag = state.releaseLanguageTag,
+                includeSystemOption = false,
+                systemOptionLabel = stringResource(R.string.ui_language_system),
+                onSelected = { viewModel.updateReleaseLanguage(it) },
+            )
+            Spacer(Modifier.height(20.dp))
             OutlinedTextField(
                 value = displayName,
                 onValueChange = { displayName = it },
