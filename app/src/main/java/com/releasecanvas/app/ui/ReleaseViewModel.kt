@@ -205,11 +205,24 @@ class ReleaseViewModel(
 
     fun resetForNewRelease() {
         val shooter = _uiState.value.draft.shooterName
+        val template = _uiState.value.draft.template
         val oldSig = _uiState.value.draft.signatureBitmap
         if (oldSig != null && !oldSig.isRecycled) oldSig.recycle()
         _uiState.value = ReleaseUiState(
-            draft = ReleaseDraft(shooterName = shooter),
+            draft = ReleaseDraft(shooterName = shooter, template = template),
         )
+    }
+
+    fun removeHistoryEntry(uriString: String) {
+        viewModelScope.launch {
+            preferencesStore.removeHistoryEntry(uriString)
+        }
+    }
+
+    fun clearHistory() {
+        viewModelScope.launch {
+            preferencesStore.clearHistory()
+        }
     }
 
     companion object {

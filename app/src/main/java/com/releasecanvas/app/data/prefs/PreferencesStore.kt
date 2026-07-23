@@ -53,6 +53,21 @@ class PreferencesStore(private val context: Context) {
         }
     }
 
+    /** Removes a history row only; does not delete the PDF file from storage. */
+    suspend fun removeHistoryEntry(uriString: String) {
+        context.dataStore.edit { prefs ->
+            val current = parseHistory(prefs[historyKey].orEmpty()).filterNot { it.uriString == uriString }
+            prefs[historyKey] = serializeHistory(current)
+        }
+    }
+
+    /** Clears local history metadata only; PDF files remain in Documents/ReleaseCanvas. */
+    suspend fun clearHistory() {
+        context.dataStore.edit { prefs ->
+            prefs[historyKey] = "[]"
+        }
+    }
+
     private fun parseHistory(raw: String): List<HistoryEntry> {
         if (raw.isBlank()) return emptyList()
         return runCatching {
