@@ -11,6 +11,14 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 ### Added
 - (none yet)
 
+## [1.3.0] - 2026-07-23
+
+### Added
+- Photographer profile defaults (name, studio, email, phone, logo)
+- PDF branding (logo header, studio line, accent headings, toggle)
+- First-run onboarding tips (reopen from About)
+- Accessibility basics (headings, taller primary actions)
+
 ## [1.2.0] - 2026-07-23
 
 ### Added

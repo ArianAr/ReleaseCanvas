@@ -36,21 +36,21 @@ Living product plan. **GitHub [milestones](https://github.com/ArianAr/ReleaseCan
 
 ## Next
 
-### v1.3 — Scale
+### v1.5 — Scale (later)
 | Issue | Theme |
 |-------|--------|
 | [#20](https://github.com/ArianAr/ReleaseCanvas/issues/20) | Batch multi-model releases |
 | [#21](https://github.com/ArianAr/ReleaseCanvas/issues/21) | Cloud backup behind a storage interface |
 
-### v1.4 — UX, branding & localization
-Agreed with maintainer:
+### v1.3 — Profile, branding & onboarding (shipped in app 1.3.0)
+- [x] [#30](https://github.com/ArianAr/ReleaseCanvas/issues/30) Photographer profile defaults
+- [x] [#31](https://github.com/ArianAr/ReleaseCanvas/issues/31) PDF branding / watermark
+- [x] [#32](https://github.com/ArianAr/ReleaseCanvas/issues/32) Onboarding / first-run tips
+- [x] [#33](https://github.com/ArianAr/ReleaseCanvas/issues/33) Accessibility basics (more a11y work welcome later)
 
+### v1.4 — Templates & localization
 | Issue | Theme |
 |-------|--------|
-| [#30](https://github.com/ArianAr/ReleaseCanvas/issues/30) | Photographer profile defaults (studio, email/phone, logo; prefill) |
-| [#31](https://github.com/ArianAr/ReleaseCanvas/issues/31) | PDF branding / watermark (logo, accent, studio footer) |
-| [#32](https://github.com/ArianAr/ReleaseCanvas/issues/32) | Onboarding / first-run tips |
-| [#33](https://github.com/ArianAr/ReleaseCanvas/issues/33) | Accessibility pass (TalkBack, targets, contrast) |
 | [#34](https://github.com/ArianAr/ReleaseCanvas/issues/34) | Custom template import (offline `.txt` / `.md`) |
 | [#36](https://github.com/ArianAr/ReleaseCanvas/issues/36) | Editable multi-jurisdiction legal templates |
 | [#37](https://github.com/ArianAr/ReleaseCanvas/issues/37) | **Two language pickers**: app UI language × release/template language (en, es, fr, it, de, fa; Persian RTL) |
