@@ -11,6 +11,13 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 ### Added
 - (none yet)
 
+## [1.4.0] - 2026-07-23
+
+### Added
+- Custom template import (.txt / .md) with {{MODEL}} / {{PHOTOGRAPHER}} placeholders
+- Editable custom templates with jurisdiction labels
+- Duplicate built-in templates as editable copies
+
 ## [1.3.0] - 2026-07-23
 
 ### Added
