@@ -104,21 +104,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Please read the [Code of Conduct](CODE_O
 
 ## Roadmap
 
-### Shipped
-- [x] Form → terms preview → signature → review → PDF export  
-- [x] Optional shoot metadata + city/country (manual / reverse geocode)  
-- [x] Multi-template release picker (unofficial wording samples)  
-- [x] About screen, history clear/remove, attestation checkbox  
-- [x] Share / email PDF with subject & body; multi-page PDF overflow  
+See **[ROADMAP.md](ROADMAP.md)** for shipped versions, current focus, and non-goals.
 
-### Next (see GitHub milestones)
-| Milestone | Focus |
-|-----------|--------|
-| **v1.2 Product depth** | Completing remaining polish items on the board |
-| **v1.3 Scale** | [Batch multi-model releases](https://github.com/ArianAr/ReleaseCanvas/issues/20), [cloud backup interface](https://github.com/ArianAr/ReleaseCanvas/issues/21), editable templates |
-| **v1.0 Backlog / security** | Private vulnerability reporting toggle (repo Settings) |
-
-Issues & milestones: https://github.com/ArianAr/ReleaseCanvas/milestones  
+Active tracking: [milestones](https://github.com/ArianAr/ReleaseCanvas/milestones) · [issues](https://github.com/ArianAr/ReleaseCanvas/issues)
 
 ## License
 
