@@ -31,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -63,17 +64,22 @@ fun ReviewScreen(
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) {
-        viewModel.refreshLocationPreview()
+        viewModel.refreshLocationPreview(force = true)
     }
 
-    LaunchedEffect(Unit) {
-        permissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-            ),
-        )
-        viewModel.refreshLocationPreview()
+    // Do not request GPS until the user opts in (privacy default off).
+    LaunchedEffect(state.includeLocationInPdf) {
+        if (state.includeLocationInPdf) {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                ),
+            )
+            viewModel.refreshLocationPreview(force = false)
+        } else {
+            viewModel.refreshLocationPreview(force = true)
+        }
     }
 
     Scaffold(
@@ -120,21 +126,69 @@ fun ReviewScreen(
             Spacer(Modifier.height(8.dp))
             SignaturePreview(draft.signatureBitmap)
             Spacer(Modifier.height(16.dp))
-            Text("Location stamp", style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.height(4.dp))
             Text(
-                text = state.locationPreviewText,
-                style = MaterialTheme.typography.bodyMedium,
+                text = stringResource(R.string.privacy_shared_storage_warning),
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            if (state.locationPreviewStatus != LocationStatus.Available &&
-                state.locationPreviewStatus != LocationStatus.Acquiring
+            Spacer(Modifier.height(16.dp))
+            Text("Location stamp", style = MaterialTheme.typography.titleMedium)
+            Spacer(Modifier.height(4.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .toggleable(
+                        value = state.includeLocationInPdf,
+                        onValueChange = viewModel::setIncludeLocationInPdf,
+                        role = Role.Checkbox,
+                    )
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.Top,
             ) {
+                Checkbox(
+                    checked = state.includeLocationInPdf,
+                    onCheckedChange = null,
+                )
+                androidx.compose.foundation.layout.Column(
+                    modifier = Modifier.padding(start = 8.dp, top = 12.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.include_location_in_pdf),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    Text(
+                        text = stringResource(R.string.include_location_in_pdf_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            if (state.includeLocationInPdf) {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = state.locationPreviewText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                if (state.locationPreviewStatus != LocationStatus.Available &&
+                    state.locationPreviewStatus != LocationStatus.Acquiring
+                ) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(R.string.location_unavailable_warning),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+                TextButton(onClick = { viewModel.refreshLocationPreview(force = true) }) {
+                    Text(stringResource(R.string.refresh_location))
+                }
+            } else {
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = stringResource(R.string.location_unavailable_warning),
+                    text = stringResource(R.string.location_not_included),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.error,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Spacer(Modifier.height(16.dp))
