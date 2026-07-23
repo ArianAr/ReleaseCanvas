@@ -12,6 +12,7 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 - **Web companion** (`web/`): browser sign & PDF export (no history); GitHub Pages deploy workflow
 - Platform docs: Android full product; web for iOS/desktop gap; native iOS deferred (no Apple test device)
 - Web: best-effort **reverse geocode** after GPS (OpenStreetMap Nominatim); manual city/country still override
+- Web: **studio branding** (name, studio, accent, logo) persisted in **localStorage**; optional PDF header branding
 
 ## [1.6.1] - 2026-07-24
 

@@ -7,10 +7,11 @@ Browser companion for **sign → PDF export only**. Hosted on **GitHub Pages** (
 | Included | Not included |
 |----------|----------------|
 | Form, terms preview, signature pad | Export history |
-| Client-side PDF (pdf-lib CDN) | Photographer profile / branding |
-| Optional GPS + UTC + reverse geocode (Nominatim) | Batch multi-model |
-| Download + Web Share (when supported) | Full multi-language UI |
-| Works on iPhone Safari | Native iOS app |
+| Client-side PDF (pdf-lib CDN) | Batch multi-model |
+| Optional GPS + UTC + reverse geocode (Nominatim) | Full multi-language UI |
+| **Branding** (studio, accent, logo) via **localStorage** | Native iOS app |
+| Download + Web Share (when supported) | Cloud sync of profile |
+| Works on iPhone Safari | Cross-device profile sync |
 
 Prefer the **Android app** for the full product. Native **iOS is not available yet** (no Apple device for testing).
 

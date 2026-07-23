@@ -285,3 +285,63 @@ textarea:focus {
 .footer-note {
   margin-top: 1.25rem;
 }
+
+.brand-panel {
+  margin: 0 0 1.15rem;
+  padding: 0.65rem 0.85rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.brand-panel > summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.35rem 0;
+  list-style-position: outside;
+}
+
+.brand-panel[open] > summary {
+  margin-bottom: 0.35rem;
+}
+
+.brand-check {
+  margin-top: 0.5rem;
+}
+
+.color-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.35rem;
+}
+
+.color-row input[type="color"] {
+  width: 3rem;
+  height: 2.5rem;
+  padding: 0.15rem;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.color-row input[type="text"] {
+  margin: 0;
+  flex: 1;
+}
+
+.logo-preview-wrap {
+  margin: 0.5rem 0 0.25rem;
+}
+
+.logo-preview {
+  display: block;
+  max-width: 10rem;
+  max-height: 5rem;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.25rem;
+}

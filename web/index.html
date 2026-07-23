@@ -23,8 +23,9 @@
     <aside class="banner" role="note">
       <strong>Platforms:</strong> The full native app is <strong>Android-only</strong> for now
       (no iOS build — we lack an Apple device for proper testing).
-      This web companion covers <strong>signing and PDF export only</strong>
-      (no history, profile, batch, or offline MediaStore). Prefer the Android app when you can.
+      This web companion covers <strong>signing, PDF export, and optional branding</strong>
+      (no history or batch). Studio defaults are stored in <strong>this browser only</strong> (localStorage).
+      Prefer the Android app when you can.
     </aside>
 
     <nav class="steps" aria-label="Progress">
@@ -38,6 +39,45 @@
     <section id="step-form" class="panel active" aria-labelledby="form-title">
       <h1 id="form-title">Release details</h1>
       <p class="hint legal">Templates are unofficial samples, not legal advice and not official forms of any platform or stock agency.</p>
+
+      <details class="brand-panel" id="brandPanel">
+        <summary>Studio branding &amp; defaults</summary>
+        <p class="hint">
+          Saved in <strong>localStorage on this device/browser only</strong> — not uploaded anywhere.
+          Prefills photographer name and appears on the PDF when branding is enabled.
+        </p>
+        <label>
+          Display name (prefill photographer)
+          <input id="brandDisplayName" type="text" autocomplete="name" />
+        </label>
+        <label>
+          Studio name <span class="opt">(optional)</span>
+          <input id="brandStudio" type="text" />
+        </label>
+        <label class="check brand-check">
+          <input type="checkbox" id="brandEnabled" checked />
+          <span>Show logo, studio name, and accent color on PDFs</span>
+        </label>
+        <label>
+          Brand accent color
+          <span class="color-row">
+            <input id="brandAccent" type="color" value="#3A86FF" />
+            <input id="brandAccentHex" type="text" value="#3A86FF" placeholder="#3A86FF" maxlength="7" />
+          </span>
+        </label>
+        <label>
+          Logo <span class="opt">(optional, stored locally)</span>
+          <input id="brandLogoFile" type="file" accept="image/*" />
+        </label>
+        <div id="brandLogoPreviewWrap" class="logo-preview-wrap" hidden>
+          <img id="brandLogoPreview" alt="Logo preview" class="logo-preview" />
+          <button type="button" class="btn secondary" id="btnClearLogo">Remove logo</button>
+        </div>
+        <p id="brandStatus" class="meta" hidden></p>
+        <div class="row tight">
+          <button type="button" class="btn secondary" id="btnSaveBrand">Save branding</button>
+        </div>
+      </details>
 
       <label>
         Release template
