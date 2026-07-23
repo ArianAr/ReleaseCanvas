@@ -62,4 +62,8 @@
     <string name="about_privacy_body">ReleaseCanvas works offline for core signing. Optional GPS and reverse geocode use device location services and may use network. PDFs are written to Documents/ReleaseCanvas via MediaStore. History is stored only on this device.</string>
     <string name="about_license_heading">License</string>
     <string name="about_license_body">ReleaseCanvas is free software under the GNU General Public License v3.0. Source is available on GitHub: ArianAr/ReleaseCanvas.</string>
+    <string name="terms_preview_title">Review terms</string>
+    <string name="terms_preview_version">Template version: %1$s</string>
+    <string name="terms_preview_hint">Read the release wording carefully before signing. This is not legal advice.</string>
+    <string name="terms_preview_continue">I have read these terms</string>
 </resources>

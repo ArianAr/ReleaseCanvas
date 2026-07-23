@@ -13,10 +13,12 @@ import com.releasecanvas.app.ui.screens.HomeScreen
 import com.releasecanvas.app.ui.screens.ReviewScreen
 import com.releasecanvas.app.ui.screens.SignatureScreen
 import com.releasecanvas.app.ui.screens.SuccessScreen
+import com.releasecanvas.app.ui.screens.TermsPreviewScreen
 
 object Routes {
     const val HOME = "home"
     const val FORM = "form"
+    const val TERMS = "terms"
     const val SIGNATURE = "signature"
     const val REVIEW = "review"
     const val SUCCESS = "success"
@@ -53,9 +55,16 @@ fun AppNav(
                 onBack = { navController.popBackStack() },
                 onContinue = {
                     if (viewModel.validateForm()) {
-                        navController.navigate(Routes.SIGNATURE)
+                        navController.navigate(Routes.TERMS)
                     }
                 },
+            )
+        }
+        composable(Routes.TERMS) {
+            TermsPreviewScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onContinue = { navController.navigate(Routes.SIGNATURE) },
             )
         }
         composable(Routes.SIGNATURE) {
