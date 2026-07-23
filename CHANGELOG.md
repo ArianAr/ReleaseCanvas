@@ -9,11 +9,18 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 ## [Unreleased]
 
 ### Added
-- About screen, terms preview, history management
-- Age/authority attestation checkbox
-- Email/share subject-body polish
-- Multi-page PDF overflow
+- (none yet)
 
+## [1.2.0] - 2026-07-23
+
+### Added
+- About screen with version and legal/privacy notes
+- Terms preview step before signature
+- History management (remove entry / clear list; PDFs retained)
+- Age/authority attestation checkbox required before export
+- Share and Email PDF with prefilled subject and body
+- Multi-page PDF when content overflows Letter page 1
+- Updated product roadmap and milestones
 
 ## [1.1.0] - 2026-07-23
 
@@ -43,15 +50,27 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 | `versionName` | User-facing semver (`MAJOR.MINOR.PATCH`) in `app/build.gradle.kts` |
 | `versionCode` | Integer, increase on every Play/store or tagged release |
 
-### Cutting a release (manual, no CI required)
+### Version bumps & releases (required after meaningful changes)
 
-1. Update `versionName` / `versionCode` in `app/build.gradle.kts`
-2. Add a dated section under CHANGELOG
-3. Commit, tag `vX.Y.Z`, push tag
-4. Create a GitHub Release from the tag and attach the APK if desired
+After each **minor** or **major** change set lands on `main`:
+
+1. Bump `versionName` (semver) and `versionCode` (+1) in `app/build.gradle.kts`
+2. Move items from `[Unreleased]` into a dated `## [X.Y.Z]` section in this file
+3. Open a short PR if branch protection requires it (or merge via PR as usual)
+4. Tag and publish a GitHub Release:
 
 ```bash
-git tag -a v1.0.0 -m "ReleaseCanvas 1.0.0"
-git push origin v1.0.0
-gh release create v1.0.0 --title "v1.0.0" --notes-file CHANGELOG.md
+git tag -a vX.Y.Z -m "ReleaseCanvas X.Y.Z"
+git push origin vX.Y.Z
+gh release create vX.Y.Z --title "vX.Y.Z" --notes-file /tmp/notes.md
 ```
+
+**Semver guide for this project**
+
+| Bump | When |
+|------|------|
+| **MAJOR** | Breaking data/export format or removed features |
+| **MINOR** | New user-facing features (screens, templates, export options) |
+| **PATCH** | Bug fixes, copy, small UX polish only |
+
+Patch releases may skip a full GitHub Release notes page if tiny, but **minor/major always get a tag + GitHub Release**.
