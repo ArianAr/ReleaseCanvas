@@ -80,6 +80,8 @@ class ReleaseViewModel(
     private val locationRepository: LocationRepository,
     private val pdfCompiler: PdfCompiler,
     private val documentStore: DocumentStore,
+    private val logoImporter: com.releasecanvas.app.data.profile.LogoImporter =
+        com.releasecanvas.app.data.profile.LogoImporter(application),
 ) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(ReleaseUiState())
@@ -328,37 +330,17 @@ class ReleaseViewModel(
      * @return absolute path, or null on failure. Sets [ReleaseUiState.profileSavedMessage]
      * to an error token when rejected (UI maps to localized strings).
      */
-    suspend fun importProfileLogo(uri: Uri): String? = withContext(Dispatchers.IO) {
-        val app = getApplication<Application>()
-        val maxBytes = 2 * 1024 * 1024 // 2 MB compressed
-        val type = app.contentResolver.getType(uri).orEmpty()
-        if (type.isNotEmpty() && !type.startsWith("image/")) {
-            _uiState.update { it.copy(profileSavedMessage = "logo_invalid") }
-            return@withContext null
-        }
-        runCatching {
-            val dest = File(app.filesDir, "profile_logo.jpg")
-            app.contentResolver.openInputStream(uri)?.use { input ->
-                val limited = input.readBytes()
-                if (limited.size > maxBytes) {
-                    _uiState.update {
-                        it.copy(profileSavedMessage = "logo_too_large")
-                    }
-                    return@withContext null
-                }
-                // Decode bounds to reject absurd dimensions
-                val bounds = android.graphics.BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                android.graphics.BitmapFactory.decodeByteArray(limited, 0, limited.size, bounds)
-                if (bounds.outWidth > 4096 || bounds.outHeight > 4096 || bounds.outWidth <= 0) {
-                    _uiState.update { it.copy(profileSavedMessage = "logo_invalid") }
-                    return@withContext null
-                }
-                FileOutputStream(dest).use { output -> output.write(limited) }
-            } ?: return@withContext null
-            dest.absolutePath
-        }.getOrElse {
-            _uiState.update { it.copy(profileSavedMessage = "logo_invalid") }
-            null
+    suspend fun importProfileLogo(uri: Uri): String? {
+        return when (val result = logoImporter.import(uri)) {
+            is com.releasecanvas.app.data.profile.LogoImportResult.Ok -> result.path
+            com.releasecanvas.app.data.profile.LogoImportResult.TooLarge -> {
+                _uiState.update { it.copy(profileSavedMessage = "logo_too_large") }
+                null
+            }
+            com.releasecanvas.app.data.profile.LogoImportResult.Invalid -> {
+                _uiState.update { it.copy(profileSavedMessage = "logo_invalid") }
+                null
+            }
         }
     }
 
