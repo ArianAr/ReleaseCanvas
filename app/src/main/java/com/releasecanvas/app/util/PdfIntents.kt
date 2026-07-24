@@ -13,7 +13,9 @@ import com.releasecanvas.app.R
  */
 object PdfIntents {
 
+    /** Returns false if no app can open PDFs or the content URI is missing/unreadable. */
     fun openPdf(context: Context, uri: Uri): Boolean {
+        if (!uriExists(context, uri)) return false
         val intent = Intent(Intent.ACTION_VIEW).apply {
             setDataAndType(uri, "application/pdf")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -24,6 +26,12 @@ object PdfIntents {
         } catch (_: ActivityNotFoundException) {
             false
         }
+    }
+
+    fun uriExists(context: Context, uri: Uri): Boolean {
+        return runCatching {
+            context.contentResolver.openInputStream(uri)?.use { true } ?: false
+        }.getOrDefault(false)
     }
 
     /**
@@ -44,6 +52,7 @@ object PdfIntents {
         } else {
             context.getString(R.string.share_pdf_body_short, displayName)
         }
+        if (!uriExists(context, uri)) return false
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "application/pdf"
             putExtra(Intent.EXTRA_STREAM, uri)

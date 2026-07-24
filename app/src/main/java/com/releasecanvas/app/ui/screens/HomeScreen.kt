@@ -71,6 +71,7 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
     val openFailed = stringResource(R.string.open_pdf_failed)
     val shareFailed = stringResource(R.string.share_pdf_failed)
+    val fileMissing = stringResource(R.string.history_file_missing)
 
     Scaffold(
         topBar = {
@@ -174,12 +175,15 @@ fun HomeScreen(
                                     Text(
                                         entry.modelName.ifBlank { entry.displayName },
                                         modifier = Modifier.clickable {
-                                            val ok = PdfIntents.openPdf(
-                                                context,
-                                                Uri.parse(entry.uriString),
-                                            )
+                                            val uri = Uri.parse(entry.uriString)
+                                            val ok = PdfIntents.openPdf(context, uri)
                                             if (!ok) {
-                                                scope.launch { snackbar.showSnackbar(openFailed) }
+                                                val msg = if (!PdfIntents.uriExists(context, uri)) {
+                                                    fileMissing
+                                                } else {
+                                                    openFailed
+                                                }
+                                                scope.launch { snackbar.showSnackbar(msg) }
                                             }
                                         },
                                     )
@@ -191,16 +195,22 @@ fun HomeScreen(
                                     Row {
                                         IconButton(
                                             onClick = {
+                                                val uri = Uri.parse(entry.uriString)
                                                 val ok = PdfIntents.sharePdf(
                                                     context = context,
-                                                    uri = Uri.parse(entry.uriString),
+                                                    uri = uri,
                                                     modelName = entry.modelName,
                                                     displayName = entry.displayName,
                                                     signedAtUtc = entry.signedAtUtc,
                                                 )
                                                 if (!ok) {
+                                                    val msg = if (!PdfIntents.uriExists(context, uri)) {
+                                                        fileMissing
+                                                    } else {
+                                                        shareFailed
+                                                    }
                                                     scope.launch {
-                                                        snackbar.showSnackbar(shareFailed)
+                                                        snackbar.showSnackbar(msg)
                                                     }
                                                 }
                                             },

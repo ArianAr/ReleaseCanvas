@@ -79,3 +79,31 @@ window.RC_fillTemplate = function (template, model, photographer, lang) {
     .replace(/\s+/g, " ")
     .trim();
 };
+
+
+// Prefer canonical shared catalog when present (same file as Android assets).
+(function loadSharedCatalog() {
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "./data/release_templates.json", false); // sync at startup for simplicity
+    xhr.send(null);
+    if (xhr.status >= 200 && xhr.status < 300) {
+      var data = JSON.parse(xhr.responseText);
+      window.RC_BODIES_FA = window.RC_BODIES_FA || {};
+      (data.templates || []).forEach(function (t) {
+        if (!window.RC_TEMPLATES) return;
+        var hit = window.RC_TEMPLATES.find(function (x) { return x.id === t.id; });
+        if (hit && t.bodies && t.bodies.en) {
+          hit.body = t.bodies.en;
+          hit.version = t.version || hit.version;
+          hit.name = t.name || hit.name;
+        }
+        if (t.bodies && t.bodies.fa) {
+          window.RC_BODIES_FA[t.id] = t.bodies.fa;
+        }
+      });
+    }
+  } catch (e) {
+    console.warn("shared templates not loaded", e);
+  }
+})();

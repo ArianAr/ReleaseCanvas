@@ -30,14 +30,20 @@ object ReleaseTerms {
         photographer: String,
     ): String {
         val version = template.version
-        val map = when (template) {
-            ReleaseTemplate.GENERIC -> generic_bodies
-            ReleaseTemplate.FIVE_HUNDRED_PX_STYLE -> five_hundred_px_style_bodies
-            ReleaseTemplate.STOCK_RF_STYLE -> stock_rf_style_bodies
-            ReleaseTemplate.EDITORIAL_ONLY -> editorial_only_bodies
-            ReleaseTemplate.SOCIAL_WEB -> social_web_bodies
-        }
-        val pattern = map[lang] ?: map.getValue("en")
+        // Prefer shared JSON catalog when loaded (assets/release_templates.json).
+        val fromCatalog = TemplateCatalog.body(template.id, lang)
+        val pattern = fromCatalog
+            ?: when (template) {
+                ReleaseTemplate.GENERIC -> generic_bodies[lang] ?: generic_bodies.getValue("en")
+                ReleaseTemplate.FIVE_HUNDRED_PX_STYLE ->
+                    five_hundred_px_style_bodies[lang] ?: five_hundred_px_style_bodies.getValue("en")
+                ReleaseTemplate.STOCK_RF_STYLE ->
+                    stock_rf_style_bodies[lang] ?: stock_rf_style_bodies.getValue("en")
+                ReleaseTemplate.EDITORIAL_ONLY ->
+                    editorial_only_bodies[lang] ?: editorial_only_bodies.getValue("en")
+                ReleaseTemplate.SOCIAL_WEB ->
+                    social_web_bodies[lang] ?: social_web_bodies.getValue("en")
+            }
         return pattern
             .replace("{model}", model)
             .replace("{photographer}", photographer)
