@@ -7,8 +7,12 @@
   <meta name="description" content="ReleaseCanvas Web — sign a model release and download a PDF. Companion to the Android app for browsers (including iPhone)." />
   <title>ReleaseCanvas Web</title>
   <link rel="stylesheet" href="./styles.css" />
-  <!-- pdf-lib: client-side PDF generation (no server) -->
-  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <!-- Vendored pdf-lib (OFL-friendly app use); SRI pins integrity -->
+  <script
+    src="./vendor/pdf-lib.min.js"
+    integrity="sha384-weMABwrltA6jWR8DDe9Jp5blk+tZQh7ugpCsF3JwSA53WZM9/14PjS5LAJNHNjAI"
+    crossorigin="anonymous"
+  ></script>
 </head>
 <body>
   <div class="app">
@@ -79,6 +83,13 @@
         </div>
       </details>
 
+      <label>
+        Release wording language
+        <select id="releaseLang">
+          <option value="en">English</option>
+          <option value="fa">فارسی</option>
+        </select>
+      </label>
       <label>
         Release template
         <select id="templateId"></select>
@@ -157,8 +168,9 @@
       <h1 id="export-title">Export PDF</h1>
       <p class="hint">
         Location is optional. Time is recorded in UTC when you create the PDF.
-        If you allow GPS, we try a best-effort reverse geocode (OpenStreetMap) for city/country —
-        manual city/country on the form still win when filled.
+        If you allow GPS, we try a best-effort reverse geocode via
+        <strong>OpenStreetMap Nominatim</strong> (third party — your IP and coordinates are sent to them when you tap the button).
+        Manual city/country on the form still win when filled.
       </p>
       <p id="locationStatus" class="meta">Location: not requested</p>
       <div class="row tight">

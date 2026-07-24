@@ -36,3 +36,15 @@ Site URL (typical):
 `https://arianar.github.io/ReleaseCanvas/`
 
 All asset paths are relative (`./styles.css`) so the app works under a project-pages base path.
+
+## Third parties
+
+| Service | When | Data |
+|---------|------|------|
+| OpenStreetMap Nominatim | User taps “Use device location” | IP + lat/lon (OSM policy applies) |
+| pdf-lib | Bundled under `vendor/` | None (local) |
+| Vazirmatn | UI + FA PDFs (`fonts/`, OFL) | None (local) |
+
+## Fonts
+
+Persian UI and PDF text use **[Vazirmatn](https://github.com/rastikerdar/vazirmatn)** (SIL Open Font License).
