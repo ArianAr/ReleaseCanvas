@@ -343,6 +343,7 @@
       city: $("city").value.trim(),
       country: $("country").value.trim(),
       template: selectedTemplate(),
+      releaseLang: ($("releaseLang") && $("releaseLang").value) || "en",
     };
   }
 
@@ -370,7 +371,9 @@
   $("btnToTerms").addEventListener("click", () => {
     const d = validateForm();
     if (!d) return;
-    const body = window.RC_fillTemplate(d.template, d.modelName, d.photographerName);
+    const body = window.RC_fillTemplate(d.template, d.modelName, d.photographerName, d.releaseLang);
+    $("termsBody").classList.toggle("rtl", d.releaseLang === "fa");
+    document.documentElement.lang = d.releaseLang === "fa" ? "fa" : "en";
     $("termsMeta").textContent = d.template.name + " · " + d.template.version;
     $("termsBody").textContent = body;
     showStep("terms");
@@ -539,8 +542,20 @@
     const { PDFDocument, rgb, StandardFonts } = PDFLib;
     const accent = rgb(accentParts.r, accentParts.g, accentParts.b);
     const pdfDoc = await PDFDocument.create();
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    const isFa = d.releaseLang === "fa";
+    let font;
+    let fontBold;
+    if (isFa) {
+      const fontBytes = await fetch("./fonts/Vazirmatn-Regular.ttf").then((r) => {
+        if (!r.ok) throw new Error("Vazirmatn font missing");
+        return r.arrayBuffer();
+      });
+      font = await pdfDoc.embedFont(fontBytes, { subset: true });
+      fontBold = font; // single weight
+    } else {
+      font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    }
     const pageSize = [612, 792]; // US Letter
     const margin = 48;
     const maxW = pageSize[0] - margin * 2;
@@ -576,7 +591,7 @@
       }
     }
 
-    const terms = window.RC_fillTemplate(d.template, d.modelName, d.photographerName);
+    const terms = window.RC_fillTemplate(d.template, d.modelName, d.photographerName, d.releaseLang);
     const signedAt = new Date().toISOString();
 
     if (brand.brandingEnabled) {
