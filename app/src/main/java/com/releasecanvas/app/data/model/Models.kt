@@ -65,14 +65,34 @@ data class HistoryEntry(
     val modelName: String,
 )
 
+/** Validation failure keys resolved to localized strings in the UI. */
+enum class FieldError {
+    Required,
+    InvalidEmail,
+}
+
 data class FormErrors(
-    val modelName: String? = null,
-    val modelEmail: String? = null,
-    val shooterName: String? = null,
-    val description: String? = null,
+    val modelName: FieldError? = null,
+    val modelEmail: FieldError? = null,
+    val shooterName: FieldError? = null,
+    val description: FieldError? = null,
 ) {
     val hasErrors: Boolean
         get() = modelName != null || modelEmail != null || shooterName != null || description != null
+}
+
+/** Why export cannot proceed (localized in UI). */
+enum class ExportBlocker {
+    MissingSignature,
+    MissingAttestation,
+}
+
+/** Batch roster validation failures (localized in UI). */
+sealed class BatchRosterError {
+    data object Inconsistent : BatchRosterError()
+    data class TooFew(val min: Int) : BatchRosterError()
+    data class NameRequired(val index: Int) : BatchRosterError()
+    data class InvalidEmail(val index: Int) : BatchRosterError()
 }
 
 /** One model in a batch multi-model session (name + email only; signature collected later). */

@@ -2,6 +2,7 @@ package com.releasecanvas.app
 
 import com.releasecanvas.app.data.model.BatchModelInput
 import com.releasecanvas.app.data.model.BatchSession
+import com.releasecanvas.app.data.model.BatchRosterError
 import com.releasecanvas.app.util.Validation
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -18,7 +19,7 @@ class BatchValidationTest {
             names = listOf("A", ""),
             emails = listOf("a@example.com", ""),
         )
-        assertNotNull(err)
+        assertTrue(err is BatchRosterError.TooFew)
     }
 
     @Test
@@ -36,8 +37,8 @@ class BatchValidationTest {
             names = listOf("Alex", "Sam"),
             emails = listOf("a@example.com", "not-an-email"),
         )
-        assertNotNull(err)
-        assertTrue(err!!.contains("2") || err.contains("email", ignoreCase = true))
+        assertTrue(err is BatchRosterError.InvalidEmail)
+        assertEquals(2, (err as BatchRosterError.InvalidEmail).index)
     }
 
     @Test
