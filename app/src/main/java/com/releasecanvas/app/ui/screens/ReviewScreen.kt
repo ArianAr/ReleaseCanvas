@@ -104,25 +104,25 @@ fun ReviewScreen(
                 BatchProgressBanner(batch = batch)
                 Spacer(Modifier.height(12.dp))
             }
-            ReviewRow("Release template", state.selectedTemplateOption.displayName)
+            ReviewRow(stringResource(R.string.review_label_template), state.selectedTemplateOption.displayName)
             ReviewRow(
                 stringResource(R.string.review_release_language),
                 AppLocale.displayName(state.releaseLanguageTag),
             )
-            ReviewRow("Model", draft.modelName)
-            ReviewRow("Email", draft.modelEmail)
-            ReviewRow("Photographer", draft.shooterName)
-            ReviewRow("Description", draft.description)
-            if (draft.shootId.isNotBlank()) ReviewRow("Shoot ID", draft.shootId)
-            if (draft.photographerEmail.isNotBlank()) ReviewRow("Photographer email", draft.photographerEmail)
-            if (draft.photographerPhone.isNotBlank()) ReviewRow("Photographer phone", draft.photographerPhone)
-            if (draft.clientAgency.isNotBlank()) ReviewRow("Client / agency", draft.clientAgency)
-            if (draft.locationName.isNotBlank()) ReviewRow("Shoot location", draft.locationName)
-            if (draft.notes.isNotBlank()) ReviewRow("Notes", draft.notes)
-            if (draft.city.isNotBlank()) ReviewRow("City", draft.city)
-            if (draft.country.isNotBlank()) ReviewRow("Country", draft.country)
+            ReviewRow(stringResource(R.string.review_label_model), draft.modelName)
+            ReviewRow(stringResource(R.string.review_label_email), draft.modelEmail)
+            ReviewRow(stringResource(R.string.review_label_photographer), draft.shooterName)
+            ReviewRow(stringResource(R.string.review_label_description), draft.description)
+            if (draft.shootId.isNotBlank()) ReviewRow(stringResource(R.string.review_label_shoot_id), draft.shootId)
+            if (draft.photographerEmail.isNotBlank()) ReviewRow(stringResource(R.string.review_label_photographer_email), draft.photographerEmail)
+            if (draft.photographerPhone.isNotBlank()) ReviewRow(stringResource(R.string.review_label_photographer_phone), draft.photographerPhone)
+            if (draft.clientAgency.isNotBlank()) ReviewRow(stringResource(R.string.review_label_client), draft.clientAgency)
+            if (draft.locationName.isNotBlank()) ReviewRow(stringResource(R.string.review_label_shoot_location), draft.locationName)
+            if (draft.notes.isNotBlank()) ReviewRow(stringResource(R.string.review_label_notes), draft.notes)
+            if (draft.city.isNotBlank()) ReviewRow(stringResource(R.string.review_label_city), draft.city)
+            if (draft.country.isNotBlank()) ReviewRow(stringResource(R.string.review_label_country), draft.country)
             Spacer(Modifier.height(12.dp))
-            Text("Signature", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.review_label_signature), style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(8.dp))
             SignaturePreview(draft.signatureBitmap)
             Spacer(Modifier.height(16.dp))
@@ -132,7 +132,7 @@ fun ReviewScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(16.dp))
-            Text("Location stamp", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.review_label_location_stamp), style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(4.dp))
             Row(
                 modifier = Modifier

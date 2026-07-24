@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -45,6 +46,7 @@ import com.releasecanvas.app.data.model.BatchModelInput
 import com.releasecanvas.app.ui.ReleaseViewModel
 import com.releasecanvas.app.ui.components.LanguagePickerField
 import com.releasecanvas.app.ui.theme.screenBody
+import com.releasecanvas.app.util.toMessage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,6 +56,7 @@ fun BatchSetupScreen(
     onStart: () -> Unit,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     val draft = state.draft
     val errors = state.formErrors
     val selected = state.selectedTemplateOption
@@ -170,7 +173,7 @@ fun BatchSetupScreen(
                 onValueChange = viewModel::updateShooterName,
                 label = { Text(stringResource(R.string.shooter_name)) },
                 isError = errors.shooterName != null,
-                supportingText = errors.shooterName?.let { { Text(it) } },
+                supportingText = errors.shooterName?.let { err -> { Text(err.toMessage(context)) } },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -180,7 +183,7 @@ fun BatchSetupScreen(
                 onValueChange = viewModel::updateDescription,
                 label = { Text(stringResource(R.string.description)) },
                 isError = errors.description != null,
-                supportingText = errors.description?.let { { Text(it) } },
+                supportingText = errors.description?.let { err -> { Text(err.toMessage(context)) } },
                 minLines = 2,
                 modifier = Modifier.fillMaxWidth(),
             )

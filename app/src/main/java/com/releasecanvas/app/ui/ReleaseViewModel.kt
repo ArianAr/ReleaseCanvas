@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.releasecanvas.app.R
 import com.releasecanvas.app.data.locale.AppLocale
 import com.releasecanvas.app.data.locale.LocaleHelper
 import com.releasecanvas.app.data.location.LocationRepository
@@ -15,7 +16,9 @@ import com.releasecanvas.app.data.model.BatchModelInput
 import com.releasecanvas.app.data.model.BatchSession
 import com.releasecanvas.app.data.model.CustomTemplate
 import com.releasecanvas.app.data.model.ExportResult
+import com.releasecanvas.app.data.model.ExportBlocker
 import com.releasecanvas.app.data.model.FormErrors
+import com.releasecanvas.app.data.model.BatchRosterError
 import com.releasecanvas.app.data.model.HistoryEntry
 import com.releasecanvas.app.data.model.LocationStatus
 import com.releasecanvas.app.data.model.PhotographerProfile
@@ -306,7 +309,7 @@ class ReleaseViewModel(
             _uiState.update {
                 it.copy(
                     profile = profile,
-                    profileSavedMessage = "Profile saved",
+                    profileSavedMessage = "ok",
                     draft = it.draft.copy(
                         shooterName = it.draft.shooterName.ifBlank { profile.displayName },
                         photographerEmail = it.draft.photographerEmail.ifBlank { profile.email },
@@ -321,15 +324,42 @@ class ReleaseViewModel(
         _uiState.update { it.copy(profileSavedMessage = null) }
     }
 
+    /**
+     * @return absolute path, or null on failure. Sets [ReleaseUiState.profileSavedMessage]
+     * to an error token when rejected (UI maps to localized strings).
+     */
     suspend fun importProfileLogo(uri: Uri): String? = withContext(Dispatchers.IO) {
+        val app = getApplication<Application>()
+        val maxBytes = 2 * 1024 * 1024 // 2 MB compressed
+        val type = app.contentResolver.getType(uri).orEmpty()
+        if (type.isNotEmpty() && !type.startsWith("image/")) {
+            _uiState.update { it.copy(profileSavedMessage = "logo_invalid") }
+            return@withContext null
+        }
         runCatching {
-            val app = getApplication<Application>()
             val dest = File(app.filesDir, "profile_logo.jpg")
             app.contentResolver.openInputStream(uri)?.use { input ->
-                FileOutputStream(dest).use { output -> input.copyTo(output) }
+                val limited = input.readBytes()
+                if (limited.size > maxBytes) {
+                    _uiState.update {
+                        it.copy(profileSavedMessage = "logo_too_large")
+                    }
+                    return@withContext null
+                }
+                // Decode bounds to reject absurd dimensions
+                val bounds = android.graphics.BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                android.graphics.BitmapFactory.decodeByteArray(limited, 0, limited.size, bounds)
+                if (bounds.outWidth > 4096 || bounds.outHeight > 4096 || bounds.outWidth <= 0) {
+                    _uiState.update { it.copy(profileSavedMessage = "logo_invalid") }
+                    return@withContext null
+                }
+                FileOutputStream(dest).use { output -> output.write(limited) }
             } ?: return@withContext null
             dest.absolutePath
-        }.getOrNull()
+        }.getOrElse {
+            _uiState.update { it.copy(profileSavedMessage = "logo_invalid") }
+            null
+        }
     }
 
     fun clearProfileLogo(current: PhotographerProfile) {
@@ -370,7 +400,11 @@ class ReleaseViewModel(
                 includeLocationInPdf = include,
                 // Force a new capture when the user toggles GPS consent
                 frozenSigningMetadata = null,
-                locationPreviewText = if (include) "Acquiring GPS…" else "Location not included in PDF (optional)",
+                locationPreviewText = if (include) {
+                    getApplication<Application>().getString(R.string.location_acquiring)
+                } else {
+                    getApplication<Application>().getString(R.string.location_not_included)
+                },
                 locationPreviewStatus = if (include) LocationStatus.Acquiring else LocationStatus.Unavailable,
             )
         }
@@ -403,7 +437,7 @@ class ReleaseViewModel(
                     it.copy(
                         frozenSigningMetadata = meta,
                         locationPreviewStatus = meta.locationStatus,
-                        locationPreviewText = "Location not included in PDF (optional)",
+                        locationPreviewText = getApplication<Application>().getString(R.string.location_not_included),
                     )
                 }
                 return@launch
@@ -411,7 +445,7 @@ class ReleaseViewModel(
             _uiState.update {
                 it.copy(
                     locationPreviewStatus = LocationStatus.Acquiring,
-                    locationPreviewText = "Acquiring GPS…",
+                    locationPreviewText = getApplication<Application>().getString(R.string.location_acquiring),
                 )
             }
             val meta = locationRepository.captureForSigning(
@@ -433,14 +467,18 @@ class ReleaseViewModel(
     fun export(onSuccess: () -> Unit) {
         val state = _uiState.value
         if (state.isExporting) return
-        if (!state.hasSignatureStrokes || state.draft.signatureBitmap == null) {
-            _uiState.update { it.copy(exportError = "Please provide a signature") }
-            return
-        }
-        if (!state.attestationAccepted) {
-            _uiState.update {
-                it.copy(exportError = "Confirm age of majority / authority to sign before exporting")
+        val blocker = Validation.exportBlocker(
+            hasSignatureStrokes = state.hasSignatureStrokes,
+            hasSignatureBitmap = state.draft.signatureBitmap != null,
+            attestationAccepted = state.attestationAccepted,
+        )
+        if (blocker != null) {
+            val app = getApplication<Application>()
+            val msg = when (blocker) {
+                ExportBlocker.MissingSignature -> app.getString(R.string.error_signature_empty)
+                ExportBlocker.MissingAttestation -> app.getString(R.string.error_attestation_required)
             }
+            _uiState.update { it.copy(exportError = msg) }
             return
         }
 
@@ -498,7 +536,10 @@ class ReleaseViewModel(
                 _uiState.update {
                     it.copy(
                         isExporting = false,
-                        exportError = "Export failed: $detail. Your form and signature are still here — try again.",
+                        exportError = getApplication<Application>().getString(
+                            R.string.error_export_failed,
+                            detail,
+                        ),
                     )
                 }
             }
@@ -530,7 +571,7 @@ class ReleaseViewModel(
             _uiState.update {
                 it.copy(
                     formErrors = sharedErrors,
-                    batchSetupError = "Fill photographer name and shoot description",
+                    batchSetupError = getApplication<Application>().getString(R.string.batch_error_shared_required),
                 )
             }
             return false
@@ -541,7 +582,14 @@ class ReleaseViewModel(
             minModels = 2,
         )
         if (rosterError != null) {
-            _uiState.update { it.copy(batchSetupError = rosterError) }
+            val app = getApplication<Application>()
+            val msg = when (rosterError) {
+                BatchRosterError.Inconsistent -> app.getString(R.string.batch_error_inconsistent)
+                is BatchRosterError.TooFew -> app.getString(R.string.batch_error_too_few, rosterError.min)
+                is BatchRosterError.NameRequired -> app.getString(R.string.batch_error_name_required, rosterError.index)
+                is BatchRosterError.InvalidEmail -> app.getString(R.string.batch_error_email, rosterError.index)
+            }
+            _uiState.update { it.copy(batchSetupError = msg) }
             return false
         }
         val cleaned = models

@@ -75,10 +75,17 @@ fun ProfileScreen(
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val savedMsg = stringResource(R.string.profile_saved)
+    val logoTooLarge = stringResource(R.string.profile_logo_too_large, 2)
+    val logoInvalid = stringResource(R.string.profile_logo_invalid)
 
     LaunchedEffect(state.profileSavedMessage) {
-        state.profileSavedMessage?.let {
-            snackbar.showSnackbar(savedMsg)
+        state.profileSavedMessage?.let { token ->
+            val msg = when (token) {
+                "logo_too_large" -> logoTooLarge
+                "logo_invalid" -> logoInvalid
+                else -> savedMsg
+            }
+            snackbar.showSnackbar(msg)
             viewModel.clearProfileSavedMessage()
         }
     }

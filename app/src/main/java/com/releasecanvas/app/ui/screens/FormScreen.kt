@@ -51,6 +51,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.releasecanvas.app.ui.theme.screenBody
+import com.releasecanvas.app.util.toMessage
+import com.releasecanvas.app.data.model.FieldError
+import androidx.compose.ui.platform.LocalContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,6 +63,7 @@ fun FormScreen(
     onContinue: () -> Unit,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     val draft = state.draft
     val errors = state.formErrors
     val selected = state.selectedTemplateOption
@@ -73,7 +77,6 @@ fun FormScreen(
     var editJurisdiction by remember { mutableStateOf("") }
     var editBody by remember { mutableStateOf("") }
     var editId by remember { mutableStateOf<String?>(null) }
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     val importLauncher = rememberLauncherForActivityResult(
@@ -230,7 +233,7 @@ fun FormScreen(
                 onValueChange = viewModel::updateModelName,
                 label = { Text(stringResource(R.string.model_name)) },
                 isError = errors.modelName != null,
-                supportingText = errors.modelName?.let { { Text(it) } },
+                supportingText = errors.modelName?.let { err -> { Text(err.toMessage(context)) } },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -240,7 +243,7 @@ fun FormScreen(
                 onValueChange = viewModel::updateModelEmail,
                 label = { Text(stringResource(R.string.model_email)) },
                 isError = errors.modelEmail != null,
-                supportingText = errors.modelEmail?.let { { Text(it) } },
+                supportingText = errors.modelEmail?.let { err -> { Text(err.toMessage(context)) } },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth(),
@@ -251,7 +254,7 @@ fun FormScreen(
                 onValueChange = viewModel::updateShooterName,
                 label = { Text(stringResource(R.string.shooter_name)) },
                 isError = errors.shooterName != null,
-                supportingText = errors.shooterName?.let { { Text(it) } },
+                supportingText = errors.shooterName?.let { err -> { Text(err.toMessage(context)) } },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -261,7 +264,7 @@ fun FormScreen(
                 onValueChange = viewModel::updateDescription,
                 label = { Text(stringResource(R.string.description)) },
                 isError = errors.description != null,
-                supportingText = errors.description?.let { { Text(it) } },
+                supportingText = errors.description?.let { err -> { Text(err.toMessage(context)) } },
                 minLines = 3,
                 modifier = Modifier.fillMaxWidth(),
             )
