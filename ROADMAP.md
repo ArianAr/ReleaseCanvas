@@ -4,7 +4,7 @@ Living product plan. **GitHub [milestones](https://github.com/ArianAr/ReleaseCan
 
 > New roadmap items should be agreed with the maintainer before being added here.
 
-**Current tagged release:** **[v1.7.1](https://github.com/ArianAr/ReleaseCanvas/releases/tag/v1.7.1)** (`versionName` / `versionCode` in `app/build.gradle.kts`). Hardening from the senior review (issues #69–#84) is on `main` and will ship in the next tag (intended **1.8.0**). Full history: [CHANGELOG.md](CHANGELOG.md).
+**Current tagged release:** **[v1.8.0](https://github.com/ArianAr/ReleaseCanvas/releases/tag/v1.8.0)** (`versionName` **1.8.0** / `versionCode` **11**). Full history: [CHANGELOG.md](CHANGELOG.md).
 
 > **AI-assisted development:** most of the project code and docs have been drafted with AI assistance. **Everything is reviewed, tested, and approved by humans** before it lands on `main`. Maintainers remain accountable for product decisions and quality.
 
@@ -39,7 +39,7 @@ Examples of **non-goals** (do not schedule without a new decision):
 
 Milestones on GitHub mirror these themes: [all milestones](https://github.com/ArianAr/ReleaseCanvas/milestones?state=closed).
 
-### [v1.8 Engineering hardening](https://github.com/ArianAr/ReleaseCanvas/milestone/8) (on `main`, next tag)
+### [v1.8 Engineering hardening](https://github.com/ArianAr/ReleaseCanvas/milestone/8) (tagged **1.8.0**)
 
 Senior review follow-up — issues **#69–#84** (all closed).
 

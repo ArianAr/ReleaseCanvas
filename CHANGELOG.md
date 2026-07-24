@@ -11,6 +11,31 @@ for `versionName` (with integer `versionCode` monotonically increasing).
 ### Added
 - (none yet)
 
+## [1.8.0] - 2026-07-24
+
+Senior review hardening — issues [#69](https://github.com/ArianAr/ReleaseCanvas/issues/69)–[#84](https://github.com/ArianAr/ReleaseCanvas/issues/84); PRs [#85](https://github.com/ArianAr/ReleaseCanvas/pull/85)–[#88](https://github.com/ArianAr/ReleaseCanvas/pull/88).
+
+### Security / privacy
+- Document shared `Documents/ReleaseCanvas` export risk (in-app + README)
+- Auto Backup / data-extraction rules exclude DataStore prefs and logo
+- GPS coordinates in PDF are **opt-in** on Review (default off); single frozen stamp for preview + export
+
+### Added
+- PR CI: unit tests + `assembleDebug`
+- Unit tests for export guards, locale helpers, form validation
+- Web: vendored **pdf-lib** with SRI; **Vazirmatn** for Persian UI + PDF
+- Nominatim reverse-geocode privacy note on web
+- Shared `release_templates.json` source (Android assets + `web/data`)
+- `SECURITY.md` updated for 1.x data handling
+
+### Changed
+- Dynamic Validation / Review / export / GPS strings localized
+- Logo import size and image-type caps
+- `LogoImporter` collaborator (start of ViewModel slim-down)
+- R8 minify + resource shrink for release builds
+- History soft-handles missing MediaStore PDFs (no crash)
+- Remove unused FileProvider paths
+
 ## [1.7.1] - 2026-07-24
 
 ### Fixed
